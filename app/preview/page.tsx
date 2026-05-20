@@ -1,7 +1,96 @@
 'use client'
 import Image from 'next/image'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import Particles from '@/components/Particles'
+
+const galleryPhotos = [
+  '/gallery/Archivo_096-3.jpg',
+  '/gallery/DSC01734.jpg',
+  '/gallery/IMG_6477.JPG',
+  '/gallery/Archivo_192-2.jpg',
+  '/gallery/DSC01782_1.jpg',
+  '/gallery/IMG_6481.JPG',
+  '/gallery/Archivo_206-2.jpg',
+  '/gallery/DSC01807.jpg',
+  '/gallery/IMG_7200.JPG',
+  '/gallery/Archivo_244.jpg',
+  '/gallery/DSC05052.jpg',
+  '/gallery/IMG_7542-2.jpg',
+  '/gallery/Archivo_540-3.jpg',
+  '/gallery/IMG_5232.JPG',
+  '/gallery/IMG_8760.jpg',
+  '/gallery/Archivo_545-3.jpg',
+  '/gallery/IMG_9090.jpg',
+  '/gallery/Archivo_565-4.jpg',
+  '/gallery/IMG_9667.JPG',
+]
+
+function Lightbox({ photos, index, onClose, onPrev, onNext }: {
+  photos: string[]; index: number; onClose: () => void; onPrev: () => void; onNext: () => void
+}) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+      if (e.key === 'ArrowLeft') onPrev()
+      if (e.key === 'ArrowRight') onNext()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose, onPrev, onNext])
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex items-center justify-center"
+      style={{ background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(16px)' }}
+      onClick={onClose}
+    >
+      {/* Prev */}
+      <button
+        onClick={e => { e.stopPropagation(); onPrev() }}
+        className="absolute left-4 md:left-10 z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all"
+        style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+
+      {/* Image */}
+      <div
+        className="relative max-w-5xl max-h-[85vh] mx-16"
+        onClick={e => e.stopPropagation()}
+        style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.8), 0 0 60px rgba(139,60,247,0.08)' }}
+      >
+        <img
+          src={photos[index]}
+          alt=""
+          className="block max-w-full max-h-[85vh] object-contain"
+          style={{ minWidth: '280px' }}
+        />
+        <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-4 pt-12"
+          style={{ background: 'linear-gradient(to top, rgba(7,5,8,0.8), transparent)' }}>
+          <p className="font-mono text-xs text-white/30 tracking-widest">{index + 1} / {photos.length}</p>
+        </div>
+      </div>
+
+      {/* Next */}
+      <button
+        onClick={e => { e.stopPropagation(); onNext() }}
+        className="absolute right-4 md:right-10 z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all"
+        style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+
+      {/* Close */}
+      <button
+        onClick={onClose}
+        className="absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center transition-all"
+        style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+  )
+}
 
 function useCounter(target: number, duration = 2000, triggered: boolean) {
   const [count, setCount] = useState(0)
@@ -101,17 +190,32 @@ const bookFeatures = [
 
 export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
+  const closeLightbox = useCallback(() => { setLightboxIndex(null); document.body.style.overflow = '' }, [])
+  const prevPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i - 1 + galleryPhotos.length) % galleryPhotos.length), [])
+  const nextPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i + 1) % galleryPhotos.length), [])
 
   return (
     <main className="grain min-h-screen" style={{ background: '#070508' }}>
       <Particles />
+
+      {lightboxIndex !== null && (
+        <Lightbox
+          photos={galleryPhotos}
+          index={lightboxIndex}
+          onClose={closeLightbox}
+          onPrev={prevPhoto}
+          onNext={nextPhoto}
+        />
+      )}
 
       {/* ── NAV ─────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-6 md:px-12 py-5"
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
         <Image src="/logo.png" alt="Pipe Santos" width={130} height={48} className="opacity-90" />
         <div className="hidden md:flex gap-8">
-          {[['#sobre', 'Sobre mí'], ['#libro', 'Libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
+          {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
             <a key={label} href={href} className="font-mono text-xs tracking-widest text-white/40 hover:text-white uppercase transition-colors">{label}</a>
           ))}
         </div>
@@ -276,6 +380,53 @@ export default function PreviewPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {stats.map((s) => (
               <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
+            ))}
+          </div>
+          <div className="line-holo mt-16" />
+        </div>
+      </section>
+
+      {/* ── GALERÍA ──────────────────────────────── */}
+      <section id="galeria" className="relative z-10 px-6 md:px-12 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="line-holo mb-16" />
+          <div className="text-center mb-14">
+            <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Eventos</p>
+            <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-3">
+              Momentos que <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>inspiran</span>
+            </h2>
+            <p className="font-body text-white/40 max-w-md mx-auto">
+              Cada evento es una historia única. Aquí algunos de esos momentos especiales.
+            </p>
+          </div>
+
+          {/* Masonry grid */}
+          <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+            {galleryPhotos.map((src, i) => (
+              <div
+                key={src}
+                className="break-inside-avoid relative overflow-hidden rounded-xl cursor-pointer group"
+                style={{ marginBottom: '12px' }}
+                onClick={() => openLightbox(i)}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className="w-full h-auto block transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                {/* Hover overlay */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, rgba(139,60,247,0.45), rgba(196,82,0,0.35))' }}
+                >
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                    </svg>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
           <div className="line-holo mt-16" />
