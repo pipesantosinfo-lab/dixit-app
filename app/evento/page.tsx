@@ -140,14 +140,14 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
 function CountdownBox({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="glass rounded-xl md:rounded-2xl w-12 h-12 md:w-20 md:h-20 flex items-center justify-center mb-1 md:mb-2"
+      <div className="glass rounded-lg md:rounded-2xl w-9 h-9 md:w-20 md:h-20 flex items-center justify-center mb-0.5 md:mb-2"
         style={{ border: '1px solid rgba(139,60,247,0.2)' }}>
-        <span className="font-display text-lg md:text-3xl font-light text-white"
+        <span className="font-display text-sm md:text-3xl font-light text-white"
           style={{ textShadow: '0 0 20px rgba(139,60,247,0.5)' }}>
           {String(value).padStart(2, '0')}
         </span>
       </div>
-      <span className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest uppercase">{label}</span>
+      <span className="font-mono text-[7px] md:text-xs text-white/30 tracking-wide md:tracking-widest uppercase">{label}</span>
     </div>
   )
 }
@@ -186,7 +186,7 @@ export default function EventoPage() {
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
-        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-[3fr_2fr] md:grid-cols-2 gap-4 md:gap-10 lg:gap-20 items-center">
+        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-2 md:grid-cols-2 gap-3 md:gap-10 lg:gap-20 items-center">
 
           {/* Left: text + countdown + CTA */}
           <div>
@@ -218,13 +218,13 @@ export default function EventoPage() {
             </div>
 
             {/* Countdown */}
-            <div className="flex gap-1.5 md:gap-4 mb-4 md:mb-10 animate-fade-up-delay-4">
+            <div className="flex gap-1 md:gap-4 mb-4 md:mb-10 animate-fade-up-delay-4">
               <CountdownBox value={countdown.days} label="días" />
-              <div className="font-display text-lg md:text-3xl text-white/20 self-center mb-4 md:mb-6">:</div>
+              <div className="font-display text-sm md:text-3xl text-white/20 self-center mb-3 md:mb-6">:</div>
               <CountdownBox value={countdown.hours} label="hrs" />
-              <div className="font-display text-lg md:text-3xl text-white/20 self-center mb-4 md:mb-6">:</div>
+              <div className="font-display text-sm md:text-3xl text-white/20 self-center mb-3 md:mb-6">:</div>
               <CountdownBox value={countdown.minutes} label="min" />
-              <div className="font-display text-lg md:text-3xl text-white/20 self-center mb-4 md:mb-6">:</div>
+              <div className="font-display text-sm md:text-3xl text-white/20 self-center mb-3 md:mb-6">:</div>
               <CountdownBox value={countdown.seconds} label="seg" />
             </div>
 
@@ -254,7 +254,7 @@ export default function EventoPage() {
                 alt="La vida es cule viaje — Barranquilla 2026"
                 width={480}
                 height={640}
-                className="relative rounded-xl md:rounded-2xl max-h-[55vh] md:max-h-[68vh] w-auto"
+                className="relative rounded-xl md:rounded-2xl max-h-[65vh] md:max-h-[68vh] w-auto"
                 style={{
                   objectFit: 'contain',
                   filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.35))',
