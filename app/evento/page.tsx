@@ -182,7 +182,7 @@ export default function EventoPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative md:min-h-screen px-4 md:px-6 pt-36 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
+      <section className="relative md:min-h-screen px-4 md:px-6 pt-44 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
@@ -190,7 +190,7 @@ export default function EventoPage() {
 
           {/* Left: text + countdown + CTA */}
           <div>
-            <p className="font-mono text-[9px] md:text-xs tracking-[0.25em] md:tracking-[0.5em] text-aurora/80 uppercase mb-3 md:mb-6 animate-fade-up">
+            <p className="hidden md:block font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
               ◆ Pipe Santos · Barranquilla · 2026
             </p>
             <div className="mb-4 md:mb-8 animate-fade-up-delay-1">
