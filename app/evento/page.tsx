@@ -175,14 +175,14 @@ export default function EventoPage() {
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
         <Image src="/logo.png" alt="Pipe Santos" width={120} height={44} className="opacity-90" />
         {!isSoldOut && (
-          <button onClick={() => setShowModal(true)} className="btn-primary text-sm">
+          <button onClick={() => setShowModal(true)} className="btn-primary text-sm hidden md:block">
             <span>Comprar entrada</span>
           </button>
         )}
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen px-4 md:px-6 pt-28 md:pt-24 pb-10 md:pb-20 flex items-start md:items-center">
+      <section className="relative min-h-screen px-4 md:px-6 pt-20 md:pt-24 pb-10 md:pb-20 flex items-start md:items-center">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
