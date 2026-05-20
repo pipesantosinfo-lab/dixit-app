@@ -194,14 +194,13 @@ export default function EventoPage() {
               ◆ Pipe Santos · Barranquilla · 2026
             </p>
             <div className="mb-8 animate-fade-up-delay-1">
-              <p className="font-display text-3xl md:text-4xl lg:text-5xl font-light leading-none mb-1"
-                style={{ color: 'rgba(255,255,255,0.65)' }}>
+              <h1 className="font-display text-5xl md:text-6xl lg:text-8xl font-light text-white leading-none">
                 La vida es
-              </p>
-              <h1 className="leading-none"
-                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)', fontSize: 'clamp(4.5rem, 10vw, 9rem)' }}>
-                cule viaje
               </h1>
+              <p className="text-5xl md:text-6xl lg:text-8xl leading-none"
+                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
+                cule viaje
+              </p>
             </div>
 
             <div className="flex flex-col gap-3 mb-10 animate-fade-up-delay-3">
