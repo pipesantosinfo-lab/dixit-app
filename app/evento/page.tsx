@@ -171,9 +171,9 @@ export default function EventoPage() {
       {showModal && <CheckoutModal onClose={() => setShowModal(false)} sold={sold} />}
 
       {/* ── NAV ── */}
-      <nav className="fixed top-0 left-0 right-0 z-40 flex justify-between items-center px-4 md:px-12 py-2 md:py-5"
+      <nav className="fixed top-0 left-0 right-0 z-40 flex justify-between items-center px-4 md:px-12 py-1 md:py-5"
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
-        <Image src="/logo.png" alt="Pipe Santos" width={90} height={33} className="opacity-90 md:w-[120px] md:h-[44px]" />
+        <Image src="/logo.png" alt="Pipe Santos" width={80} height={29} className="opacity-90 md:w-[120px] md:h-[44px]" />
         {!isSoldOut && (
           <button onClick={() => setShowModal(true)} className="btn-primary text-sm hidden md:block">
             <span>Comprar entrada</span>
@@ -182,7 +182,7 @@ export default function EventoPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative md:min-h-screen px-4 md:px-6 pt-20 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
+      <section className="relative md:min-h-screen px-4 md:px-6 pt-28 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
