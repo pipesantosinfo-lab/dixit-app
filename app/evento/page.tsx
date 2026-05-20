@@ -235,7 +235,7 @@ export default function EventoPage() {
             ) : (
               <div className="animate-fade-up-delay-4">
                 <button onClick={() => setShowModal(true)} className="btn-primary text-[10px] md:text-base px-3 md:px-10 py-2.5 md:py-5 w-full md:w-auto">
-                  <span>Comprar — $40.000</span>
+                  <span>Adquiere tu entrada - $40.000</span>
                 </button>
                 <p className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest mt-2 md:mt-4 uppercase">
                   {available} de {MAX_TICKETS} disponibles
