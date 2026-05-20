@@ -86,7 +86,7 @@ export async function sendTicketEmail(params: TicketEmailParams) {
 </html>`
 
   await resend.emails.send({
-    from: 'Pipe Santos <onboarding@resend.dev>',
+    from: 'Pipe Santos <entradas@pipesantos.com>',
     replyTo: 'pipesantos93@gmail.com',
     to: params.to,
     subject: `Tu entrada para ${params.eventName} ✦`,
