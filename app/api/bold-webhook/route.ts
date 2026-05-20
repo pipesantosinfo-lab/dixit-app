@@ -20,22 +20,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }
 
-  // Bold sends different event types — only process accepted payments
-  const status = (body.status as string) || (body.data as Record<string, unknown>)?.status as string
-  const orderId = (body.order_id as string) || (body.reference as string) ||
-    ((body.data as Record<string, unknown>)?.order_id as string) ||
-    ((body.data as Record<string, unknown>)?.reference as string)
+  // Bold sends the reference inside data.metadata.reference, status as body.type
+  const data = body.data as Record<string, unknown> | undefined
+  const metadata = data?.metadata as Record<string, unknown> | undefined
+
+  const orderId = (metadata?.reference as string) ||
+    (data?.reference as string) ||
+    (body.reference as string) ||
+    (body.order_id as string)
+
+  const eventType = (body.type as string) || (body.status as string) || (body.event as string)
 
   if (!orderId) {
     console.warn('Bold webhook: no orderId found', body)
     return NextResponse.json({ received: true })
   }
 
-  const isAccepted = ['ACCEPTED', 'APPROVED', 'payment_accepted'].includes(status as string) ||
-    body.event === 'payment_accepted'
+  const isAccepted = ['SALE_APPROVED', 'ACCEPTED', 'APPROVED', 'payment_accepted'].includes(eventType)
 
   if (!isAccepted) {
-    console.log('Bold webhook: ignoring status', status)
+    console.log('Bold webhook: ignoring event', eventType)
     return NextResponse.json({ received: true })
   }
 

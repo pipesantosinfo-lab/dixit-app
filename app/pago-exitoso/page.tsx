@@ -43,7 +43,7 @@ function Content() {
           </div>
 
           {order && (
-            <a href={`/lavida/ticket/${order}`}
+            <a href={`/lavida/ticket/${order}-1`}
               className="btn-primary w-full inline-block text-center mb-4">
               <span>Ver mi entrada →</span>
             </a>
