@@ -15,7 +15,7 @@ export async function createBoldPaymentLink({
     },
     body: JSON.stringify({
       amount_type: 'CLOSE',
-      amount: { currency: 'COP', total_amount: 40000 },
+      amount: { currency: 'COP', total_amount: 2000 },
       description: 'Entrada — La vida es cule viaje',
       reference: orderId,
       callback_url: `${APP_URL}/pago-exitoso?order=${orderId}`,

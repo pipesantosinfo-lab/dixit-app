@@ -81,7 +81,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
           <div>
             <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-1">Entrada General</p>
             <h2 className="font-display text-2xl text-white">La vida es cule viaje</h2>
-            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>$40.000 COP</p>
+            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>$2.000 COP</p>
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white transition-colors text-3xl leading-none mt-1">×</button>
         </div>
@@ -237,8 +237,8 @@ export default function EventoPage() {
                 <button onClick={() => setShowModal(true)} className="btn-primary w-full md:w-auto px-4 md:px-10 py-3 md:py-5">
                   <span className="flex flex-col md:inline items-center leading-tight gap-0.5">
                     <span className="text-[8px] md:hidden tracking-[0.18em]">Adquiere tu entrada</span>
-                    <span className="text-sm md:hidden tracking-widest">$40.000</span>
-                    <span className="hidden md:inline text-base">Adquiere tu entrada · $40.000</span>
+                    <span className="text-sm md:hidden tracking-widest">$2.000</span>
+                    <span className="hidden md:inline text-base">Adquiere tu entrada · $2.000</span>
                   </span>
                 </button>
                 <p className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest mt-2 md:mt-4 uppercase">
@@ -327,7 +327,7 @@ export default function EventoPage() {
                 <p className="font-body text-white/80 font-medium">Entrada General</p>
                 <p className="font-mono text-xs text-white/30 mt-1">Acceso completo al evento</p>
               </div>
-              <p className="font-display text-3xl font-light" style={{ color: '#8B3CF7' }}>$40.000</p>
+              <p className="font-display text-3xl font-light" style={{ color: '#8B3CF7' }}>$2.000</p>
             </div>
 
             {/* Availability bar */}
@@ -349,7 +349,7 @@ export default function EventoPage() {
               </div>
             ) : (
               <button onClick={() => setShowModal(true)} className="btn-primary w-full text-base py-5">
-                <span>Comprar ahora — $40.000 COP</span>
+                <span>Comprar ahora — $2.000 COP</span>
               </button>
             )}
           </div>
