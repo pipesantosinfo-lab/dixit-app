@@ -1,7 +1,5 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 interface TicketEmailParams {
   to: string
   name: string
@@ -15,6 +13,7 @@ interface TicketEmailParams {
 }
 
 export async function sendTicketEmail(params: TicketEmailParams) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
   const shortId = params.ticketId.split('-')[0].toUpperCase()
 
   const html = `
