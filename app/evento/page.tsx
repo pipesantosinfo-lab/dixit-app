@@ -193,13 +193,16 @@ export default function EventoPage() {
             <p className="font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
               ◆ Pipe Santos · Barranquilla · 2026
             </p>
-            <h1 className="font-display text-5xl md:text-6xl lg:text-8xl font-light text-white leading-none mb-3 animate-fade-up-delay-1">
-              La vida es
-            </h1>
-            <p className="text-5xl md:text-6xl lg:text-8xl mb-8 animate-fade-up-delay-2 leading-none"
-              style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
-              cule viaje
-            </p>
+            <div className="mb-8 animate-fade-up-delay-1">
+              <p className="font-display text-3xl md:text-4xl lg:text-5xl font-light leading-none mb-1"
+                style={{ color: 'rgba(255,255,255,0.65)' }}>
+                La vida es
+              </p>
+              <h1 className="leading-none"
+                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)', fontSize: 'clamp(4.5rem, 10vw, 9rem)' }}>
+                cule viaje
+              </h1>
+            </div>
 
             <div className="flex flex-col gap-3 mb-10 animate-fade-up-delay-3">
               {[
