@@ -26,12 +26,17 @@ function useCountdown() {
   return time
 }
 
+const PRICE = 2000
+
 function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number }) {
   const [form, setForm] = useState({ name: '', email: '', phone: '' })
+  const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
   const available = MAX_TICKETS - sold
+  const maxQty = Math.min(10, available)
+  const total = PRICE * quantity
 
   const handleSubmit = async () => {
     if (!form.name.trim() || !form.email.trim()) {
@@ -52,6 +57,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
           buyerName: form.name,
           buyerEmail: form.email,
           buyerPhone: form.phone,
+          quantity,
         }),
       })
       const data = await res.json()
@@ -87,6 +93,33 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
         </div>
 
         <div className="line-holo mb-6" />
+
+        {/* Quantity selector */}
+        <div className="flex items-center justify-between mb-5 rounded-xl px-4 py-3"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <span className="font-body text-white/60 text-sm">Cantidad de entradas</span>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setQuantity(q => Math.max(1, q - 1))}
+              className="w-8 h-8 rounded-lg flex items-center justify-center font-body text-lg transition-all"
+              style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.3)', color: '#a660f9' }}>
+              −
+            </button>
+            <span className="font-display text-xl text-white w-6 text-center">{quantity}</span>
+            <button
+              onClick={() => setQuantity(q => Math.min(maxQty, q + 1))}
+              className="w-8 h-8 rounded-lg flex items-center justify-center font-body text-lg transition-all"
+              style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.3)', color: '#a660f9' }}>
+              +
+            </button>
+          </div>
+        </div>
+        {quantity > 1 && (
+          <div className="flex justify-between items-center mb-4 px-1">
+            <span className="font-mono text-xs text-white/30 uppercase tracking-widest">{quantity} × ${PRICE.toLocaleString('es-CO')}</span>
+            <span className="font-display text-lg" style={{ color: '#8B3CF7' }}>${total.toLocaleString('es-CO')}</span>
+          </div>
+        )}
 
         {available <= 20 && (
           <div className="mb-4 rounded-xl px-4 py-2 text-center"
@@ -126,7 +159,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
           disabled={loading}
           className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <span>{loading ? 'Redirigiendo a pago seguro...' : 'Continuar al pago →'}</span>
+          <span>{loading ? 'Redirigiendo a pago seguro...' : `Continuar al pago — $${total.toLocaleString('es-CO')} →`}</span>
         </button>
 
         <p className="font-mono text-xs text-white/20 text-center mt-4">

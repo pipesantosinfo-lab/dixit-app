@@ -1,11 +1,15 @@
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://pipesantos.com'
 
+const UNIT_PRICE = 2000
+
 export async function createBoldPaymentLink({
   orderId,
   buyerEmail,
+  quantity = 1,
 }: {
   orderId: string
   buyerEmail: string
+  quantity?: number
 }) {
   const response = await fetch('https://integrations.api.bold.co/online/link/v1', {
     method: 'POST',
@@ -15,7 +19,7 @@ export async function createBoldPaymentLink({
     },
     body: JSON.stringify({
       amount_type: 'CLOSE',
-      amount: { currency: 'COP', total_amount: 2000 },
+      amount: { currency: 'COP', total_amount: UNIT_PRICE * quantity },
       description: 'Entrada — La vida es cule viaje',
       reference: orderId,
       callback_url: `${APP_URL}/pago-exitoso?order=${orderId}`,

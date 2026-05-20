@@ -41,76 +41,72 @@ export async function POST(req: NextRequest) {
 
   const db = supabaseAdmin()
 
-  // Avoid duplicates
-  const { data: existing } = await db
+  // Find all tickets for this order
+  const { data: tickets } = await db
     .from('lavida_tickets')
-    .select('id, status')
-    .eq('bold_order_id', orderId)
-    .single()
+    .select('*')
+    .like('ticket_number', `${orderId}-%`)
 
-  if (!existing) {
-    console.error('Ticket not found for order:', orderId)
-    return NextResponse.json({ error: 'Ticket not found' }, { status: 404 })
+  if (!tickets || tickets.length === 0) {
+    console.error('Tickets not found for order:', orderId)
+    return NextResponse.json({ error: 'Tickets not found' }, { status: 404 })
   }
 
-  if (existing.status === 'active') {
+  if (tickets[0].status === 'active') {
     console.log('Already processed:', orderId)
     return NextResponse.json({ received: true })
   }
 
-  const ticketUrl = `${APP_URL}/lavida/ticket/${orderId}`
-  const qrDataUrl = await generateQRDataURL(ticketUrl)
+  const buyer = tickets[0]
+  const now = new Date().toISOString()
 
-  // Mark as active
-  await db.from('lavida_tickets').update({
-    status: 'active',
-    qr_data: ticketUrl,
-    paid_at: new Date().toISOString(),
-  }).eq('bold_order_id', orderId)
+  // Activate all tickets and generate QR for each
+  for (const ticket of tickets) {
+    const ticketUrl = `${APP_URL}/lavida/ticket/${ticket.ticket_number}`
+    const qrDataUrl = await generateQRDataURL(ticketUrl)
 
-  // Get buyer info
-  const { data: ticket } = await db
-    .from('lavida_tickets')
-    .select('*')
-    .eq('bold_order_id', orderId)
-    .single()
+    await db.from('lavida_tickets').update({
+      status: 'active',
+      qr_data: ticketUrl,
+      paid_at: now,
+    }).eq('ticket_number', ticket.ticket_number)
 
-  if (!ticket) return NextResponse.json({ received: true })
-
-  // Send email
-  try {
-    await sendTicketEmail({
-      to: ticket.buyer_email,
-      name: ticket.buyer_name,
-      eventName: EVENT.name,
-      eventDate: EVENT.date,
-      eventLocation: EVENT.location,
-      tierName: 'Entrada General',
-      ticketId: orderId,
-      qrImageUrl: qrDataUrl,
-      ticketPageUrl: ticketUrl,
-    })
-  } catch (err) {
-    console.error('Email error:', err)
-  }
-
-  // Send WhatsApp
-  if (ticket.buyer_phone) {
+    // Send individual email per ticket
     try {
-      await sendWhatsAppTicket({
-        to: ticket.buyer_phone,
-        name: ticket.buyer_name,
+      await sendTicketEmail({
+        to: buyer.buyer_email,
+        name: buyer.buyer_name,
         eventName: EVENT.name,
         eventDate: EVENT.date,
         eventLocation: EVENT.location,
+        tierName: 'Entrada General',
+        ticketId: ticket.ticket_number,
+        qrImageUrl: qrDataUrl,
         ticketPageUrl: ticketUrl,
-        ticketId: orderId,
+      })
+    } catch (err) {
+      console.error('Email error for', ticket.ticket_number, err)
+    }
+  }
+
+  // Send one WhatsApp with the first ticket link
+  if (buyer.buyer_phone) {
+    try {
+      const firstUrl = `${APP_URL}/lavida/ticket/${tickets[0].ticket_number}`
+      await sendWhatsAppTicket({
+        to: buyer.buyer_phone,
+        name: buyer.buyer_name,
+        eventName: EVENT.name,
+        eventDate: EVENT.date,
+        eventLocation: EVENT.location,
+        ticketPageUrl: firstUrl,
+        ticketId: tickets[0].ticket_number,
       })
     } catch (err) {
       console.error('WhatsApp error:', err)
     }
   }
 
-  console.log(`✓ Ticket confirmed: ${orderId} for ${ticket.buyer_email}`)
+  console.log(`✓ ${tickets.length} ticket(s) confirmed: ${orderId} for ${buyer.buyer_email}`)
   return NextResponse.json({ received: true })
 }
