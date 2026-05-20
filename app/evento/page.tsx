@@ -183,9 +183,11 @@ export default function EventoPage() {
 
       {/* ── HERO ── */}
       <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-20">
-        <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.6) 0%, rgba(7,5,8,0.3) 30%, rgba(7,5,8,0.85) 75%, rgba(7,5,8,1) 100%)' }} />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 60%, rgba(139,60,247,0.1) 0%, transparent 60%)' }} />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/evento-hero.jpg')" }} />
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.55) 0%, rgba(7,5,8,0.2) 25%, rgba(7,5,8,0.75) 65%, rgba(7,5,8,1) 100%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(139,60,247,0.18) 0%, transparent 65%)' }} />
+        {/* Vignette edges */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(7,5,8,0.6) 100%)' }} />
 
         <div className="relative z-10 max-w-4xl mx-auto">
           <p className="font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
