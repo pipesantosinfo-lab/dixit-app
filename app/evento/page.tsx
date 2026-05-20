@@ -197,7 +197,7 @@ export default function EventoPage() {
               <h1 className="font-display text-5xl md:text-6xl lg:text-8xl font-light text-white leading-none">
                 La vida es
               </h1>
-              <p className="text-5xl md:text-6xl lg:text-8xl leading-none"
+              <p className="text-5xl md:text-6xl lg:text-8xl leading-none -mt-6 md:-mt-8"
                 style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
                 cule viaje
               </p>
