@@ -140,14 +140,14 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
 function CountdownBox({ value, label }: { value: number; label: string }) {
   return (
     <div className="flex flex-col items-center">
-      <div className="glass rounded-2xl w-20 h-20 flex items-center justify-center mb-2"
+      <div className="glass rounded-xl md:rounded-2xl w-12 h-12 md:w-20 md:h-20 flex items-center justify-center mb-1 md:mb-2"
         style={{ border: '1px solid rgba(139,60,247,0.2)' }}>
-        <span className="font-display text-3xl font-light text-white"
+        <span className="font-display text-lg md:text-3xl font-light text-white"
           style={{ textShadow: '0 0 20px rgba(139,60,247,0.5)' }}>
           {String(value).padStart(2, '0')}
         </span>
       </div>
-      <span className="font-mono text-xs text-white/30 tracking-widest uppercase">{label}</span>
+      <span className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest uppercase">{label}</span>
     </div>
   )
 }
@@ -182,81 +182,79 @@ export default function EventoPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen px-6 pt-24 pb-20 flex items-center">
+      <section className="relative min-h-screen px-4 md:px-6 pt-28 md:pt-24 pb-10 md:pb-20 flex items-start md:items-center">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
-        <div className="relative z-10 max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
+        <div className="relative z-10 max-w-6xl mx-auto w-full grid grid-cols-[3fr_2fr] md:grid-cols-2 gap-4 md:gap-10 lg:gap-20 items-center">
 
           {/* Left: text + countdown + CTA */}
           <div>
-            <p className="font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
+            <p className="font-mono text-[9px] md:text-xs tracking-[0.25em] md:tracking-[0.5em] text-aurora/80 uppercase mb-3 md:mb-6 animate-fade-up">
               ◆ Pipe Santos · Barranquilla · 2026
             </p>
-            <div className="mb-8 animate-fade-up-delay-1">
-              <h1 className="font-display text-5xl md:text-6xl lg:text-8xl font-light text-white leading-none">
+            <div className="mb-4 md:mb-8 animate-fade-up-delay-1">
+              <h1 className="font-display text-3xl md:text-6xl lg:text-8xl font-light text-white leading-none">
                 La vida es
               </h1>
-              <p className="text-5xl md:text-6xl lg:text-8xl leading-none -mt-6 md:-mt-8"
+              <p className="text-3xl md:text-6xl lg:text-8xl leading-none -mt-3 md:-mt-8"
                 style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
                 cule viaje
               </p>
             </div>
 
-            <div className="flex flex-col gap-3 mb-10 animate-fade-up-delay-3">
+            <div className="flex flex-col gap-1.5 md:gap-3 mb-4 md:mb-10 animate-fade-up-delay-3">
               {[
-                { icon: '📅', text: '22 de agosto · 2026' },
-                { icon: '🕑', text: '2:00 PM – 6:00 PM' },
-                { icon: '📍', text: 'Barranquilla, Colombia' },
+                { icon: '📅', text: '22 ago · 2026' },
+                { icon: '🕑', text: '2:00 – 6:00 PM' },
+                { icon: '📍', text: 'Barranquilla' },
               ].map(item => (
-                <div key={item.text} className="flex items-center gap-2">
-                  <span>{item.icon}</span>
-                  <span className="font-body text-white/60">{item.text}</span>
+                <div key={item.text} className="flex items-center gap-1.5 md:gap-2">
+                  <span className="text-xs md:text-base">{item.icon}</span>
+                  <span className="font-body text-xs md:text-base text-white/60 leading-tight">{item.text}</span>
                 </div>
               ))}
             </div>
 
             {/* Countdown */}
-            <div className="flex gap-3 md:gap-4 mb-10 animate-fade-up-delay-4">
+            <div className="flex gap-1.5 md:gap-4 mb-4 md:mb-10 animate-fade-up-delay-4">
               <CountdownBox value={countdown.days} label="días" />
-              <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
-              <CountdownBox value={countdown.hours} label="horas" />
-              <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
+              <div className="font-display text-lg md:text-3xl text-white/20 self-center mb-4 md:mb-6">:</div>
+              <CountdownBox value={countdown.hours} label="hrs" />
+              <div className="font-display text-lg md:text-3xl text-white/20 self-center mb-4 md:mb-6">:</div>
               <CountdownBox value={countdown.minutes} label="min" />
-              <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
+              <div className="font-display text-lg md:text-3xl text-white/20 self-center mb-4 md:mb-6">:</div>
               <CountdownBox value={countdown.seconds} label="seg" />
             </div>
 
             {isSoldOut ? (
-              <div className="glass rounded-2xl px-8 py-4 inline-block">
-                <p className="font-mono text-sm text-white/50 tracking-widest uppercase">Entradas agotadas</p>
+              <div className="glass rounded-xl px-4 py-2 inline-block">
+                <p className="font-mono text-xs text-white/50 tracking-widest uppercase">Agotadas</p>
               </div>
             ) : (
               <div className="animate-fade-up-delay-4">
-                <button onClick={() => setShowModal(true)} className="btn-primary text-base px-10 py-5">
-                  <span>Comprar entrada — $40.000</span>
+                <button onClick={() => setShowModal(true)} className="btn-primary text-[10px] md:text-base px-3 md:px-10 py-2.5 md:py-5 w-full md:w-auto">
+                  <span>Comprar — $40.000</span>
                 </button>
-                <p className="font-mono text-xs text-white/30 tracking-widest mt-4 uppercase">
-                  {available} de {MAX_TICKETS} entradas disponibles
+                <p className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest mt-2 md:mt-4 uppercase">
+                  {available} de {MAX_TICKETS} disponibles
                 </p>
               </div>
             )}
           </div>
 
           {/* Right: event flyer */}
-          <div className="flex justify-center md:justify-end animate-fade-up-delay-2">
+          <div className="flex justify-center md:justify-end animate-fade-up-delay-2 self-start md:self-auto pt-2 md:pt-0">
             <div className="relative">
-              <div className="absolute -inset-6 rounded-3xl pointer-events-none"
+              <div className="absolute -inset-2 md:-inset-6 rounded-2xl md:rounded-3xl pointer-events-none"
                 style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.25) 0%, transparent 70%)' }} />
               <Image
                 src="/evento-hero.jpg"
                 alt="La vida es cule viaje — Barranquilla 2026"
                 width={480}
                 height={640}
-                className="relative rounded-2xl"
+                className="relative rounded-xl md:rounded-2xl max-h-[55vh] md:max-h-[68vh] w-auto"
                 style={{
-                  maxHeight: '68vh',
-                  width: 'auto',
                   objectFit: 'contain',
                   filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.35))',
                 }}
