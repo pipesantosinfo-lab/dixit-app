@@ -7,7 +7,7 @@ export async function createBoldPaymentLink({
   orderId: string
   buyerEmail: string
 }) {
-  const response = await fetch('https://api.bold.co/online/link/v1', {
+  const response = await fetch('https://integrations.api.bold.co/online/link/v1', {
     method: 'POST',
     headers: {
       Authorization: `x-api-key ${process.env.BOLD_API_KEY}`,
@@ -18,10 +18,8 @@ export async function createBoldPaymentLink({
       amount: { currency: 'COP', total_amount: 40000 },
       description: 'Entrada — La vida es cule viaje',
       reference: orderId,
-      redirect_url: `${APP_URL}/pago-exitoso?order=${orderId}`,
-      notification_url: `${APP_URL}/api/bold-webhook`,
-      // Optional: prefill buyer email in Bold checkout
-      customer: { email: buyerEmail },
+      callback_url: `${APP_URL}/pago-exitoso?order=${orderId}`,
+      payer_email: buyerEmail,
     }),
   })
 
