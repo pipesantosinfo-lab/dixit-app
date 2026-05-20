@@ -386,6 +386,37 @@ export default function PreviewPage() {
         </div>
       </section>
 
+      {/* ── SHOWREEL ─────────────────────────────── */}
+      <section className="relative z-10 px-6 md:px-12 py-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-12">
+            <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Showreel</p>
+            <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-3">
+              Mira lo que pasa en <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>mis eventos</span>
+            </h2>
+            <p className="font-body text-white/40 max-w-md mx-auto">
+              Una experiencia única que transforma audiencias y deja huella.
+            </p>
+          </div>
+
+          <div className="relative rounded-2xl overflow-hidden"
+            style={{ boxShadow: '0 0 0 1px rgba(139,60,247,0.15), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(139,60,247,0.08)' }}>
+            {/* Purple glow behind */}
+            <div className="absolute -inset-1 rounded-2xl" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.12) 0%, transparent 70%)', zIndex: -1 }} />
+            <video
+              controls
+              playsInline
+              preload="metadata"
+              className="w-full block"
+              style={{ maxHeight: '600px', background: '#070508' }}
+              poster=""
+            >
+              <source src="/showreel.mp4" type="video/mp4" />
+            </video>
+          </div>
+        </div>
+      </section>
+
       {/* ── GALERÍA ──────────────────────────────── */}
       <section id="galeria" className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-6xl mx-auto">
