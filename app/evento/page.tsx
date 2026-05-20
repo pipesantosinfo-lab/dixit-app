@@ -190,8 +190,9 @@ export default function EventoPage() {
 
           {/* Left: text + countdown + CTA */}
           <div>
-            <p className="hidden md:block font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
-              ◆ Pipe Santos · Barranquilla · 2026
+            <p className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.5em] text-aurora/80 uppercase mb-2 md:mb-6 animate-fade-up">
+              <span className="md:hidden">◆ Barranquilla · 2026</span>
+              <span className="hidden md:inline">◆ Pipe Santos · Barranquilla · 2026</span>
             </p>
             <div className="mb-4 md:mb-8 animate-fade-up-delay-1">
               <h1 className="font-display text-3xl md:text-6xl lg:text-8xl font-light text-white leading-none">
