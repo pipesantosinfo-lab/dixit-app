@@ -18,8 +18,32 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
   const shortId = ticket.ticket_number.split('-')[0].toUpperCase()
 
   useEffect(() => {
-    if (ticket.qr_data) generateQRDataURL(ticket.qr_data).then(setQrUrl)
+    if (ticket.qr_data) generateQRDataURL(ticket.qr_data).then(url => {
+      setQrUrl(url)
+      if (!isUsed) playApprovedSound()
+    })
   }, [ticket.qr_data])
+
+  function playApprovedSound() {
+    try {
+      const ctx = new AudioContext()
+      const notes = [523.25, 783.99] // C5 → G5
+      notes.forEach((freq, i) => {
+        const osc = ctx.createOscillator()
+        const gain = ctx.createGain()
+        osc.connect(gain)
+        gain.connect(ctx.destination)
+        osc.type = 'sine'
+        osc.frequency.value = freq
+        const t = ctx.currentTime + i * 0.18
+        gain.gain.setValueAtTime(0, t)
+        gain.gain.linearRampToValueAtTime(0.18, t + 0.02)
+        gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.55)
+        osc.start(t)
+        osc.stop(t + 0.55)
+      })
+    } catch {}
+  }
 
   return (
     <main className="grain min-h-screen flex items-center justify-center px-4 py-12" style={{ background: '#070508' }}>
