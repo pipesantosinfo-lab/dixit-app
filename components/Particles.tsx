@@ -18,7 +18,7 @@ export default function Particles() {
       size: number; opacity: number; color: string
     }> = []
 
-    const colors = ['rgba(123,104,255,', 'rgba(0,255,209,', 'rgba(255,107,157,']
+    const colors = ['rgba(139,60,247,', 'rgba(196,82,0,', 'rgba(224,120,32,']
 
     for (let i = 0; i < 60; i++) {
       particles.push({
