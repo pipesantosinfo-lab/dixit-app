@@ -268,9 +268,9 @@ export default function EventoPage() {
       </section>
 
       {/* ── SOBRE EL EVENTO ── */}
-      <section className="relative z-10 px-6 md:px-12 py-20">
+      <section className="relative z-10 px-6 md:px-12 pt-6 pb-16 md:py-20">
         <div className="max-w-4xl mx-auto">
-          <div className="line-holo mb-16" />
+          <div className="line-holo mb-8 md:mb-16" />
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ ¿De qué se trata?</p>
