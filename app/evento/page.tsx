@@ -182,62 +182,87 @@ export default function EventoPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative min-h-screen flex flex-col justify-center items-center text-center px-6 pt-24 pb-20">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/evento-hero.jpg')" }} />
-        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.55) 0%, rgba(7,5,8,0.2) 25%, rgba(7,5,8,0.75) 65%, rgba(7,5,8,1) 100%)' }} />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 40%, rgba(139,60,247,0.18) 0%, transparent 65%)' }} />
-        {/* Vignette edges */}
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(7,5,8,0.6) 100%)' }} />
+      <section className="relative min-h-screen px-6 pt-24 pb-20 flex items-center">
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
-        <div className="relative z-10 max-w-4xl mx-auto">
-          <p className="font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
-            ◆ Pipe Santos · Barranquilla · 2026
-          </p>
-          <h1 className="font-display text-5xl md:text-7xl lg:text-8xl font-light text-white leading-none mb-4 animate-fade-up-delay-1">
-            La vida es
-          </h1>
-          <p className="text-5xl md:text-7xl lg:text-8xl mb-8 animate-fade-up-delay-2 leading-none"
-            style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
-            cule viaje
-          </p>
-          <div className="flex flex-wrap justify-center gap-6 mb-12 animate-fade-up-delay-3">
-            {[
-              { icon: '📅', text: '22 de agosto · 2026' },
-              { icon: '🕑', text: '2:00 PM – 6:00 PM' },
-              { icon: '📍', text: 'Barranquilla, Colombia' },
-            ].map(item => (
-              <div key={item.text} className="flex items-center gap-2">
-                <span>{item.icon}</span>
-                <span className="font-body text-white/60">{item.text}</span>
+        <div className="relative z-10 max-w-6xl mx-auto w-full grid md:grid-cols-2 gap-10 lg:gap-20 items-center">
+
+          {/* Left: text + countdown + CTA */}
+          <div>
+            <p className="font-mono text-xs tracking-[0.5em] text-aurora/80 uppercase mb-6 animate-fade-up">
+              ◆ Pipe Santos · Barranquilla · 2026
+            </p>
+            <h1 className="font-display text-5xl md:text-6xl lg:text-8xl font-light text-white leading-none mb-3 animate-fade-up-delay-1">
+              La vida es
+            </h1>
+            <p className="text-5xl md:text-6xl lg:text-8xl mb-8 animate-fade-up-delay-2 leading-none"
+              style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
+              cule viaje
+            </p>
+
+            <div className="flex flex-col gap-3 mb-10 animate-fade-up-delay-3">
+              {[
+                { icon: '📅', text: '22 de agosto · 2026' },
+                { icon: '🕑', text: '2:00 PM – 6:00 PM' },
+                { icon: '📍', text: 'Barranquilla, Colombia' },
+              ].map(item => (
+                <div key={item.text} className="flex items-center gap-2">
+                  <span>{item.icon}</span>
+                  <span className="font-body text-white/60">{item.text}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Countdown */}
+            <div className="flex gap-3 md:gap-4 mb-10 animate-fade-up-delay-4">
+              <CountdownBox value={countdown.days} label="días" />
+              <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
+              <CountdownBox value={countdown.hours} label="horas" />
+              <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
+              <CountdownBox value={countdown.minutes} label="min" />
+              <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
+              <CountdownBox value={countdown.seconds} label="seg" />
+            </div>
+
+            {isSoldOut ? (
+              <div className="glass rounded-2xl px-8 py-4 inline-block">
+                <p className="font-mono text-sm text-white/50 tracking-widest uppercase">Entradas agotadas</p>
               </div>
-            ))}
+            ) : (
+              <div className="animate-fade-up-delay-4">
+                <button onClick={() => setShowModal(true)} className="btn-primary text-base px-10 py-5">
+                  <span>Comprar entrada — $40.000</span>
+                </button>
+                <p className="font-mono text-xs text-white/30 tracking-widest mt-4 uppercase">
+                  {available} de {MAX_TICKETS} entradas disponibles
+                </p>
+              </div>
+            )}
           </div>
 
-          {/* Countdown */}
-          <div className="flex justify-center gap-4 md:gap-6 mb-12 animate-fade-up-delay-4">
-            <CountdownBox value={countdown.days} label="días" />
-            <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
-            <CountdownBox value={countdown.hours} label="horas" />
-            <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
-            <CountdownBox value={countdown.minutes} label="min" />
-            <div className="font-display text-3xl text-white/20 self-center mb-6">:</div>
-            <CountdownBox value={countdown.seconds} label="seg" />
+          {/* Right: event flyer */}
+          <div className="flex justify-center md:justify-end animate-fade-up-delay-2">
+            <div className="relative">
+              <div className="absolute -inset-6 rounded-3xl pointer-events-none"
+                style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.25) 0%, transparent 70%)' }} />
+              <Image
+                src="/evento-hero.jpg"
+                alt="La vida es cule viaje — Barranquilla 2026"
+                width={480}
+                height={640}
+                className="relative rounded-2xl"
+                style={{
+                  maxHeight: '68vh',
+                  width: 'auto',
+                  objectFit: 'contain',
+                  filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.35))',
+                }}
+                priority
+              />
+            </div>
           </div>
 
-          {isSoldOut ? (
-            <div className="glass rounded-2xl px-8 py-4 inline-block">
-              <p className="font-mono text-sm text-white/50 tracking-widest uppercase">Entradas agotadas</p>
-            </div>
-          ) : (
-            <div className="animate-fade-up-delay-4">
-              <button onClick={() => setShowModal(true)} className="btn-primary text-base px-12 py-5 mr-4">
-                <span>Comprar entrada — $40.000</span>
-              </button>
-              <p className="font-mono text-xs text-white/30 tracking-widest mt-4 uppercase">
-                {available} de {MAX_TICKETS} entradas disponibles
-              </p>
-            </div>
-          )}
         </div>
       </section>
 
