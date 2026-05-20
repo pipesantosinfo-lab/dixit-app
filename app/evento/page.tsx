@@ -173,7 +173,7 @@ export default function EventoPage() {
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-40 flex justify-center md:justify-between items-center px-4 md:px-12 py-1 md:py-5"
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
-        <Image src="/logo.png" alt="Pipe Santos" width={80} height={29} className="opacity-90 md:w-[120px] md:h-[44px]" />
+        <Image src="/logo.png" alt="Pipe Santos" width={110} height={40} className="opacity-90 md:w-[120px] md:h-[44px]" />
         {!isSoldOut && (
           <button onClick={() => setShowModal(true)} className="btn-primary text-sm hidden md:block">
             <span>Comprar entrada</span>
