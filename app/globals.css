@@ -125,27 +125,42 @@ html {
 
 /* ── Button styles ─────────────────────────────────── */
 .btn-primary {
-  @apply relative overflow-hidden px-8 py-4 rounded-full font-body font-medium tracking-widest text-sm uppercase transition-all duration-300;
-  background: linear-gradient(135deg, #8B3CF7, #a660f9);
+  @apply relative overflow-hidden px-8 py-4 font-body font-medium tracking-widest text-sm uppercase transition-all duration-500;
+  border-radius: 5px;
   color: white;
+  background:
+    linear-gradient(135deg, rgba(139,60,247,0.14) 0%, rgba(196,82,0,0.09) 100%) padding-box,
+    linear-gradient(135deg, #8B3CF7 0%, #C45200 100%) border-box;
+  border: 1px solid transparent;
 }
 
 .btn-primary::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #a660f9, #C45200);
+  background: linear-gradient(135deg, rgba(139,60,247,0.38), rgba(196,82,0,0.28));
   opacity: 0;
-  transition: opacity 0.3s;
+  transition: opacity 0.4s;
 }
 
-.btn-primary:hover::before {
-  opacity: 1;
+/* shimmer sweep */
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -110%;
+  width: 80%;
+  height: 100%;
+  background: linear-gradient(105deg, transparent, rgba(255,255,255,0.12), transparent);
+  transition: left 0.55s ease;
 }
+
+.btn-primary:hover::before { opacity: 1; }
+.btn-primary:hover::after  { left: 130%; }
 
 .btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 40px rgba(139, 60, 247, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(139,60,247,0.4), 0 4px 16px rgba(196,82,0,0.18);
 }
 
 .btn-primary span {
@@ -154,15 +169,20 @@ html {
 }
 
 .btn-ghost {
-  @apply px-8 py-4 rounded-full font-body font-medium tracking-widest text-sm uppercase transition-all duration-300;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.7);
+  @apply px-8 py-4 font-body font-medium tracking-widest text-sm uppercase transition-all duration-300;
+  border-radius: 5px;
+  background:
+    transparent padding-box,
+    linear-gradient(135deg, rgba(139,60,247,0.5), rgba(255,255,255,0.12)) border-box;
+  border: 1px solid transparent;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 .btn-ghost:hover {
-  border-color: rgba(123, 104, 255, 0.5);
   color: white;
-  background: rgba(123, 104, 255, 0.08);
+  background:
+    rgba(139,60,247,0.08) padding-box,
+    linear-gradient(135deg, #8B3CF7, #C45200) border-box;
 }
 
 /* ── Animations ────────────────────────────────────── */
