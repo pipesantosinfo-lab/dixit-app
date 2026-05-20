@@ -244,8 +244,8 @@ export default function PreviewPage() {
             <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
           </p>
           <div className="flex flex-wrap gap-4 animate-fade-up-delay-4">
-            <a href="#libro" className="btn-primary"><span>Conoce mi libro</span></a>
-            <a href="#contacto" className="btn-ghost">Escríbeme</a>
+            <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
+            <a href="#libro" className="btn-ghost">Conoce mi libro</a>
           </div>
         </div>
       </section>
