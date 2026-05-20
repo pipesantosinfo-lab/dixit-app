@@ -4,13 +4,13 @@
 
 /* ── Base ───────────────────────────────────────────── */
 :root {
-  --void: #030305;
-  --obsidian: #0a0a0f;
-  --phantom: #0f0f1a;
-  --iris: #7B68FF;
-  --aurora: #00FFD1;
-  --blush: #FF6B9D;
-  --gold: #FFD166;
+  --void: #070508;
+  --obsidian: #0d0a14;
+  --phantom: #140e20;
+  --iris: #8B3CF7;
+  --aurora: #C45200;
+  --blush: #E07820;
+  --gold: #FF9A00;
 }
 
 html {
@@ -18,7 +18,7 @@ html {
 }
 
 ::selection {
-  background: rgba(123, 104, 255, 0.3);
+  background: rgba(139, 60, 247, 0.3);
   color: white;
 }
 
@@ -29,7 +29,7 @@ html {
   background: var(--void);
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(123, 104, 255, 0.3);
+  background: rgba(139, 60, 247, 0.3);
   border-radius: 2px;
 }
 
@@ -40,7 +40,7 @@ html {
 
 /* ── Holographic text ──────────────────────────────── */
 .text-holo {
-  background: linear-gradient(135deg, #7B68FF 0%, #00FFD1 40%, #FF6B9D 70%, #FFD166 100%);
+  background: linear-gradient(135deg, #8B3CF7 0%, #C45200 40%, #E07820 70%, #FF9A00 100%);
   background-size: 300% 300%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -49,7 +49,7 @@ html {
 }
 
 .text-holo-static {
-  background: linear-gradient(135deg, #7B68FF, #00FFD1, #FF6B9D);
+  background: linear-gradient(135deg, #8B3CF7, #C45200, #E07820);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -64,34 +64,34 @@ html {
 }
 
 .glass-iris {
-  background: rgba(123, 104, 255, 0.06);
+  background: rgba(139, 60, 247, 0.06);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(123, 104, 255, 0.2);
+  border: 1px solid rgba(139, 60, 247, 0.2);
 }
 
 .glass-aurora {
-  background: rgba(0, 255, 209, 0.04);
+  background: rgba(196, 82, 0, 0.06);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(0, 255, 209, 0.15);
+  border: 1px solid rgba(196, 82, 0, 0.2);
 }
 
 /* ── Glow effects ──────────────────────────────────── */
 .glow-iris {
-  box-shadow: 0 0 30px rgba(123, 104, 255, 0.3), 0 0 60px rgba(123, 104, 255, 0.1);
+  box-shadow: 0 0 30px rgba(139, 60, 247, 0.3), 0 0 60px rgba(139, 60, 247, 0.1);
 }
 
 .glow-aurora {
-  box-shadow: 0 0 30px rgba(0, 255, 209, 0.3), 0 0 60px rgba(0, 255, 209, 0.1);
+  box-shadow: 0 0 30px rgba(196, 82, 0, 0.3), 0 0 60px rgba(196, 82, 0, 0.1);
 }
 
 .text-glow-iris {
-  text-shadow: 0 0 30px rgba(123, 104, 255, 0.8);
+  text-shadow: 0 0 30px rgba(139, 60, 247, 0.8);
 }
 
 .text-glow-aurora {
-  text-shadow: 0 0 30px rgba(0, 255, 209, 0.8);
+  text-shadow: 0 0 30px rgba(196, 82, 0, 0.8);
 }
 
 /* ── Grain overlay ─────────────────────────────────── */
@@ -112,13 +112,13 @@ html {
 /* ── Divider line ──────────────────────────────────── */
 .line-holo {
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(123, 104, 255, 0.5), rgba(0, 255, 209, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(139, 60, 247, 0.5), rgba(196, 82, 0, 0.5), transparent);
 }
 
 /* ── Button styles ─────────────────────────────────── */
 .btn-primary {
   @apply relative overflow-hidden px-8 py-4 rounded-full font-body font-medium tracking-widest text-sm uppercase transition-all duration-300;
-  background: linear-gradient(135deg, #7B68FF, #9d8fff);
+  background: linear-gradient(135deg, #8B3CF7, #a660f9);
   color: white;
 }
 
@@ -126,7 +126,7 @@ html {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, #9d8fff, #00FFD1);
+  background: linear-gradient(135deg, #a660f9, #C45200);
   opacity: 0;
   transition: opacity 0.3s;
 }
@@ -137,7 +137,7 @@ html {
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 40px rgba(123, 104, 255, 0.4);
+  box-shadow: 0 10px 40px rgba(139, 60, 247, 0.4);
 }
 
 .btn-primary span {

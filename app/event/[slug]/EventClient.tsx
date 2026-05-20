@@ -25,22 +25,19 @@ export default function EventClient({ event, tiers }: Props) {
       <section className="relative min-h-screen flex flex-col">
         {/* Background image with deep overlay */}
         <div className="absolute inset-0 z-0">
-          {event.cover_image && (
-            <Image
-              src={event.cover_image}
-              alt={event.name}
-              fill
-              className="object-cover"
-              priority
-            />
-          )}
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero.jpg')" }} />
           {/* Multi-layer gradient overlay for depth */}
           <div className="absolute inset-0" style={{
-            background: 'linear-gradient(to bottom, rgba(3,3,5,0.4) 0%, rgba(3,3,5,0.2) 30%, rgba(3,3,5,0.7) 70%, rgba(3,3,5,1) 100%)',
+            background: 'linear-gradient(to bottom, rgba(7,5,8,0.5) 0%, rgba(7,5,8,0.2) 30%, rgba(7,5,8,0.75) 70%, rgba(7,5,8,1) 100%)',
           }} />
           <div className="absolute inset-0" style={{
-            background: 'radial-gradient(ellipse at 30% 50%, rgba(123,104,255,0.1) 0%, transparent 60%)',
+            background: 'radial-gradient(ellipse at 30% 50%, rgba(139,60,247,0.12) 0%, transparent 60%)',
           }} />
+        </div>
+
+        {/* Logo header */}
+        <div className="absolute top-0 left-0 right-0 z-20 flex justify-between items-center px-6 pt-8">
+          <Image src="/logo.png" alt="Pipe Santos" width={160} height={60} className="opacity-90" />
         </div>
 
         {/* Content */}
@@ -191,7 +188,7 @@ export default function EventClient({ event, tiers }: Props) {
       {/* ── Footer ───────────────────────────────────── */}
       <footer className="relative z-10 border-t border-white/5 py-12 px-6">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="font-display text-white/20 text-lg">{event.name}</p>
+          <Image src="/logo.png" alt="Pipe Santos" width={100} height={38} className="opacity-20" />
           <p className="font-mono text-white/20 text-xs tracking-wider">
             {event.date} · {event.location}
           </p>
