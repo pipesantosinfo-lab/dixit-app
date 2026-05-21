@@ -66,7 +66,6 @@ export async function POST(req: NextRequest) {
   // Activate all tickets and generate QR for each
   for (const ticket of tickets) {
     const ticketUrl = `${APP_URL}/lavida/ticket/${ticket.ticket_number}`
-    const qrImageUrl = `${APP_URL}/api/qr?data=${encodeURIComponent(ticketUrl)}`
 
     await db.from('lavida_tickets').update({
       status: 'active',
@@ -84,7 +83,6 @@ export async function POST(req: NextRequest) {
         eventLocation: EVENT.location,
         tierName: 'Entrada General',
         ticketId: ticket.ticket_number,
-        qrImageUrl,
         ticketPageUrl: ticketUrl,
       })
     } catch (err) {

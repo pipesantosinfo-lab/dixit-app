@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { generateQRBuffer } from '@/lib/qr'
 
 interface TicketEmailParams {
   to: string
@@ -8,13 +9,13 @@ interface TicketEmailParams {
   eventLocation: string
   tierName: string
   ticketId: string
-  qrImageUrl: string
   ticketPageUrl: string
 }
 
 export async function sendTicketEmail(params: TicketEmailParams) {
   const resend = new Resend(process.env.RESEND_API_KEY)
   const shortId = params.ticketId.split('-')[0].toUpperCase()
+  const qrBuffer = await generateQRBuffer(params.ticketPageUrl)
 
   const html = `
 <!DOCTYPE html>
@@ -38,7 +39,7 @@ export async function sendTicketEmail(params: TicketEmailParams) {
 
       <div style="text-align:center;margin-bottom:28px;">
         <div style="display:inline-block;background:#ffffff;padding:12px;border-radius:14px;box-shadow:0 0 30px rgba(139,60,247,0.2);">
-          <img src="${params.qrImageUrl}" width="180" height="180" alt="QR Ticket" style="display:block;">
+          <img src="cid:qr-ticket" width="180" height="180" alt="QR Ticket" style="display:block;">
         </div>
         <p style="color:rgba(255,255,255,0.2);font-size:10px;letter-spacing:0.25em;margin:12px 0 0;font-family:monospace;">${shortId}</p>
       </div>
@@ -91,5 +92,12 @@ export async function sendTicketEmail(params: TicketEmailParams) {
     to: params.to,
     subject: `Tu entrada para ${params.eventName} ✦`,
     html,
+    attachments: [
+      {
+        filename: 'entrada-qr.png',
+        content: qrBuffer,
+        content_id: 'qr-ticket',
+      },
+    ],
   })
 }
