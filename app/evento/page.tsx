@@ -213,7 +213,7 @@ export default function EventoPage() {
       </nav>
 
       {/* ── HERO ── */}
-      <section className="relative md:min-h-screen px-4 md:px-6 pt-24 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
+      <section className="relative md:min-h-screen px-4 md:px-6 pt-36 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
