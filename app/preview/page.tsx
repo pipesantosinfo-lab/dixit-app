@@ -268,7 +268,7 @@ export default function PreviewPage() {
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-8" style={{ paddingTop: '20vh' }}>
+        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '20vh' }}>
           {/* Texto */}
           <motion.div initial="hidden" animate="visible" variants={stagger}>
             <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
@@ -284,11 +284,11 @@ export default function PreviewPage() {
               <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
             </motion.div>
           </motion.div>
+        </div>
 
-          {/* Avatar interactivo */}
-          <div className="flex justify-center md:justify-end md:pb-4 flex-shrink-0">
-            <WavingPipe />
-          </div>
+        {/* Pipe asomándose desde el borde derecho */}
+        <div className="absolute right-0 bottom-0 md:bottom-[5%] z-20" style={{ transform: 'translateX(28%)' }}>
+          <WavingPipe />
         </div>
       </section>
 
