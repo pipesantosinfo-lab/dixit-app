@@ -519,26 +519,20 @@ export default function PreviewPage() {
             </p>
           </div>
           <div className="grid md:grid-cols-2 gap-6">
-            {[
-              { title: 'La banca de aquel parque', date: '21 oct · Pipe Santos', url: 'https://open.spotify.com/episode/1IgzCLGtd5GT5VAJKWuk38' },
-              { title: 'La Ausencia de los perros', date: '20 oct · Pipe Santos', url: 'https://open.spotify.com/episode/3xAd9gVStVB9YaPdaJ4oJh' },
-            ].map((ep) => (
-              <div key={ep.title} className="glass rounded-2xl p-6 flex items-center gap-5 group hover:border-iris/30 transition-all">
-                <div className="w-16 h-16 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.2)' }}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                    <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z" fill="#1DB954" />
-                    <path d="M16 12l-6 3.5v-7L16 12z" fill="white" />
-                  </svg>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="font-body text-white/80 font-medium truncate">{ep.title}</p>
-                  <p className="font-mono text-xs text-white/30 mt-1">{ep.date}</p>
-                </div>
-                <a href={ep.url} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-iris/60 hover:text-iris tracking-widest uppercase transition-colors">
-                  Escuchar →
-                </a>
-              </div>
-            ))}
+            <iframe
+              style={{ borderRadius: '12px' }}
+              src="https://open.spotify.com/embed/episode/1IgzCLGtd5GT5VAJKWuk38?utm_source=generator"
+              width="100%" height="352" frameBorder={0}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
+            <iframe
+              style={{ borderRadius: '12px' }}
+              src="https://open.spotify.com/embed/episode/3xAd9gVStVB9YaPdaJ4oJh?utm_source=generator"
+              width="100%" height="352" frameBorder={0}
+              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+              loading="lazy"
+            />
           </div>
           <div className="text-center mt-10">
             <a href="https://open.spotify.com/show/2MaZs9kPXMWv20RysXRcxG" target="_blank" rel="noopener noreferrer" className="btn-ghost inline-block">Ver todos los episodios en Spotify</a>
