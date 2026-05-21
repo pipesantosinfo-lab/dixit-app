@@ -223,49 +223,33 @@ export default function PreviewPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────── */}
-      <section className="relative min-h-screen overflow-hidden flex items-center">
-        {/* Background glow */}
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 60%, rgba(139,60,247,0.15) 0%, transparent 55%)' }} />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 85% 40%, rgba(196,82,0,0.08) 0%, transparent 50%)' }} />
+      <section className="relative min-h-screen flex flex-col justify-end">
+        {/* Background photo */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
+          {/* Dark overlay on left/bottom for text readability */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.92) 0%, rgba(7,5,8,0.75) 45%, rgba(7,5,8,0.2) 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.5) 30%, rgba(7,5,8,0.1) 60%, transparent 100%)' }} />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 60%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
+        </div>
 
-        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-12 pt-28 md:pt-0 pb-12 md:pb-0">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
-
-            {/* Text — first on desktop, second on mobile */}
-            <div className="order-2 md:order-1 animate-fade-up">
-              <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5">
-                ◆ Conferencista · Escritor · Influencer
-              </p>
-              <h1 className="font-display text-5xl md:text-[6rem] font-light text-white leading-none mb-3">
-                Conectando
-              </h1>
-              <p className="text-4xl md:text-5xl mb-8" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
-                A partir de historias
-              </p>
-              <p className="font-body text-base md:text-lg text-white/50 leading-relaxed mb-10">
-                Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
-                <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
-              </p>
-              <div className="flex flex-wrap gap-4">
-                <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
-                <a href="#libro" className="btn-ghost">Conoce mi libro</a>
-              </div>
-            </div>
-
-            {/* Photo — first on mobile */}
-            <div className="order-1 md:order-2 flex justify-center md:justify-end">
-              <div className="relative w-full md:max-w-3xl" style={{
-                WebkitMaskImage: 'radial-gradient(ellipse 88% 85% at 50% 55%, black 50%, transparent 100%)',
-                maskImage: 'radial-gradient(ellipse 88% 85% at 50% 55%, black 50%, transparent 100%)',
-              }}>
-                <img
-                  src="/pipe-hero.png"
-                  alt="Pipe Santos"
-                  className="w-full h-auto"
-                />
-              </div>
-            </div>
-
+        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-24 pt-40">
+          <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
+            ◆ Conferencista · Escritor · Influencer
+          </p>
+          <h1 className="font-display text-6xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1">
+            Conectando
+          </h1>
+          <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
+            A partir de historias
+          </p>
+          <p className="font-body text-lg md:text-xl text-white/60 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
+            Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
+            <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
+          </p>
+          <div className="flex flex-wrap gap-4 animate-fade-up-delay-4">
+            <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
+            <a href="#libro" className="btn-ghost">Conoce mi libro</a>
           </div>
         </div>
       </section>
