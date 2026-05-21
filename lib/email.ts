@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
-import { generateQRBuffer } from '@/lib/qr'
+import fs from 'fs'
+import path from 'path'
 
 interface TicketEmailParams {
   to: string
@@ -15,7 +16,16 @@ interface TicketEmailParams {
 export async function sendTicketEmail(params: TicketEmailParams) {
   const resend = new Resend(process.env.RESEND_API_KEY)
   const shortId = params.ticketId.split('-')[0].toUpperCase()
-  const qrBuffer = await generateQRBuffer(params.ticketPageUrl)
+
+  // Embed hero image from public folder
+  let heroAttachment: { filename: string; content: Buffer; content_id: string } | null = null
+  try {
+    const heroPath = path.join(process.cwd(), 'public', 'hero.jpg')
+    const heroBuffer = fs.readFileSync(heroPath)
+    heroAttachment = { filename: 'evento.jpg', content: heroBuffer, content_id: 'hero-img' }
+  } catch {}
+
+  const heroSrc = heroAttachment ? 'cid:hero-img' : ''
 
   const html = `
 <!DOCTYPE html>
@@ -26,65 +36,87 @@ export async function sendTicketEmail(params: TicketEmailParams) {
   <title>Tu entrada — ${params.eventName}</title>
 </head>
 <body style="margin:0;padding:0;background:#070508;font-family:'Helvetica Neue',Arial,sans-serif;">
-  <div style="max-width:560px;margin:0 auto;padding:40px 20px;">
+<div style="max-width:560px;margin:0 auto;background:#070508;">
 
-    <div style="height:1px;background:linear-gradient(90deg,transparent,#8B3CF7,#C45200,transparent);margin-bottom:40px;"></div>
-
-    <div style="text-align:center;margin-bottom:32px;">
-      <p style="color:rgba(196,82,0,0.8);font-size:11px;letter-spacing:0.35em;text-transform:uppercase;margin:0 0 12px;font-family:monospace;">◆ Entrada confirmada</p>
-      <h1 style="color:#ffffff;font-size:28px;font-weight:300;letter-spacing:0.04em;margin:0;">${params.eventName}</h1>
+  <!-- Hero image -->
+  ${heroSrc ? `
+  <div style="position:relative;height:220px;overflow:hidden;border-radius:0;">
+    <img src="${heroSrc}" width="560" style="width:100%;height:220px;object-fit:cover;object-position:center top;display:block;" alt="${params.eventName}">
+    <div style="position:absolute;inset:0;background:linear-gradient(to bottom, rgba(7,5,8,0.2) 0%, rgba(7,5,8,0.85) 100%);"></div>
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:24px 32px;">
+      <p style="margin:0 0 6px;color:rgba(196,82,0,0.9);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;font-family:monospace;">◆ Entrada confirmada</p>
+      <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:300;letter-spacing:0.03em;">${params.eventName}</h1>
     </div>
+  </div>
+  ` : `
+  <div style="padding:40px 32px 24px;background:linear-gradient(135deg,#0d0a14,#140e20);">
+    <p style="margin:0 0 8px;color:rgba(196,82,0,0.9);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;font-family:monospace;">◆ Entrada confirmada</p>
+    <h1 style="margin:0;color:#ffffff;font-size:26px;font-weight:300;">${params.eventName}</h1>
+  </div>
+  `}
 
-    <div style="background:linear-gradient(145deg,#0d0a14,#140e20);border:1px solid rgba(139,60,247,0.25);border-radius:20px;padding:32px;margin-bottom:24px;">
+  <!-- Body -->
+  <div style="padding:32px;background:#070508;">
 
-      <div style="text-align:center;margin-bottom:28px;">
-        <div style="display:inline-block;background:#ffffff;padding:12px;border-radius:14px;box-shadow:0 0 30px rgba(139,60,247,0.2);">
-          <img src="cid:qr-ticket" width="180" height="180" alt="QR Ticket" style="display:block;">
-        </div>
-        <p style="color:rgba(255,255,255,0.2);font-size:10px;letter-spacing:0.25em;margin:12px 0 0;font-family:monospace;">${shortId}</p>
-      </div>
+    <!-- Divider -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(139,60,247,0.5),rgba(196,82,0,0.3),transparent);margin-bottom:28px;"></div>
 
-      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(139,60,247,0.3),rgba(196,82,0,0.2),transparent);margin:0 0 24px;"></div>
-
+    <!-- Ticket info card -->
+    <div style="background:linear-gradient(135deg,#0f0c18 0%,#140e1e 50%,#0c0a12 100%);border-radius:12px;padding:24px;margin-bottom:28px;border-left:3px solid #8B3CF7;">
       <table style="width:100%;border-collapse:collapse;">
         <tr>
-          <td style="padding:9px 0;color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-family:monospace;">Asistente</td>
-          <td style="padding:9px 0;color:#ffffff;font-size:14px;text-align:right;">${params.name}</td>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;width:40%;">Asistente</td>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:#ffffff;font-size:14px;text-align:right;">${params.name}</td>
         </tr>
         <tr>
-          <td style="padding:9px 0;color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-family:monospace;">Fecha</td>
-          <td style="padding:9px 0;color:#8B3CF7;font-size:14px;text-align:right;">${params.eventDate}</td>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;">Fecha</td>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:#8B3CF7;font-size:13px;text-align:right;">${params.eventDate}</td>
         </tr>
         <tr>
-          <td style="padding:9px 0;color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-family:monospace;">Lugar</td>
-          <td style="padding:9px 0;color:#ffffff;font-size:14px;text-align:right;">${params.eventLocation}</td>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;">Lugar</td>
+          <td style="padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.7);font-size:14px;text-align:right;">${params.eventLocation}</td>
         </tr>
         <tr>
-          <td style="padding:9px 0;color:rgba(255,255,255,0.35);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-family:monospace;">Tipo</td>
-          <td style="padding:9px 0;color:rgba(196,82,0,0.9);font-size:14px;font-weight:500;text-align:right;">${params.tierName}</td>
+          <td style="padding:10px 0;color:rgba(255,255,255,0.35);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;">Tipo</td>
+          <td style="padding:10px 0;color:rgba(196,82,0,0.9);font-size:14px;font-weight:500;text-align:right;">${params.tierName}</td>
         </tr>
       </table>
     </div>
 
-    <div style="text-align:center;margin-bottom:36px;">
-      <a href="${params.ticketPageUrl}"
-        style="display:inline-block;padding:14px 36px;background:linear-gradient(135deg,#8B3CF7,#a660f9);color:#ffffff;text-decoration:none;border-radius:100px;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;">
-        Ver mi entrada digital →
-      </a>
+    <!-- CTA Section -->
+    <div style="background:linear-gradient(135deg,rgba(139,60,247,0.08),rgba(196,82,0,0.05));border:1px solid rgba(139,60,247,0.2);border-radius:12px;padding:28px 24px;text-align:center;margin-bottom:28px;">
+      <p style="margin:0 0 6px;color:rgba(255,255,255,0.4);font-size:11px;letter-spacing:0.15em;text-transform:uppercase;font-family:monospace;">Tu QR está aquí</p>
+      <p style="margin:0 0 20px;color:rgba(255,255,255,0.6);font-size:13px;line-height:1.6;">Presiona el botón para ver tu código QR y guarda una captura de pantalla antes del evento.</p>
+
+      <!-- Button -->
+      <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
+        <tr>
+          <td style="border-radius:6px;background:linear-gradient(135deg,#8B3CF7,#7c35dd);">
+            <a href="${params.ticketPageUrl}"
+              style="display:inline-block;padding:16px 40px;color:#ffffff;text-decoration:none;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;font-weight:500;font-family:'Helvetica Neue',Arial,sans-serif;">
+              Ver mi entrada + QR →
+            </a>
+          </td>
+        </tr>
+      </table>
+
+      <p style="margin:16px 0 0;color:rgba(255,255,255,0.2);font-size:10px;letter-spacing:0.1em;font-family:monospace;">${shortId}</p>
     </div>
 
-    <div style="text-align:center;">
-      <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin-bottom:20px;"></div>
-      <p style="color:rgba(255,255,255,0.2);font-size:11px;line-height:1.7;margin:0;">
-        Muestra este QR en la entrada el día del evento.<br>
-        Válido para una sola persona · No transferible.<br><br>
-        <span style="color:rgba(139,60,247,0.5);">Pipe Santos · pipesantos.com</span>
-      </p>
-    </div>
+    <!-- Footer -->
+    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent);margin-bottom:20px;"></div>
+    <p style="color:rgba(255,255,255,0.2);font-size:11px;line-height:1.7;margin:0;text-align:center;">
+      Muestra el QR en la entrada el día del evento · Válido para una persona<br>
+      <span style="color:rgba(139,60,247,0.4);">Pipe Santos · pipesantos.com</span>
+    </p>
 
   </div>
+</div>
 </body>
 </html>`
+
+  const attachments: { filename: string; content: Buffer; content_id: string }[] = []
+  if (heroAttachment) attachments.push(heroAttachment)
 
   await resend.emails.send({
     from: 'Pipe Santos <entradas@pipesantos.com>',
@@ -92,12 +124,6 @@ export async function sendTicketEmail(params: TicketEmailParams) {
     to: params.to,
     subject: `Tu entrada para ${params.eventName} ✦`,
     html,
-    attachments: [
-      {
-        filename: 'entrada-qr.png',
-        content: qrBuffer,
-        content_id: 'qr-ticket',
-      },
-    ],
+    attachments,
   })
 }
