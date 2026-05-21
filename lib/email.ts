@@ -1,4 +1,6 @@
 import { Resend } from 'resend'
+import fs from 'fs'
+import path from 'path'
 
 interface TicketEmailParams {
   to: string
@@ -15,6 +17,14 @@ export async function sendTicketEmail(params: TicketEmailParams) {
   const resend = new Resend(process.env.RESEND_API_KEY)
   const shortId = params.ticketId.split('-')[0].toUpperCase()
 
+  const attachments: { filename: string; content: Buffer; content_id: string }[] = []
+  try {
+    const logoBuffer = fs.readFileSync(path.join(process.cwd(), 'public', 'logo.png'))
+    attachments.push({ filename: 'logo.png', content: logoBuffer, content_id: 'logo-pipe' })
+  } catch {}
+
+  const logoSrc = attachments.length > 0 ? 'cid:logo-pipe' : ''
+
   const html = `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -27,18 +37,23 @@ export async function sendTicketEmail(params: TicketEmailParams) {
   <tr><td align="center" style="padding:40px 16px;">
   <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
 
-    <!-- Top gradient line -->
-    <tr><td style="height:3px;background:linear-gradient(90deg,#8B3CF7,#C45200);border-radius:2px 2px 0 0;"></td></tr>
+    <!-- Top line -->
+    <tr><td style="height:3px;background-color:#8B3CF7;border-radius:2px 2px 0 0;"></td></tr>
 
     <!-- Header -->
-    <tr><td style="background:#0d0a14;padding:36px 36px 28px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
-      <p style="margin:0 0 10px;color:rgba(196,82,0,0.85);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;font-family:monospace;">◆ Entrada confirmada</p>
-      <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.02em;">${params.eventName}</h1>
+    <tr><td style="background-color:#0d0a14;padding:32px 36px 28px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);text-align:center;">
+      ${logoSrc ? `<img src="${logoSrc}" width="110" height="auto" alt="Pipe Santos" style="display:inline-block;opacity:0.9;margin-bottom:24px;">` : `<p style="margin:0 0 24px;color:#ffffff;font-size:18px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.15em;">PIPE SANTOS</p>`}
+      <p style="margin:0 0 6px;color:rgba(196,82,0,0.85);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;font-family:monospace;">◆ Entrada confirmada</p>
+      <p style="margin:0;color:#ffffff;font-size:30px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.02em;line-height:1.2;">La vida es</p>
+      <p style="margin:0;color:rgba(139,60,247,0.9);font-size:34px;font-style:italic;font-weight:300;font-family:Georgia,'Times New Roman',serif;letter-spacing:0.02em;">cule viaje</p>
     </td></tr>
 
+    <!-- Divider -->
+    <tr><td style="background-color:#0a0812;height:1px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);"></td></tr>
+
     <!-- Ticket info -->
-    <tr><td style="background:#0a0812;padding:0 36px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
-      <table width="100%" cellpadding="0" cellspacing="0" style="border-top:1px solid rgba(255,255,255,0.06);">
+    <tr><td style="background-color:#0a0812;padding:0 36px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
+      <table width="100%" cellpadding="0" cellspacing="0">
         <tr>
           <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;width:45%;">Asistente</td>
           <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:#ffffff;font-size:14px;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;">${params.name}</td>
@@ -59,14 +74,13 @@ export async function sendTicketEmail(params: TicketEmailParams) {
     </td></tr>
 
     <!-- CTA block -->
-    <tr><td style="background:#0d0a14;padding:32px 36px 36px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
-      <p style="margin:0 0 8px;color:rgba(255,255,255,0.35);font-size:12px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center;">Tu código QR está en tu entrada digital.</p>
-      <p style="margin:0 0 24px;color:rgba(255,255,255,0.5);font-size:12px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center;">Ábrela y guarda una captura de pantalla antes del evento.</p>
-      <!-- Big CTA button -->
+    <tr><td style="background-color:#0d0a14;padding:32px 36px 36px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
+      <p style="margin:0 0 6px;color:rgba(255,255,255,0.35);font-size:12px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center;">Tu código QR está en tu entrada digital.</p>
+      <p style="margin:0 0 24px;color:rgba(255,255,255,0.45);font-size:12px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center;">Ábrela y guarda una captura de pantalla antes del evento.</p>
       <table cellpadding="0" cellspacing="0" width="100%">
         <tr><td align="center">
           <a href="${params.ticketPageUrl}"
-            style="display:inline-block;background:linear-gradient(135deg,#8B3CF7 0%,#6d28c9 100%);color:#ffffff;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;padding:16px 52px;border-radius:5px;font-family:'Helvetica Neue',Arial,sans-serif;">
+            style="display:inline-block;background-color:#8B3CF7;color:#ffffff;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;padding:16px 52px;border-radius:5px;font-family:'Helvetica Neue',Arial,sans-serif;">
             Ver mi entrada digital 💛
           </a>
         </td></tr>
@@ -75,7 +89,7 @@ export async function sendTicketEmail(params: TicketEmailParams) {
     </td></tr>
 
     <!-- Bottom line -->
-    <tr><td style="height:3px;background:linear-gradient(90deg,#8B3CF7,rgba(196,82,0,0.5),transparent);border-radius:0 0 2px 2px;"></td></tr>
+    <tr><td style="height:3px;background-color:#8B3CF7;border-radius:0 0 2px 2px;"></td></tr>
 
     <!-- Footer -->
     <tr><td style="padding:24px 0;text-align:center;">
@@ -97,5 +111,6 @@ export async function sendTicketEmail(params: TicketEmailParams) {
     to: params.to,
     subject: `Tu entrada para ${params.eventName} ✦`,
     html,
+    attachments,
   })
 }
