@@ -250,7 +250,6 @@ export default function PreviewPage() {
           </p>
           <div className="flex flex-col items-start gap-3 animate-fade-up-delay-4">
             <a href="/evento" className="btn-primary" style={{ padding: '10px 20px', fontSize: '11px' }}><span>Adquiere tu entrada</span></a>
-            <a href="#libro" className="btn-primary" style={{ padding: '10px 20px', fontSize: '11px' }}><span>Conoce mi libro</span></a>
           </div>
         </div>
       </section>
