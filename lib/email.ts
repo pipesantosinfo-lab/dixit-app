@@ -66,8 +66,8 @@ export async function sendTicketEmail(params: TicketEmailParams) {
       <table cellpadding="0" cellspacing="0" width="100%">
         <tr><td align="center">
           <a href="${params.ticketPageUrl}"
-            style="display:inline-block;background:linear-gradient(135deg,#8B3CF7 0%,#6d28c9 100%);color:#ffffff;text-decoration:none;font-size:15px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;padding:18px 48px;border-radius:6px;font-family:'Helvetica Neue',Arial,sans-serif;">
-            Ver mi entrada + QR &rarr;
+            style="display:inline-block;background:linear-gradient(135deg,#8B3CF7 0%,#6d28c9 100%);color:#ffffff;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;padding:16px 52px;border-radius:5px;font-family:'Helvetica Neue',Arial,sans-serif;">
+            Ver mi entrada digital
           </a>
         </td></tr>
       </table>
