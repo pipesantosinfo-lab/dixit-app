@@ -286,8 +286,8 @@ export default function PreviewPage() {
           </motion.div>
         </div>
 
-        {/* Pipe asomándose desde el borde derecho */}
-        <div className="absolute right-0 bottom-0 md:bottom-[5%] z-20" style={{ transform: 'translateX(28%)' }}>
+        {/* Pipe asomándose desde el borde derecho — abajo para no tapar el texto */}
+        <div className="absolute right-0 bottom-0 z-20" style={{ transform: 'translateX(28%)' }}>
           <WavingPipe />
         </div>
       </section>
