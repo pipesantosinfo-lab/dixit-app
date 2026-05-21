@@ -225,43 +225,47 @@ export default function PreviewPage() {
       {/* ── HERO ─────────────────────────────────── */}
       <section className="relative min-h-screen overflow-hidden flex items-center">
         {/* Background glow */}
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 60%, rgba(139,60,247,0.15) 0%, transparent 60%)' }} />
-        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 40%, rgba(196,82,0,0.08) 0%, transparent 50%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 60%, rgba(139,60,247,0.15) 0%, transparent 55%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 85% 40%, rgba(196,82,0,0.08) 0%, transparent 50%)' }} />
 
-        {/* Pipe Santos photo — right side, blend mode removes white bg */}
-        <div className="absolute right-0 top-0 h-full w-full md:w-[55%] flex items-center justify-center md:justify-end pointer-events-none select-none">
-          <img
-            src="/pipe-hero.png"
-            alt="Pipe Santos"
-            className="h-full w-auto object-contain"
-            style={{ mixBlendMode: 'multiply' }}
-          />
-        </div>
+        <div className="relative z-10 w-full max-w-6xl mx-auto px-6 md:px-12 pt-28 md:pt-0 pb-12 md:pb-0">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 items-center">
 
-        {/* Gradient fade on mobile bottom */}
-        <div className="absolute bottom-0 left-0 right-0 h-40 md:hidden pointer-events-none"
-          style={{ background: 'linear-gradient(to top, #070508 0%, transparent 100%)' }} />
-
-        {/* Text content */}
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pt-32 md:pt-0 pb-24 w-full">
-          <div className="max-w-xl">
-            <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
-              ◆ Conferencista · Escritor · Influencer
-            </p>
-            <h1 className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1">
-              Conectando
-            </h1>
-            <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
-              A partir de historias
-            </p>
-            <p className="font-body text-base md:text-xl text-white/50 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
-              Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
-              <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
-            </p>
-            <div className="flex flex-wrap gap-4 animate-fade-up-delay-4">
-              <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
-              <a href="#libro" className="btn-ghost">Conoce mi libro</a>
+            {/* Text — first on desktop, second on mobile */}
+            <div className="order-2 md:order-1 animate-fade-up">
+              <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5">
+                ◆ Conferencista · Escritor · Influencer
+              </p>
+              <h1 className="font-display text-5xl md:text-[6rem] font-light text-white leading-none mb-3">
+                Conectando
+              </h1>
+              <p className="text-4xl md:text-5xl mb-8" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
+                A partir de historias
+              </p>
+              <p className="font-body text-base md:text-lg text-white/50 leading-relaxed mb-10">
+                Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
+                <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
+                <a href="#libro" className="btn-ghost">Conoce mi libro</a>
+              </div>
             </div>
+
+            {/* Photo — first on mobile */}
+            <div className="order-1 md:order-2 flex justify-center md:justify-end">
+              <div className="relative w-full max-w-xs md:max-w-lg" style={{
+                WebkitMaskImage: 'radial-gradient(ellipse 88% 85% at 50% 55%, black 50%, transparent 100%)',
+                maskImage: 'radial-gradient(ellipse 88% 85% at 50% 55%, black 50%, transparent 100%)',
+              }}>
+                <img
+                  src="/pipe-hero.png"
+                  alt="Pipe Santos"
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
