@@ -235,7 +235,7 @@ export default function PreviewPage() {
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '22vh' }}>
-          <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
+          <p className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
             ◆ Conferencista · Escritor · Influencer
           </p>
           <h1 className="font-display text-6xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
