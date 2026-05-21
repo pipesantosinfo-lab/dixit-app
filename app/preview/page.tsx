@@ -1,7 +1,35 @@
 'use client'
 import Image from 'next/image'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import Particles from '@/components/Particles'
+
+/* ── Framer Motion variants ──────────────────────── */
+const fadeUp = {
+  hidden:  { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+}
+const fadeIn = {
+  hidden:  { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 0.9, ease: 'easeOut' } },
+}
+const slideLeft = {
+  hidden:  { opacity: 0, x: -60 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+}
+const slideRight = {
+  hidden:  { opacity: 0, x: 60 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } },
+}
+const stagger = {
+  hidden:  {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.1 } },
+}
+const staggerItem = {
+  hidden:  { opacity: 0, y: 30, scale: 0.97 },
+  visible: { opacity: 1, y: 0,  scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+}
+const VP = { once: true, amount: 0.15 }
 
 const galleryPhotos = [
   '/gallery/Archivo_096-3.jpg',
@@ -191,6 +219,9 @@ const bookFeatures = [
 export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const heroRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
+  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
   const closeLightbox = useCallback(() => { setLightboxIndex(null); document.body.style.overflow = '' }, [])
   const prevPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i - 1 + galleryPhotos.length) % galleryPhotos.length), [])
@@ -223,10 +254,10 @@ export default function PreviewPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-start">
-        {/* Background photo */}
+      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-start overflow-hidden">
+        {/* Background photo con parallax */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
+          <motion.div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')", y: heroY, scale: 1.15 }} />
           {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.4) 40%, transparent 58%)' }} />
           {/* Oscuridad mínima en la parte inferior para transición suave */}
@@ -236,37 +267,42 @@ export default function PreviewPage() {
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '20vh' }}>
-          <p className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
+        <motion.div
+          className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16"
+          style={{ paddingTop: '20vh' }}
+          initial="hidden" animate="visible"
+          variants={stagger}
+        >
+          <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
             ◆ Conferencista · Escritor · Influencer
-          </p>
-          <h1 className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0 animate-fade-up-delay-1" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
+          </motion.p>
+          <motion.h1 variants={fadeUp} className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
             Conectando
-          </h1>
-          <p className="text-[2.3rem] md:text-6xl mb-8 animate-fade-up-delay-2 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
+          </motion.h1>
+          <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
             A partir de historias
-          </p>
-          <div className="flex flex-col items-start gap-3 animate-fade-up-delay-3">
+          </motion.p>
+          <motion.div variants={fadeUp} className="flex flex-col items-start gap-3">
             <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </section>
 
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-14">
+          <motion.div className="text-center mb-14" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
               Métricas
             </h2>
             <p className="text-3xl md:text-4xl mt-1" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
               que nos respaldan
             </p>
-          </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          </motion.div>
+          <motion.div className="grid md:grid-cols-3 gap-6" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
 
             {/* TikTok */}
-            <div className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all">
+            <motion.div variants={staggerItem} className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                   <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
@@ -286,10 +322,10 @@ export default function PreviewPage() {
                 style={{ color: 'rgba(139,60,247,0.6)' }}>
                 @pipesantos93 →
               </a>
-            </div>
+            </motion.div>
 
             {/* Instagram */}
-            <div className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all">
+            <motion.div variants={staggerItem} className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -309,10 +345,10 @@ export default function PreviewPage() {
                 style={{ color: 'rgba(139,60,247,0.6)' }}>
                 @pipesantos93 →
               </a>
-            </div>
+            </motion.div>
 
             {/* Facebook */}
-            <div className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all">
+            <motion.div variants={staggerItem} className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -332,16 +368,16 @@ export default function PreviewPage() {
                 style={{ color: 'rgba(139,60,247,0.6)' }}>
                 Pipe Santos →
               </a>
-            </div>
+            </motion.div>
 
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* ── SHOWREEL ─────────────────────────────── */}
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
+          <motion.div className="text-center mb-12" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Showreel</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-3">
               Mira lo que pasa en <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>mis eventos</span>
@@ -349,9 +385,9 @@ export default function PreviewPage() {
             <p className="font-body text-white/40 max-w-md mx-auto">
               Una experiencia única que transforma audiencias y deja huella.
             </p>
-          </div>
+          </motion.div>
 
-          <div className="relative rounded-2xl overflow-hidden"
+          <motion.div className="relative rounded-2xl overflow-hidden" initial="hidden" whileInView="visible" viewport={VP} variants={fadeIn}
             style={{ boxShadow: '0 0 0 1px rgba(139,60,247,0.15), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(139,60,247,0.08)' }}>
             <div className="absolute -inset-1 rounded-2xl" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.12) 0%, transparent 70%)', zIndex: -1 }} />
             <video
@@ -363,7 +399,7 @@ export default function PreviewPage() {
             >
               <source src="/showreel.mp4" type="video/mp4" />
             </video>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -381,7 +417,7 @@ export default function PreviewPage() {
         <div className="absolute inset-0 pointer-events-none" style={{ background: 'rgba(7,5,8,0.65)' }} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
+            <motion.div initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
               <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Sobre mí</p>
               <h2 className="font-display text-4xl md:text-5xl font-light text-white leading-tight mb-8">
                 Comunicador del<br />
@@ -393,13 +429,13 @@ export default function PreviewPage() {
               <p className="font-body text-white/50 text-lg leading-relaxed">
                 Como conferencista, escritor e influencer, he tenido el privilegio de impactar a miles de personas en su crecimiento personal, profesional y financiero.
               </p>
-            </div>
-            <div className="relative">
+            </motion.div>
+            <motion.div className="relative" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
               <div className="absolute inset-0 rounded-3xl" style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.15) 0%, transparent 70%)', transform: 'scale(1.2)' }} />
               <div className="relative rounded-3xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
                 <div className="w-full h-full bg-cover bg-center bg-top" style={{ backgroundImage: "url('/gallery/DSC01807.jpg')" }} />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </section>
@@ -434,11 +470,16 @@ export default function PreviewPage() {
           {/* Masonry grid */}
           <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
             {galleryPhotos.map((src, i) => (
-              <div
+              <motion.div
                 key={src}
                 className="break-inside-avoid relative overflow-hidden rounded-xl cursor-pointer group"
                 style={{ marginBottom: '12px' }}
                 onClick={() => openLightbox(i)}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.5, delay: (i % 4) * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
               >
                 <img
                   src={src}
@@ -457,7 +498,7 @@ export default function PreviewPage() {
                     </svg>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
           <div className="line-holo mt-16" />
@@ -469,7 +510,7 @@ export default function PreviewPage() {
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
           <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="order-2 md:order-1">
+            <motion.div className="order-2 md:order-1" initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
               <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Mi libro</p>
               <h2 className="font-display text-4xl md:text-5xl font-light text-white leading-tight mb-4">
                 Lo que nunca le<br />
@@ -492,15 +533,15 @@ export default function PreviewPage() {
               <a href="#" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
                 <span>Comprar ahora</span>
               </a>
-            </div>
-            <div className="order-1 md:order-2 flex justify-center">
+            </motion.div>
+            <motion.div className="order-1 md:order-2 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
               <div className="relative">
                 <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse, rgba(196,82,0,0.25) 0%, transparent 65%)', transform: 'scale(1.4)' }} />
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ maxWidth: '280px', boxShadow: '0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(196,82,0,0.15)' }}>
                   <Image src="/book-cover.png" alt="Lo que nunca le conté a papá" width={280} height={400} className="w-full h-auto" />
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
           <div className="line-holo mt-16" />
         </div>
@@ -509,7 +550,7 @@ export default function PreviewPage() {
       {/* ── PODCAST ──────────────────────────────── */}
       <section id="podcast" className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
+          <motion.div className="text-center mb-16" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Podcast</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
               Escucha mi <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>podcast</span>
@@ -517,23 +558,23 @@ export default function PreviewPage() {
             <p className="font-body text-white/40 text-lg max-w-lg mx-auto">
               Aquí podrás escuchar algunas <strong className="text-white/60">historias poderosas</strong> que con mucho cariño he producido para ti.
             </p>
-          </div>
-          <div className="grid md:grid-cols-2 gap-6">
-            <iframe
+          </motion.div>
+          <motion.div className="grid md:grid-cols-2 gap-6" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
+            <motion.iframe variants={staggerItem}
               style={{ borderRadius: '12px' }}
               src="https://open.spotify.com/embed/episode/1IgzCLGtd5GT5VAJKWuk38?utm_source=generator"
               width="100%" height="352" frameBorder={0}
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
             />
-            <iframe
+            <motion.iframe variants={staggerItem}
               style={{ borderRadius: '12px' }}
               src="https://open.spotify.com/embed/episode/3xAd9gVStVB9YaPdaJ4oJh?utm_source=generator"
               width="100%" height="352" frameBorder={0}
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
             />
-          </div>
+          </motion.div>
           <div className="text-center mt-10">
             <a href="https://open.spotify.com/show/2MaZs9kPXMWv20RysXRcxG" target="_blank" rel="noopener noreferrer" className="btn-ghost inline-block">Ver todos los episodios en Spotify</a>
           </div>
@@ -553,9 +594,9 @@ export default function PreviewPage() {
               Descubre cómo he ayudado a muchos de mis clientes a través de la comunicación.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+          <motion.div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
             {testimonials.map((t) => (
-              <div key={t.name} className="glass rounded-2xl p-6 md:p-8">
+              <motion.div key={t.name} variants={staggerItem} className="glass rounded-2xl p-6 md:p-8">
                 <div className="flex gap-1 mb-6">
                   {[...Array(5)].map((_, i) => (
                     <span key={i} style={{ color: '#C45200' }}>★</span>
@@ -571,16 +612,16 @@ export default function PreviewPage() {
                     <p className="font-mono text-xs text-white/30 leading-relaxed">{t.role}</p>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
           <div className="line-holo mt-16" />
         </div>
       </section>
 
       {/* ── CONTACTO ─────────────────────────────── */}
       <section id="contacto" className="relative z-10 px-6 md:px-12 py-20">
-        <div className="max-w-2xl mx-auto text-center">
+        <motion.div className="max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
             Quiero <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>leerte</span>
@@ -622,7 +663,7 @@ export default function PreviewPage() {
             </div>
             <button className="btn-primary w-full"><span>Enviar mensaje</span></button>
           </div>
-        </div>
+        </motion.div>
       </section>
 
       {/* ── FOOTER ───────────────────────────────── */}
