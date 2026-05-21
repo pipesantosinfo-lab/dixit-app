@@ -95,7 +95,6 @@ export async function POST(req: NextRequest) {
       eventLocation: tier.events.location,
       tierName: tier.name,
       ticketId: ticketNumber,
-      qrImageUrl: qrDataUrl,
       ticketPageUrl: ticketUrl,
     })
   } catch (emailErr) {
