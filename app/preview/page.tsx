@@ -227,8 +227,8 @@ export default function PreviewPage() {
         {/* Background photo */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
-          {/* Capa izquierda muy oscura donde está el texto */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.97) 38%, rgba(7,5,8,0.65) 58%, rgba(7,5,8,0.05) 100%)' }} />
+          {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.4) 40%, transparent 58%)' }} />
           {/* Oscuridad mínima en la parte inferior para transición suave */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,0.6) 0%, transparent 20%)' }} />
           {/* Sombra desde arriba para cubrir el área del título y subtítulo */}
