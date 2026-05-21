@@ -22,10 +22,18 @@ const dmMono = DM_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'DIXIT — Experiencias',
-  description: 'Entradas para experiencias artísticas e inmersivas.',
+  title: 'Pipe Santos — Escritor, conferencista e influencer',
+  description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
   openGraph: {
+    title: 'Pipe Santos — Escritor, conferencista e influencer',
+    description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
     images: ['/og-image.jpg'],
+    siteName: 'Pipe Santos',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Pipe Santos — Escritor, conferencista e influencer',
+    description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
   },
 }
 
