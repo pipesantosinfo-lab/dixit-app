@@ -26,7 +26,8 @@ function useCountdown() {
   return time
 }
 
-const PRICE = 2000
+const PRICE = 40000
+const INSTAGRAM_URL = 'https://www.instagram.com/pipesantos93/'
 
 function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number }) {
   const [form, setForm] = useState({ name: '', email: '' })
@@ -87,7 +88,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
           <div>
             <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-1">Entrada General</p>
             <h2 className="font-display text-2xl text-white">La vida es cule viaje</h2>
-            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>$2.000 COP</p>
+            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>$40.000 COP</p>
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white transition-colors text-3xl leading-none mt-1">×</button>
         </div>
@@ -206,11 +207,9 @@ export default function EventoPage() {
       <nav className="fixed top-0 left-0 right-0 z-40 flex justify-center md:justify-between items-center px-4 md:px-12 py-1 md:py-5"
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
         <Image src="/logo.png" alt="Pipe Santos" width={110} height={40} className="opacity-90 md:w-[120px] md:h-[44px]" />
-        {!isSoldOut && (
-          <button onClick={() => setShowModal(true)} className="btn-primary text-sm hidden md:block">
-            <span>Comprar entrada</span>
-          </button>
-        )}
+        <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm hidden md:block">
+          <span>Atento al lanzamiento</span>
+        </a>
       </nav>
 
       {/* ── HERO ── */}
@@ -265,15 +264,18 @@ export default function EventoPage() {
                 <p className="font-mono text-xs text-white/50 tracking-widest uppercase">Agotadas</p>
               </div>
             ) : (
-              <div className="animate-fade-up-delay-4">
-                <button onClick={() => setShowModal(true)} className="btn-primary w-full md:w-auto px-4 md:px-10 py-3 md:py-5">
+              <div className="animate-fade-up-delay-4 flex flex-col gap-2 md:gap-3">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn-primary w-full md:w-auto px-4 md:px-10 py-3 md:py-5 text-center">
+                  <span className="text-[8px] md:text-base tracking-[0.18em] md:tracking-widest">Atento al lanzamiento</span>
+                </a>
+                <button disabled className="btn-primary w-full md:w-auto px-4 md:px-10 py-3 md:py-5 opacity-30 cursor-not-allowed">
                   <span className="flex flex-col md:inline items-center leading-tight gap-0.5">
                     <span className="text-[8px] md:hidden tracking-[0.18em]">Adquiere tu entrada</span>
-                    <span className="text-sm md:hidden tracking-widest">$2.000</span>
-                    <span className="hidden md:inline text-base">Adquiere tu entrada · $2.000</span>
+                    <span className="text-sm md:hidden tracking-widest">$40.000</span>
+                    <span className="hidden md:inline text-base">Adquiere tu entrada · $40.000</span>
                   </span>
                 </button>
-                <p className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest mt-2 md:mt-4 uppercase">
+                <p className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest uppercase">
                   {available} de {MAX_TICKETS} disponibles
                 </p>
               </div>
@@ -359,7 +361,7 @@ export default function EventoPage() {
                 <p className="font-body text-white/80 font-medium">Entrada General</p>
                 <p className="font-mono text-xs text-white/30 mt-1">Acceso completo al evento</p>
               </div>
-              <p className="font-display text-3xl font-light" style={{ color: '#8B3CF7' }}>$2.000</p>
+              <p className="font-display text-3xl font-light" style={{ color: '#8B3CF7' }}>$40.000</p>
             </div>
 
             {/* Availability bar */}
@@ -380,9 +382,14 @@ export default function EventoPage() {
                 <p className="font-mono text-sm text-white/40 tracking-widest uppercase">Agotado</p>
               </div>
             ) : (
-              <button onClick={() => setShowModal(true)} className="btn-primary w-full text-base py-5">
-                <span>Comprar ahora — $2.000 COP</span>
-              </button>
+              <div className="flex flex-col gap-2">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn-primary w-full text-base py-5 text-center block">
+                  <span>Atento al lanzamiento</span>
+                </a>
+                <button disabled className="btn-primary w-full text-base py-5 opacity-30 cursor-not-allowed">
+                  <span>Comprar ahora — $40.000 COP</span>
+                </button>
+              </div>
             )}
           </div>
 
