@@ -231,6 +231,8 @@ export default function PreviewPage() {
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.97) 38%, rgba(7,5,8,0.65) 58%, rgba(7,5,8,0.05) 100%)' }} />
           {/* Oscuridad en la parte inferior */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.4) 25%, transparent 55%)' }} />
+          {/* Sombra desde arriba para cubrir el área del título */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.92) 0%, rgba(7,5,8,0.75) 20%, rgba(7,5,8,0.3) 40%, transparent 60%)' }} />
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
