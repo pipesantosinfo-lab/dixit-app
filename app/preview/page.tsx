@@ -375,18 +375,50 @@ export default function PreviewPage() {
                 ✦ Contenido corto, directo y contundente — diseñado para detener el scroll y mover algo por dentro.
               </p>
               {/* Pipe sentado en el borde inferior derecho de la caja */}
-              <TransparentImg
-                src="/pipe-social.png"
-                className="absolute pointer-events-none"
-                style={{
-                  width: 'clamp(110px, 14vw, 160px)',
-                  bottom: 0,
-                  right: '-8px',
-                  transform: 'translateY(52%)',
-                  filter: 'drop-shadow(-4px 6px 16px rgba(0,0,0,0.5))',
-                  zIndex: 10,
-                }}
-              />
+              {/* Capa 1: posición fija en el borde (CSS puro, sin Framer) */}
+              <div className="absolute pointer-events-none" style={{ width: 'clamp(118px, 14vw, 162px)', bottom: 0, right: '-6px', transform: 'translateY(50%)', zIndex: 10 }}>
+                {/* Capa 2: entrada */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                  style={{ position: 'relative' }}
+                >
+                  {/* Capa 3: flotación suave */}
+                  <motion.div
+                    animate={{ y: [0, -9, 0] }}
+                    transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
+                  >
+                    <TransparentImg
+                      src="/pipe-social.png"
+                      style={{ filter: 'drop-shadow(-4px 8px 20px rgba(0,0,0,0.55))' }}
+                    />
+                  </motion.div>
+
+                  {/* Partículas */}
+                  <motion.div className="absolute top-4 -left-4 w-2 h-2 rounded-full pointer-events-none"
+                    style={{ background: 'rgba(139,60,247,0.7)' }}
+                    animate={{ y: [-5, 5, -5], opacity: [0.7, 1, 0.7] }}
+                    transition={{ repeat: Infinity, duration: 2.4, ease: 'easeInOut' }}
+                  />
+                  <motion.div className="absolute top-10 -right-3 w-1.5 h-1.5 rounded-full pointer-events-none"
+                    style={{ background: 'rgba(255,140,66,0.65)' }}
+                    animate={{ y: [4, -4, 4], opacity: [0.5, 0.9, 0.5] }}
+                    transition={{ repeat: Infinity, duration: 3.1, ease: 'easeInOut' }}
+                  />
+                  <motion.div className="absolute top-20 -left-2 w-1.5 h-1.5 rounded-full pointer-events-none"
+                    style={{ background: 'rgba(139,60,247,0.45)' }}
+                    animate={{ y: [-7, 7, -7], opacity: [0.45, 0.85, 0.45] }}
+                    transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                  />
+                  <motion.div className="absolute -top-1 left-1/3 w-1.5 h-1.5 rounded-full pointer-events-none"
+                    style={{ background: 'rgba(255,200,50,0.55)' }}
+                    animate={{ y: [3, -6, 3], opacity: [0.5, 1, 0.5] }}
+                    transition={{ repeat: Infinity, duration: 2.7, ease: 'easeInOut' }}
+                  />
+                </motion.div>
+              </div>
               <a href="https://instagram.com/pipesantos93" target="_blank" rel="noopener noreferrer"
                 className="mt-5 font-mono text-xs tracking-widest uppercase transition-colors"
                 style={{ color: 'rgba(139,60,247,0.6)' }}>

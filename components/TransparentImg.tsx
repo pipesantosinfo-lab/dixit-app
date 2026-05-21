@@ -39,7 +39,7 @@ export default function TransparentImg({ src, className = '', style, threshold =
     <canvas
       ref={canvasRef}
       className={className}
-      style={{ opacity: ready ? 1 : 0, transition: 'opacity 0.5s ease', display: 'block', ...style }}
+      style={{ opacity: ready ? 1 : 0, transition: 'opacity 0.5s ease', display: 'block', width: '100%', height: 'auto', ...style }}
     />
   )
 }
