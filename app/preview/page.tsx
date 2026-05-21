@@ -299,7 +299,7 @@ export default function PreviewPage() {
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             className="absolute z-30 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap pointer-events-none"
             style={{
-              bottom: '28%',
+              bottom: '20%',
               right: '34%',
               background: 'rgba(139,60,247,0.18)',
               border: '1px solid rgba(139,60,247,0.55)',
