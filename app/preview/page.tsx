@@ -227,25 +227,26 @@ export default function PreviewPage() {
         {/* Background photo */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
-          {/* Dark overlay on left/bottom for text readability */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.92) 0%, rgba(7,5,8,0.75) 45%, rgba(7,5,8,0.2) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.5) 30%, rgba(7,5,8,0.1) 60%, transparent 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
+          {/* Capa izquierda muy oscura donde está el texto */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.97) 38%, rgba(7,5,8,0.65) 58%, rgba(7,5,8,0.05) 100%)' }} />
+          {/* Oscuridad en la parte inferior */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.4) 25%, transparent 55%)' }} />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
         <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '22vh' }}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
             ◆ Conferencista · Escritor · Influencer
           </p>
-          <h1 className="font-display text-6xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1">
+          <h1 className="font-display text-6xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
             Conectando
           </h1>
-          <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
+          <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
             A partir de historias
           </p>
-          <p className="font-body text-lg md:text-xl text-white/60 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
+          <p className="font-body text-lg md:text-xl text-white/70 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
             Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
-            <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
+            <strong className="text-white/90 font-medium">personal y profesional</strong> de mi comunidad.
           </p>
           <div className="flex flex-wrap gap-3 animate-fade-up-delay-4">
             <a href="/evento" className="btn-primary" style={{ padding: '10px 20px', fontSize: '11px' }}><span>Adquiere tu entrada</span></a>
