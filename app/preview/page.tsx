@@ -217,9 +217,12 @@ const bookFeatures = [
   { title: 'Proyectos, sueños y metas', desc: 'Descubrirás formas, tips y métodos para escalar hacia tus objetivos más importantes.' },
 ]
 
+const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¡Conectemos! 🔥', '¡Nos vemos en Barranquilla!', '¡Gracias por estar aquí! ✨']
+
 export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const heroRef = useRef<HTMLElement>(null)
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
@@ -286,9 +289,35 @@ export default function PreviewPage() {
           </motion.div>
         </div>
 
-        {/* Pipe asomándose desde el borde derecho — abajo para no tapar el texto */}
+        {/* Burbuja de Pipe — posicionada en el hero con coordenadas propias */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={pipeMsgIndex}
+            initial={{ opacity: 0, y: 10, scale: 0.85 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.9 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute z-30 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap pointer-events-none"
+            style={{
+              bottom: '28%',
+              right: '42%',
+              background: 'rgba(139,60,247,0.18)',
+              border: '1px solid rgba(139,60,247,0.55)',
+              backdropFilter: 'blur(12px)',
+              boxShadow: '0 4px 24px rgba(139,60,247,0.28)',
+            }}
+          >
+            {pipeMessages[pipeMsgIndex]}
+            {/* Punta hacia la derecha */}
+            <div className="absolute top-1/2 -translate-y-1/2 -right-[9px] w-4 h-4 rotate-45"
+              style={{ background: 'rgba(139,60,247,0.18)', borderRight: '1px solid rgba(139,60,247,0.55)', borderTop: '1px solid rgba(139,60,247,0.55)' }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Pipe asomándose desde el borde derecho */}
         <div className="absolute right-0 bottom-0 z-20" style={{ transform: 'translateX(28%)' }}>
-          <WavingPipe />
+          <WavingPipe onAvatarClick={() => setPipeMsgIndex(i => (i + 1) % pipeMessages.length)} />
         </div>
       </section>
 

@@ -1,14 +1,6 @@
 'use client'
-import { motion, useAnimationControls, AnimatePresence } from 'framer-motion'
+import { motion, useAnimationControls } from 'framer-motion'
 import { useState, useEffect, useRef } from 'react'
-
-const messages = [
-  '¡Hola! 👋',
-  '¡Bienvenido!',
-  '¡Conectemos! 🔥',
-  '¡Nos vemos en Barranquilla!',
-  '¡Gracias por estar aquí! ✨',
-]
 
 /** Elimina el fondo blanco del PNG via canvas */
 function useTransparentImage(src: string) {
@@ -30,9 +22,7 @@ function useTransparentImage(src: string) {
       const d = imageData.data
       for (let i = 0; i < d.length; i += 4) {
         const r = d[i], g = d[i + 1], b = d[i + 2]
-        if (r > 220 && g > 220 && b > 220) {
-          d[i + 3] = 0
-        }
+        if (r > 220 && g > 220 && b > 220) d[i + 3] = 0
       }
       ctx.putImageData(imageData, 0, 0)
       setReady(true)
@@ -43,9 +33,11 @@ function useTransparentImage(src: string) {
   return { canvasRef, ready }
 }
 
-export default function WavingPipe() {
-  const [msgIndex, setMsgIndex] = useState(0)
-  const [hover, setHover] = useState(false)
+interface WavingPipeProps {
+  onAvatarClick?: () => void
+}
+
+export default function WavingPipe({ onAvatarClick }: WavingPipeProps) {
   const [clicked, setClicked] = useState(false)
   const controls = useAnimationControls()
   const { canvasRef, ready } = useTransparentImage('/pipe-peek.png')
@@ -53,7 +45,7 @@ export default function WavingPipe() {
   const handleClick = async () => {
     if (clicked) return
     setClicked(true)
-    setMsgIndex(i => (i + 1) % messages.length)
+    onAvatarClick?.()
     await controls.start({
       x: [0, -12, 4, -6, 0],
       transition: { duration: 0.5, ease: 'easeInOut' },
@@ -63,45 +55,12 @@ export default function WavingPipe() {
 
   return (
     <motion.div
-      className="relative cursor-pointer select-none"
+      className="cursor-pointer select-none"
       onClick={handleClick}
-      onHoverStart={() => setHover(true)}
-      onHoverEnd={() => setHover(false)}
-      /* Entra deslizándose desde la derecha */
       initial={{ x: 120, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ delay: 1.0, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Burbuja de diálogo — aparece a la izquierda */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={msgIndex}
-          initial={{ opacity: 0, x: 16, scale: 0.85 }}
-          animate={{ opacity: 1, x: 0, scale: 1 }}
-          exit={{ opacity: 0, x: 8, scale: 0.9 }}
-          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute left-0 -translate-x-[calc(100%+52px)] top-8 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap z-30"
-          style={{
-            background: 'rgba(139,60,247,0.18)',
-            border: '1px solid rgba(139,60,247,0.55)',
-            backdropFilter: 'blur(12px)',
-            boxShadow: '0 4px 24px rgba(139,60,247,0.28)',
-          }}
-        >
-          {messages[msgIndex]}
-          {/* Punta de la burbuja apuntando a la derecha */}
-          <div
-            className="absolute top-1/2 -translate-y-1/2 -right-[9px] w-4 h-4 rotate-45"
-            style={{
-              background: 'rgba(139,60,247,0.18)',
-              borderRight: '1px solid rgba(139,60,247,0.55)',
-              borderTop: '1px solid rgba(139,60,247,0.55)',
-            }}
-          />
-        </motion.div>
-      </AnimatePresence>
-
-      {/* Figura — flota suavemente */}
       <motion.div animate={controls}>
         <motion.div
           animate={{ y: [0, -8, 0] }}
