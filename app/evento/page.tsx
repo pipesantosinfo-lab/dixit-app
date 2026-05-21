@@ -134,7 +134,6 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
           {[
             { key: 'name', label: 'Nombre completo *', type: 'text', placeholder: 'Tu nombre' },
             { key: 'email', label: 'Correo electrónico *', type: 'email', placeholder: 'tu@correo.com' },
-            { key: 'phone', label: 'WhatsApp (opcional — recibe tu QR aquí)', type: 'tel', placeholder: '+57 300 000 0000' },
           ].map(f => (
             <div key={f.key}>
               <label className="font-mono text-xs text-white/30 tracking-widest uppercase block mb-2">{f.label}</label>
@@ -351,7 +350,7 @@ export default function EventoPage() {
             Asegura tu <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>lugar</span>
           </h2>
           <p className="font-body text-white/40 mb-10">
-            Solo {MAX_TICKETS} personas. El QR llega a tu correo y WhatsApp al instante.
+            Solo {MAX_TICKETS} personas. El QR llega a tu correo al instante.
           </p>
 
           <div className="glass rounded-3xl p-8 mb-8" style={{ border: '1px solid rgba(139,60,247,0.2)' }}>
