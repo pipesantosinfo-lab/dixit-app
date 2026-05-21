@@ -203,8 +203,17 @@ export default function EventoPage() {
 
       {showModal && <CheckoutModal onClose={() => setShowModal(false)} sold={sold} />}
 
+      {/* ── NAV ── */}
+      <nav className="fixed top-0 left-0 right-0 z-40 flex justify-center md:justify-between items-center px-4 md:px-12 py-1 md:py-4"
+        style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
+        <Image src="/logo.png" alt="Pipe Santos" width={110} height={40} className="opacity-90" />
+        <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm hidden md:block">
+          <span>Atento al lanzamiento</span>
+        </a>
+      </nav>
+
       {/* ── HERO ── */}
-      <section className="relative md:min-h-screen px-4 md:px-6 pt-10 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
+      <section className="relative md:min-h-screen px-4 md:px-6 pt-16 md:pt-24 pb-12 md:pb-20 flex items-start md:items-center">
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 50%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 70%, rgba(196,82,0,0.07) 0%, transparent 50%)' }} />
 
