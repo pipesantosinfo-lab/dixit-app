@@ -240,7 +240,7 @@ export default function PreviewPage() {
           <p className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
             ◆ Conferencista · Escritor · Influencer
           </p>
-          <h1 className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
+          <h1 className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0 animate-fade-up-delay-1" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
             Conectando
           </h1>
           <p className="text-[2.3rem] md:text-6xl mb-8 animate-fade-up-delay-2 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
