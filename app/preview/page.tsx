@@ -300,7 +300,7 @@ export default function PreviewPage() {
             className="absolute z-30 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap pointer-events-none"
             style={{
               bottom: '28%',
-              right: '42%',
+              right: '34%',
               background: 'rgba(139,60,247,0.18)',
               border: '1px solid rgba(139,60,247,0.55)',
               backdropFilter: 'blur(12px)',
