@@ -141,7 +141,7 @@ function SocialCount({ target }: { target: number }) {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setTriggered(true) },
-      { threshold: 0.5 }
+      { threshold: 0, rootMargin: '0px 0px -50px 0px' }
     )
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
