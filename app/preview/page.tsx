@@ -249,7 +249,7 @@ export default function PreviewPage() {
             <strong className="text-white/90 font-medium">personal y profesional</strong> de mi comunidad.
           </p>
           <div className="flex flex-col items-start gap-3 animate-fade-up-delay-4">
-            <a href="/evento" className="btn-primary" style={{ padding: '10px 20px', fontSize: '11px' }}><span>Barranquilla 2026 en vivo</span></a>
+            <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
           </div>
         </div>
       </section>
