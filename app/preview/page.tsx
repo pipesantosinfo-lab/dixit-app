@@ -223,29 +223,45 @@ export default function PreviewPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-end">
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('/hero.jpg')" }} />
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.4) 0%, rgba(7,5,8,0.1) 20%, rgba(7,5,8,0.7) 65%, rgba(7,5,8,1) 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 60%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
+      <section className="relative min-h-screen overflow-hidden flex items-center">
+        {/* Background glow */}
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 60%, rgba(139,60,247,0.15) 0%, transparent 60%)' }} />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 40%, rgba(196,82,0,0.08) 0%, transparent 50%)' }} />
+
+        {/* Pipe Santos photo — right side, blend mode removes white bg */}
+        <div className="absolute right-0 bottom-0 h-full w-full md:w-1/2 flex items-end justify-center md:justify-end pointer-events-none select-none">
+          <img
+            src="/pipe-hero.png"
+            alt="Pipe Santos"
+            className="h-[85%] md:h-full w-auto object-contain object-bottom"
+            style={{ mixBlendMode: 'multiply', opacity: 0.95 }}
+          />
         </div>
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-24 pt-40">
-          <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
-            ◆ Conferencista · Escritor · Influencer
-          </p>
-          <h1 className="font-display text-6xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1">
-            Conectando
-          </h1>
-          <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
-            A partir de historias
-          </p>
-          <p className="font-body text-lg md:text-xl text-white/50 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
-            Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
-            <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
-          </p>
-          <div className="flex flex-wrap gap-4 animate-fade-up-delay-4">
-            <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
-            <a href="#libro" className="btn-ghost">Conoce mi libro</a>
+
+        {/* Gradient fade on mobile bottom */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 md:hidden pointer-events-none"
+          style={{ background: 'linear-gradient(to top, #070508 0%, transparent 100%)' }} />
+
+        {/* Text content */}
+        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pt-32 md:pt-0 pb-24 w-full">
+          <div className="max-w-xl">
+            <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
+              ◆ Conferencista · Escritor · Influencer
+            </p>
+            <h1 className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1">
+              Conectando
+            </h1>
+            <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
+              A partir de historias
+            </p>
+            <p className="font-body text-base md:text-xl text-white/50 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
+              Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
+              <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
+            </p>
+            <div className="flex flex-wrap gap-4 animate-fade-up-delay-4">
+              <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
+              <a href="#libro" className="btn-ghost">Conoce mi libro</a>
+            </div>
           </div>
         </div>
       </section>
