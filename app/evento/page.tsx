@@ -29,7 +29,7 @@ function useCountdown() {
 const PRICE = 2000
 
 function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number }) {
-  const [form, setForm] = useState({ name: '', email: '', phone: '' })
+  const [form, setForm] = useState({ name: '', email: '' })
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -56,7 +56,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
         body: JSON.stringify({
           buyerName: form.name,
           buyerEmail: form.email,
-          buyerPhone: form.phone,
+
           quantity,
         }),
       })
