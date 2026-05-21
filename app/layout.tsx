@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Pipe Santos — Escritor, conferencista e influencer',
     description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
-    images: ['/logo.png'],
+    images: ['/og-image.png'],
     siteName: 'Pipe Santos',
   },
   twitter: {
