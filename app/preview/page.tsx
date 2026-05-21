@@ -520,8 +520,8 @@ export default function PreviewPage() {
           </div>
           <div className="grid md:grid-cols-2 gap-6">
             {[
-              { title: 'La banca de aquel parque', date: '21 oct · Pipe Santos' },
-              { title: 'La Ausencia de los perros', date: '20 oct · Pipe Santos' },
+              { title: 'La banca de aquel parque', date: '21 oct · Pipe Santos', url: 'https://open.spotify.com/episode/1IgzCLGtd5GT5VAJKWuk38' },
+              { title: 'La Ausencia de los perros', date: '20 oct · Pipe Santos', url: 'https://open.spotify.com/episode/3xAd9gVStVB9YaPdaJ4oJh' },
             ].map((ep) => (
               <div key={ep.title} className="glass rounded-2xl p-6 flex items-center gap-5 group hover:border-iris/30 transition-all">
                 <div className="w-16 h-16 rounded-xl flex-shrink-0 flex items-center justify-center" style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.2)' }}>
@@ -534,7 +534,7 @@ export default function PreviewPage() {
                   <p className="font-body text-white/80 font-medium truncate">{ep.title}</p>
                   <p className="font-mono text-xs text-white/30 mt-1">{ep.date}</p>
                 </div>
-                <a href="#" className="font-mono text-xs text-iris/60 hover:text-iris tracking-widest uppercase transition-colors">
+                <a href={ep.url} target="_blank" rel="noopener noreferrer" className="font-mono text-xs text-iris/60 hover:text-iris tracking-widest uppercase transition-colors">
                   Escuchar →
                 </a>
               </div>
