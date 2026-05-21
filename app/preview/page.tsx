@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import Particles from '@/components/Particles'
 import WavingPipe from '@/components/WavingPipe'
 import TransparentImg from '@/components/TransparentImg'
+import LiquidBtn from '@/components/LiquidBtn'
 
 /* ── Framer Motion variants ──────────────────────── */
 const fadeUp = {
@@ -285,7 +286,7 @@ export default function PreviewPage() {
               A partir de historias
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col items-start gap-3">
-              <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
+              <LiquidBtn href="/evento" className="!text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></LiquidBtn>
             </motion.div>
           </motion.div>
         </div>
@@ -609,9 +610,9 @@ export default function PreviewPage() {
                   </div>
                 ))}
               </div>
-              <a href="#" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
+              <LiquidBtn href="#" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
                 <span>Comprar ahora</span>
-              </a>
+              </LiquidBtn>
             </motion.div>
             <motion.div className="order-1 md:order-2 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
               <div className="relative">
@@ -740,7 +741,7 @@ export default function PreviewPage() {
                 placeholder="Descríbeme aquí tu proyecto..."
               />
             </div>
-            <button className="btn-primary w-full"><span>Enviar mensaje</span></button>
+            <LiquidBtn className="w-full"><span>Enviar mensaje</span></LiquidBtn>
           </div>
         </motion.div>
       </section>
