@@ -244,7 +244,7 @@ export default function PreviewPage() {
           <p className="text-4xl md:text-6xl mb-8 animate-fade-up-delay-2" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
             A partir de historias
           </p>
-          <p className="font-body text-lg md:text-xl text-white/70 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3">
+          <p className="font-body text-lg md:text-xl text-white/70 max-w-lg leading-relaxed mb-10 animate-fade-up-delay-3 text-left">
             Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
             <strong className="text-white/90 font-medium">personal y profesional</strong> de mi comunidad.
           </p>
