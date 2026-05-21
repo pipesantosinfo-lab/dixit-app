@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import Particles from '@/components/Particles'
+import WavingPipe from '@/components/WavingPipe'
 
 /* ── Framer Motion variants ──────────────────────── */
 const fadeUp = {
@@ -267,25 +268,28 @@ export default function PreviewPage() {
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
-        <motion.div
-          className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16"
-          style={{ paddingTop: '20vh' }}
-          initial="hidden" animate="visible"
-          variants={stagger}
-        >
-          <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
-            ◆ Conferencista · Escritor · Influencer
-          </motion.p>
-          <motion.h1 variants={fadeUp} className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
-            Conectando
-          </motion.h1>
-          <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
-            A partir de historias
-          </motion.p>
-          <motion.div variants={fadeUp} className="flex flex-col items-start gap-3">
-            <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
+        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16 flex flex-col md:flex-row md:items-end md:justify-between gap-8" style={{ paddingTop: '20vh' }}>
+          {/* Texto */}
+          <motion.div initial="hidden" animate="visible" variants={stagger}>
+            <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
+              ◆ Conferencista · Escritor · Influencer
+            </motion.p>
+            <motion.h1 variants={fadeUp} className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
+              Conectando
+            </motion.h1>
+            <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
+              A partir de historias
+            </motion.p>
+            <motion.div variants={fadeUp} className="flex flex-col items-start gap-3">
+              <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
+            </motion.div>
           </motion.div>
-        </motion.div>
+
+          {/* Avatar interactivo */}
+          <div className="flex justify-center md:justify-end md:pb-4 flex-shrink-0">
+            <WavingPipe />
+          </div>
+        </div>
       </section>
 
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
