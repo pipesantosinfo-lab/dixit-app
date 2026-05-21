@@ -243,7 +243,7 @@ export default function PreviewPage() {
           <h1 className="font-display text-6xl md:text-[7rem] font-light text-white leading-none mb-3 animate-fade-up-delay-1" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
             Conectando
           </h1>
-          <p className="text-[1.7rem] md:text-6xl mb-8 animate-fade-up-delay-2 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
+          <p className="text-[2.3rem] md:text-6xl mb-8 animate-fade-up-delay-2 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
             A partir de historias
           </p>
           <div className="flex flex-col items-start gap-3 animate-fade-up-delay-3">
