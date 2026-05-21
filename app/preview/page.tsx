@@ -229,12 +229,12 @@ export default function PreviewPage() {
         <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 80% 40%, rgba(196,82,0,0.08) 0%, transparent 50%)' }} />
 
         {/* Pipe Santos photo — right side, blend mode removes white bg */}
-        <div className="absolute right-0 bottom-0 h-full w-full md:w-1/2 flex items-end justify-center md:justify-end pointer-events-none select-none">
+        <div className="absolute right-0 top-0 h-full w-full md:w-[55%] flex items-center justify-center md:justify-end pointer-events-none select-none">
           <img
             src="/pipe-hero.png"
             alt="Pipe Santos"
-            className="h-[85%] md:h-full w-auto object-contain object-bottom"
-            style={{ mixBlendMode: 'multiply', opacity: 0.95 }}
+            className="h-full w-auto object-contain"
+            style={{ mixBlendMode: 'multiply' }}
           />
         </div>
 
