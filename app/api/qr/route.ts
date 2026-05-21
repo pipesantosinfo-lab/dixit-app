@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   if (!data) return NextResponse.json({ error: 'Missing data' }, { status: 400 })
 
   const buffer = await generateQRBuffer(decodeURIComponent(data))
-  return new NextResponse(buffer, {
+  return new NextResponse(new Uint8Array(buffer), {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
