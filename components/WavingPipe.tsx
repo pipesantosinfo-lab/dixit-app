@@ -80,7 +80,7 @@ export default function WavingPipe() {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: 8, scale: 0.9 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute left-0 -translate-x-[calc(100%+12px)] top-12 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap z-30"
+          className="absolute left-0 -translate-x-[calc(100%+52px)] top-8 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap z-30"
           style={{
             background: 'rgba(139,60,247,0.18)',
             border: '1px solid rgba(139,60,247,0.55)',
