@@ -247,9 +247,9 @@ export default function PreviewPage() {
             Descubre cómo, a través de historias reales, contribuyo al crecimiento{' '}
             <strong className="text-white/80 font-medium">personal y profesional</strong> de mi comunidad.
           </p>
-          <div className="flex flex-wrap gap-4 animate-fade-up-delay-4">
-            <a href="/evento" className="btn-primary"><span>Adquiere tu entrada para mi próxima presentación</span></a>
-            <a href="#libro" className="btn-ghost">Conoce mi libro</a>
+          <div className="flex flex-wrap gap-3 animate-fade-up-delay-4">
+            <a href="/evento" className="btn-primary" style={{ padding: '10px 20px', fontSize: '11px' }}><span>Adquiere tu entrada</span></a>
+            <a href="#libro" className="btn-primary" style={{ padding: '10px 20px', fontSize: '11px' }}><span>Conoce mi libro</span></a>
           </div>
         </div>
       </section>
