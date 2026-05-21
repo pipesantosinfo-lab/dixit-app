@@ -254,7 +254,7 @@ export default function PreviewPage() {
 
             {/* Photo — first on mobile */}
             <div className="order-1 md:order-2 flex justify-center md:justify-end">
-              <div className="relative w-full max-w-sm md:max-w-2xl" style={{
+              <div className="relative w-full md:max-w-3xl" style={{
                 WebkitMaskImage: 'radial-gradient(ellipse 88% 85% at 50% 55%, black 50%, transparent 100%)',
                 maskImage: 'radial-gradient(ellipse 88% 85% at 50% 55%, black 50%, transparent 100%)',
               }}>
