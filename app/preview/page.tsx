@@ -223,17 +223,17 @@ export default function PreviewPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────── */}
-      <section className="relative min-h-screen flex flex-col justify-end">
+      <section className="relative min-h-screen flex flex-col justify-start">
         {/* Background photo */}
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
           {/* Dark overlay on left/bottom for text readability */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.92) 0%, rgba(7,5,8,0.75) 45%, rgba(7,5,8,0.2) 100%)' }} />
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.5) 30%, rgba(7,5,8,0.1) 60%, transparent 100%)' }} />
-          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 60%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
+          <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.12) 0%, transparent 55%)' }} />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-24 pt-40">
+        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '22vh' }}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/80 uppercase mb-5 animate-fade-up">
             ◆ Conferencista · Escritor · Influencer
           </p>
