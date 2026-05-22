@@ -669,17 +669,24 @@ export default function PreviewPage() {
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
-          <div className="flex items-end justify-center gap-4 md:gap-6">
-            {/* Boris — solo desktop */}
-            <div className="hidden md:block flex-shrink-0 pb-1">
-              <BorisCharacter />
-            </div>
-            {/* Tarjetas de estadísticas */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl flex-1">
+          {/* Wrapper relativo para posicionar Boris sin encoger las tarjetas */}
+          <div className="relative">
+            {/* Tarjetas — tamaño original sin cambios */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
               {stats.map((s) => (
                 <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
               ))}
             </div>
+
+            {/* Boris — desktop lg+: flota a la izquierda del grid */}
+            <div className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2">
+              <BorisCharacter />
+            </div>
+          </div>
+
+          {/* Boris — móvil/tablet: aparece centrado debajo de las tarjetas */}
+          <div className="lg:hidden flex justify-center mt-10">
+            <BorisCharacter />
           </div>
           <div className="line-holo mt-16" />
         </div>

@@ -93,33 +93,36 @@ export default function BorisCharacter() {
   return (
     <div className="relative cursor-pointer select-none" onClick={handleClick}>
 
-      {/* Burbuja de texto — aparece a la DERECHA del personaje */}
+      {/* Burbuja de texto — aparece ARRIBA del personaje (estilo cómic) */}
       <AnimatePresence>
         {showBubble && (
           <motion.div
             key={msgIndex}
-            initial={{ opacity: 0, scale: 0.85, x: 6 }}
-            animate={{ opacity: 1, scale: 1,   x: 0 }}
-            exit={{   opacity: 0, scale: 0.85, x: 6 }}
+            initial={{ opacity: 0, scale: 0.85, y: 6 }}
+            animate={{ opacity: 1, scale: 1,   y: 0 }}
+            exit={{   opacity: 0, scale: 0.85, y: 6 }}
             transition={{ duration: 0.22 }}
             className="absolute z-30 px-3 py-2 rounded-2xl text-xs font-body font-medium text-white pointer-events-none"
             style={{
-              top: '28%',
-              left: 'calc(100% + 14px)',
-              maxWidth: 190,
+              bottom: 'calc(100% + 14px)',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: 'max-content',
+              maxWidth: 200,
               background: 'rgba(139,60,247,0.18)',
               border: '1px solid rgba(139,60,247,0.55)',
               backdropFilter: 'blur(12px)',
               boxShadow: '0 4px 24px rgba(139,60,247,0.28)',
               lineHeight: 1.4,
+              textAlign: 'center',
             }}
           >
             {borisMessages[msgIndex]}
-            {/* Flecha apuntando hacia Boris (izquierda) */}
+            {/* Flecha apuntando hacia abajo (hacia Boris) */}
             <div
-              className="absolute top-1/2 -translate-y-1/2 -left-[9px] w-4 h-4"
+              className="absolute -bottom-[9px] left-1/2 w-4 h-4"
               style={{
-                transform: 'translateY(-50%) rotate(225deg)',
+                transform: 'translateX(-50%) rotate(135deg)',
                 background: 'rgba(139,60,247,0.18)',
                 borderRight: '1px solid rgba(139,60,247,0.55)',
                 borderTop:   '1px solid rgba(139,60,247,0.55)',
