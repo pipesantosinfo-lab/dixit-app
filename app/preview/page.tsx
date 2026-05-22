@@ -404,9 +404,7 @@ export default function PreviewPage() {
             <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
               A partir de historias
             </motion.p>
-            <motion.div variants={fadeUp} className="flex flex-col items-start gap-3">
-              <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
-            </motion.div>
+            {/* Botón Barranquilla 2026 oculto temporalmente */}
           </motion.div>
         </div>
 
