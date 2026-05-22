@@ -670,21 +670,22 @@ export default function PreviewPage() {
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
           <div className="relative">
-            {/* ── Móvil/tablet: Boris al lado de +300, resto debajo ── */}
-            <div className="lg:hidden max-w-3xl mx-auto">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex-shrink-0">
+            {/* ── Móvil/tablet: 3 tarjetas a ancho completo, Boris superpuesto ── */}
+            <div className="lg:hidden max-w-3xl mx-auto grid grid-cols-1 gap-4">
+              {/* Primera tarjeta: Boris superpuesto en el borde izquierdo */}
+              <div className="relative overflow-visible">
+                <StatCard num={stats[0].num} label={stats[0].label} suffix={stats[0].suffix} />
+                <div
+                  className="absolute z-10 pointer-events-auto"
+                  style={{ left: '-14px', top: '50%', transform: 'translateY(-55%)' }}
+                >
                   <BorisCharacter />
                 </div>
-                <div className="flex-1">
-                  <StatCard num={stats[0].num} label={stats[0].label} suffix={stats[0].suffix} />
-                </div>
               </div>
-              <div className="grid grid-cols-1 gap-4">
-                {stats.slice(1).map((s) => (
-                  <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
-                ))}
-              </div>
+              {/* Resto de tarjetas — mismo ancho, sin cambios */}
+              {stats.slice(1).map((s) => (
+                <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
+              ))}
             </div>
 
             {/* ── Desktop lg+: grid de 3 columnas original ── */}
