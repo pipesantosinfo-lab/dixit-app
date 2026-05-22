@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion'
 import Particles from '@/components/Particles'
 import WavingPipe from '@/components/WavingPipe'
 import TransparentImg from '@/components/TransparentImg'
@@ -57,6 +57,69 @@ function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
         </span>
       ))}
     </>
+  )
+}
+
+/* ── HeartParticles ──────────────────────────────── */
+const HEART_EMOJIS = ['❤️', '❤️', '🩷', '💜', '❤️', '🩷']
+
+interface Heart {
+  id: number
+  x: number
+  size: number
+  drift: number
+  duration: number
+  delay: number
+  emoji: string
+}
+
+let _heartId = 0
+function makeHeart(burst = false): Heart {
+  return {
+    id: _heartId++,
+    x: 5 + Math.random() * 90,
+    size: 10 + Math.random() * 18,
+    drift: (Math.random() - 0.5) * 80,
+    duration: 2.2 + Math.random() * 1.6,
+    delay: burst ? Math.random() * 0.7 : 0,
+    emoji: HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)],
+  }
+}
+
+function HeartParticles({ active }: { active: boolean }) {
+  const [hearts, setHearts] = useState<Heart[]>([])
+
+  useEffect(() => {
+    if (!active) return
+    // Burst: 12 hearts staggered
+    setHearts(prev => [...prev, ...Array.from({ length: 12 }, () => makeHeart(true))])
+    // Continue: 1 heart every 380ms for 5 s
+    let elapsed = 0
+    const iv = setInterval(() => {
+      elapsed += 380
+      if (elapsed > 5000) { clearInterval(iv); return }
+      setHearts(prev => [...prev, makeHeart(false)])
+    }, 380)
+    return () => clearInterval(iv)
+  }, [active])
+
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 20 }}>
+      <AnimatePresence>
+        {hearts.map(h => (
+          <motion.div
+            key={h.id}
+            style={{ position: 'absolute', bottom: '10%', left: `${h.x}%`, fontSize: h.size, lineHeight: 1, userSelect: 'none' }}
+            initial={{ y: 0, x: 0, opacity: 0, scale: 0 }}
+            animate={{ y: -380, x: h.drift, opacity: [0, 1, 1, 0], scale: [0, 1.4, 1, 0.4] }}
+            transition={{ duration: h.duration, delay: h.delay, ease: 'easeOut' }}
+            onAnimationComplete={() => setHearts(prev => prev.filter(p => p.id !== h.id))}
+          >
+            {h.emoji}
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
   )
 }
 
@@ -279,6 +342,8 @@ export default function PreviewPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const heroRef = useRef<HTMLElement>(null)
+  const socialRef = useRef<HTMLElement>(null)
+  const socialInView = useInView(socialRef, { once: false, margin: '0px 0px -80px 0px' })
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
   const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
   const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
@@ -401,7 +466,8 @@ export default function PreviewPage() {
       </section>
 
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
-      <section className="relative z-10 px-6 md:px-12 py-20">
+      <section ref={socialRef} className="relative z-10 px-6 md:px-12 py-20">
+        <HeartParticles active={socialInView} />
         <div className="max-w-5xl mx-auto">
           <motion.div className="flex justify-start mb-14" style={{ marginLeft: '-12%' }} initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <Image
