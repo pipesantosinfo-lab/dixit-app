@@ -1052,17 +1052,17 @@ export default function PreviewPage() {
               )}
             </motion.div>
 
-            {/* Imagen Barranquilla */}
-            <motion.div className="flex justify-center md:justify-end items-end" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
+            {/* Poster */}
+            <motion.div className="flex justify-center md:justify-end" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
               <div className="relative">
                 <div className="absolute -inset-4 rounded-3xl pointer-events-none"
-                  style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.18) 0%, transparent 70%)' }} />
-                <TransparentImg
-                  src="/pipe-barranquilla.png"
-                  style={{
-                    width: 'clamp(180px, 22vw, 300px)',
-                    filter: 'drop-shadow(-4px 12px 32px rgba(139,60,247,0.4))',
-                  }}
+                  style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.2) 0%, transparent 70%)' }} />
+                <Image
+                  src="/evento-hero.jpg"
+                  alt="La vida es cule viaje — Barranquilla 2026"
+                  width={420} height={560}
+                  className="relative rounded-2xl w-full max-w-xs md:max-w-sm"
+                  style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.3))' }}
                 />
               </div>
             </motion.div>
