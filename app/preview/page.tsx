@@ -669,24 +669,35 @@ export default function PreviewPage() {
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
-          {/* Wrapper relativo para posicionar Boris sin encoger las tarjetas */}
           <div className="relative">
-            {/* Tarjetas — tamaño original sin cambios */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+            {/* ── Móvil/tablet: Boris al lado de +300, resto debajo ── */}
+            <div className="lg:hidden max-w-3xl mx-auto">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex-shrink-0">
+                  <BorisCharacter />
+                </div>
+                <div className="flex-1">
+                  <StatCard num={stats[0].num} label={stats[0].label} suffix={stats[0].suffix} />
+                </div>
+              </div>
+              <div className="grid grid-cols-1 gap-4">
+                {stats.slice(1).map((s) => (
+                  <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
+                ))}
+              </div>
+            </div>
+
+            {/* ── Desktop lg+: grid de 3 columnas original ── */}
+            <div className="hidden lg:grid lg:grid-cols-3 gap-4 max-w-3xl mx-auto">
               {stats.map((s) => (
                 <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
               ))}
             </div>
 
-            {/* Boris — desktop lg+: flota a la izquierda del grid */}
+            {/* Boris — desktop: flota a la izquierda del grid */}
             <div className="hidden lg:block absolute left-0 top-1/2 -translate-y-1/2">
               <BorisCharacter />
             </div>
-          </div>
-
-          {/* Boris — móvil/tablet: aparece centrado debajo de las tarjetas */}
-          <div className="lg:hidden flex justify-center mt-10">
-            <BorisCharacter />
           </div>
           <div className="line-holo mt-16" />
         </div>
