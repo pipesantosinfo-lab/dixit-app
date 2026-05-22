@@ -702,7 +702,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── GALERÍA ──────────────────────────────── */}
-      <section id="galeria" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
+      <section id="galeria" className="relative z-10 px-6 md:px-12 pt-4 pb-10">
         <div className="max-w-6xl mx-auto">
           <div className="line-holo mb-14" />
           <div className="text-center mb-14">
@@ -749,14 +749,13 @@ export default function PreviewPage() {
               </motion.div>
             ))}
           </div>
-          <div className="line-holo mt-16" />
         </div>
       </section>
 
       {/* ── LIBRO ────────────────────────────────── */}
-      <section id="libro" className="relative z-10 px-6 md:px-12 py-20">
+      <section id="libro" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
         <div className="max-w-5xl mx-auto">
-          <div className="line-holo mb-16" />
+          <div className="line-holo mb-14" />
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <motion.div className="order-2 md:order-1" initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
               <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Mi libro</p>
