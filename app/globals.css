@@ -231,3 +231,53 @@ html {
 .animate-fade-up-delay-2 { animation: fadeUp 0.8s ease 0.3s both; }
 .animate-fade-up-delay-3 { animation: fadeUp 0.8s ease 0.45s both; }
 .animate-fade-up-delay-4 { animation: fadeUp 0.8s ease 0.6s both; }
+
+/* ── Glitch / CRT TV (solo "Conectando") ───────────── */
+@keyframes glitch-rgb {
+  0%,  75%, 100% { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  76%  { text-shadow:  4px 0 rgba(255,0,80,0.9),  -4px 0 rgba(0,220,255,0.9); }
+  77%  { text-shadow: -3px 0 rgba(255,0,80,0.85),  3px 0 rgba(0,220,255,0.85); }
+  78%  { text-shadow:  2px 0 rgba(255,0,80,0.6),  -2px 0 rgba(0,220,255,0.6); }
+  79%  { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  88%  { text-shadow: -6px 0 rgba(255,0,80,0.7),   6px 0 rgba(0,220,255,0.7); }
+  89%  { text-shadow:  3px 0 rgba(255,0,80,0.5),  -3px 0 rgba(0,220,255,0.5); }
+  90%  { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  95%  { text-shadow:  1px 0 rgba(255,0,80,0.4),  -1px 0 rgba(0,220,255,0.4); }
+  96%  { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+}
+
+@keyframes glitch-slice {
+  0%,  76%, 100% { clip-path: none; transform: none; }
+  77%  { clip-path: polygon(0 15%, 100% 15%, 100% 40%, 0 40%); transform: translateX(-8px); }
+  78%  { clip-path: polygon(0 55%, 100% 55%, 100% 75%, 0 75%); transform: translateX(6px); }
+  79%  { clip-path: none; transform: none; }
+  89%  { clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%); transform: translateX(10px); }
+  90%  { clip-path: none; transform: none; }
+}
+
+@keyframes glitch-flicker {
+  0%,  93%, 100% { opacity: 1;   filter: brightness(1); }
+  94%            { opacity: 0.2; filter: brightness(2); }
+  95%            { opacity: 1;   filter: brightness(1); }
+  97%            { opacity: 0.6; filter: brightness(1.4); }
+  98%            { opacity: 1;   filter: brightness(1); }
+}
+
+.glitch-crt {
+  position: relative;
+  animation:
+    glitch-rgb     3.8s steps(1) infinite,
+    glitch-flicker 6s   steps(1) infinite 0.7s;
+}
+
+/* Capa de slice superpuesta — duplica el texto con clip-path */
+.glitch-crt::before {
+  content: attr(data-text);
+  position: absolute;
+  inset: 0;
+  color: inherit;
+  font: inherit;
+  color: rgba(0,220,255,0.85);
+  animation: glitch-slice 3.8s steps(1) infinite;
+  pointer-events: none;
+}

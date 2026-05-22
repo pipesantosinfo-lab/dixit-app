@@ -5,7 +5,60 @@ import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import Particles from '@/components/Particles'
 import WavingPipe from '@/components/WavingPipe'
 import TransparentImg from '@/components/TransparentImg'
-import LiquidBtn from '@/components/LiquidBtn'
+import IntroOverlay from '@/components/IntroOverlay'
+
+/* ── ScrambleText ────────────────────────────────── */
+const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&'
+
+function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
+  const [revealed, setRevealed] = useState(0)
+  const [scramble, setScramble] = useState<string[]>(() =>
+    text.split('').map(() => SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)])
+  )
+  const [active, setActive] = useState(false)
+
+  useEffect(() => {
+    let count = 0
+    let scrambleTimer: ReturnType<typeof setInterval>
+
+    const delayTimer = setTimeout(() => {
+      setActive(true)
+      scrambleTimer = setInterval(() => {
+        setScramble(text.split('').map(() =>
+          SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)]
+        ))
+      }, 35)
+
+      const revealNext = () => {
+        if (count >= text.length) { clearInterval(scrambleTimer); return }
+        count++
+        setRevealed(count)
+        setTimeout(revealNext, 72)
+      }
+      setTimeout(revealNext, 72)
+    }, delay)
+
+    return () => { clearTimeout(delayTimer); clearInterval(scrambleTimer) }
+  }, [text, delay])
+
+  // Cada letra ocupa siempre el espacio del carácter real → sin layout shift
+  return (
+    <>
+      {text.split('').map((char, i) => (
+        <span key={i} style={{ position: 'relative', display: 'inline-block' }}>
+          {/* Carácter real: invisible hasta que se revela, pero siempre ocupa su espacio */}
+          <span style={{ visibility: i < revealed || !active ? 'visible' : 'hidden' }}>{char}</span>
+          {/* Carácter scramble: superpuesto, desaparece al revelar */}
+          {active && i >= revealed && (
+            <span style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', top: 0 }}>
+              {scramble[i]}
+            </span>
+          )}
+        </span>
+      ))}
+    </>
+  )
+}
 
 /* ── Framer Motion variants ──────────────────────── */
 const fadeUp = {
@@ -219,7 +272,7 @@ const bookFeatures = [
   { title: 'Proyectos, sueños y metas', desc: 'Descubrirás formas, tips y métodos para escalar hacia tus objetivos más importantes.' },
 ]
 
-const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¡Conectemos! 🔥', '¡Nos vemos en Barranquilla!', '¡Gracias por estar aquí! ✨']
+const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 🎟️', '¡Nos vemos en Barranquilla!', '¡Gracias por estar aquí! ✨']
 
 export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
@@ -234,7 +287,8 @@ export default function PreviewPage() {
   const nextPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i + 1) % galleryPhotos.length), [])
 
   return (
-    <main className="grain min-h-screen" style={{ background: '#070508' }}>
+    <main className="grain min-h-screen overflow-x-hidden" style={{ background: '#070508' }}>
+      <IntroOverlay />
       <Particles />
 
       {lightboxIndex !== null && (
@@ -256,7 +310,6 @@ export default function PreviewPage() {
             <a key={label} href={href} className="font-mono text-xs tracking-widest text-white/40 hover:text-white uppercase transition-colors">{label}</a>
           ))}
         </div>
-        <a href="/event/dixit-vol1" className="btn-primary hidden md:block"><span>Comprar Entradas</span></a>
       </nav>
 
       {/* ── HERO ─────────────────────────────────── */}
@@ -279,19 +332,19 @@ export default function PreviewPage() {
             <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
               ◆ Conferencista · Escritor · Influencer
             </motion.p>
-            <motion.h1 variants={fadeUp} className="font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0" style={{ textShadow: '0 2px 20px rgba(7,5,8,0.8)' }}>
-              Conectando
+            <motion.h1 variants={fadeUp} data-text="Conectando" className="glitch-crt font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0">
+              <ScrambleText text="Conectando" delay={2800} />
             </motion.h1>
             <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
               A partir de historias
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-col items-start gap-3">
-              <LiquidBtn href="/evento" className="!text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></LiquidBtn>
+              <a href="/evento" className="btn-primary !text-[9px] !px-3 !py-1.5 md:!text-[11px] md:!px-5 md:!py-[10px]"><span>Barranquilla 2026 en vivo</span></a>
             </motion.div>
           </motion.div>
         </div>
 
-        {/* Burbuja de Pipe — posicionada en el hero con coordenadas propias */}
+        {/* ── Burbuja MOBILE (sin cambios) ── */}
         <AnimatePresence mode="wait">
           <motion.div
             key={pipeMsgIndex}
@@ -299,7 +352,7 @@ export default function PreviewPage() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -6, scale: 0.9 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute z-30 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap pointer-events-none"
+            className="md:hidden absolute z-30 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap pointer-events-none"
             style={{
               bottom: '20%',
               right: '34%',
@@ -310,7 +363,31 @@ export default function PreviewPage() {
             }}
           >
             {pipeMessages[pipeMsgIndex]}
-            {/* Punta hacia la derecha */}
+            <div className="absolute top-1/2 -translate-y-1/2 -right-[9px] w-4 h-4 rotate-45"
+              style={{ background: 'rgba(139,60,247,0.18)', borderRight: '1px solid rgba(139,60,247,0.55)', borderTop: '1px solid rgba(139,60,247,0.55)' }}
+            />
+          </motion.div>
+        </AnimatePresence>
+
+        {/* ── Burbuja DESKTOP — pegada al personaje ── */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={`desk-${pipeMsgIndex}`}
+            initial={{ opacity: 0, y: 10, scale: 0.85 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -6, scale: 0.9 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden md:block absolute z-30 px-4 py-2 rounded-2xl text-sm font-body font-medium text-white whitespace-nowrap pointer-events-none"
+            style={{
+              bottom: '44%',
+              right: '15%',
+              background: 'rgba(139,60,247,0.18)',
+              border: '1px solid rgba(139,60,247,0.55)',
+              backdropFilter: 'blur(12px)',
+              boxShadow: '0 4px 24px rgba(139,60,247,0.28)',
+            }}
+          >
+            {pipeMessages[pipeMsgIndex]}
             <div className="absolute top-1/2 -translate-y-1/2 -right-[9px] w-4 h-4 rotate-45"
               style={{ background: 'rgba(139,60,247,0.18)', borderRight: '1px solid rgba(139,60,247,0.55)', borderTop: '1px solid rgba(139,60,247,0.55)' }}
             />
@@ -326,13 +403,14 @@ export default function PreviewPage() {
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
-          <motion.div className="text-center mb-14" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-white leading-tight">
-              Métricas
-            </h2>
-            <p className="text-3xl md:text-4xl mt-1" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)' }}>
-              que nos respaldan
-            </p>
+          <motion.div className="flex justify-start mb-14" style={{ marginLeft: '-12%' }} initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+            <Image
+              src="/comunidad-logo.png"
+              alt="Conoce mi comunidad"
+              width={420}
+              height={160}
+              className="w-full max-w-sm md:max-w-lg h-auto"
+            />
           </motion.div>
           <motion.div className="grid md:grid-cols-3 gap-6" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
 
@@ -610,9 +688,9 @@ export default function PreviewPage() {
                   </div>
                 ))}
               </div>
-              <LiquidBtn href="#" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
+              <a href="#" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
                 <span>Comprar ahora</span>
-              </LiquidBtn>
+              </a>
             </motion.div>
             <motion.div className="order-1 md:order-2 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
               <div className="relative">
@@ -741,7 +819,7 @@ export default function PreviewPage() {
                 placeholder="Descríbeme aquí tu proyecto..."
               />
             </div>
-            <LiquidBtn className="w-full"><span>Enviar mensaje</span></LiquidBtn>
+            <button className="btn-primary w-full"><span>Enviar mensaje</span></button>
           </div>
         </motion.div>
       </section>

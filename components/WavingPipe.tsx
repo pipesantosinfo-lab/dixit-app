@@ -20,10 +20,39 @@ function useTransparentImage(src: string) {
       ctx.drawImage(img, 0, 0)
       const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
       const d = imageData.data
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i + 1], b = d[i + 2]
-        if (r > 220 && g > 220 && b > 220) d[i + 3] = 0
+      const w = canvas.width
+      const h = canvas.height
+
+      // Flood-fill desde los bordes: solo elimina el fondo blanco externo
+      // preservando blancos internos (ej: dientes)
+      const visited = new Uint8Array(w * h)
+      const queue: number[] = []
+
+      const seed = (x: number, y: number) => {
+        const idx = y * w + x
+        if (visited[idx]) return
+        const p = idx * 4
+        if (d[p] > 210 && d[p + 1] > 210 && d[p + 2] > 210) queue.push(idx)
       }
+
+      for (let x = 0; x < w; x++) { seed(x, 0); seed(x, h - 1) }
+      for (let y = 0; y < h; y++) { seed(0, y); seed(w - 1, y) }
+
+      while (queue.length > 0) {
+        const idx = queue.pop()!
+        if (visited[idx]) continue
+        visited[idx] = 1
+        const p = idx * 4
+        if (d[p] > 210 && d[p + 1] > 210 && d[p + 2] > 210) {
+          d[p + 3] = 0
+          const x = idx % w, y = Math.floor(idx / w)
+          if (x > 0)     queue.push(idx - 1)
+          if (x < w - 1) queue.push(idx + 1)
+          if (y > 0)     queue.push(idx - w)
+          if (y < h - 1) queue.push(idx + w)
+        }
+      }
+
       ctx.putImageData(imageData, 0, 0)
       setReady(true)
     }
@@ -63,9 +92,9 @@ export default function WavingPipe({ onAvatarClick }: WavingPipeProps) {
     >
       <motion.div animate={controls}>
         <motion.div
-          animate={{ y: [0, -8, 0] }}
-          transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut' }}
-          whileHover={{ x: -8, transition: { duration: 0.3 } }}
+          animate={{ y: [0, -9, 0] }}
+          transition={{ repeat: Infinity, duration: 3.6, times: [0, 0.5, 1], ease: ['easeIn', 'easeOut'] }}
+          whileHover={{ x: -8, transition: { duration: 0.4, ease: 'easeOut' } }}
         >
           <canvas
             ref={canvasRef}
