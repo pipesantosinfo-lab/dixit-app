@@ -6,6 +6,7 @@ import Particles from '@/components/Particles'
 import WavingPipe from '@/components/WavingPipe'
 import TransparentImg from '@/components/TransparentImg'
 import IntroOverlay from '@/components/IntroOverlay'
+import BorisCharacter from '@/components/BorisCharacter'
 
 /* ── ScrambleText ────────────────────────────────── */
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&'
@@ -61,7 +62,7 @@ function ScrambleText({ text, delay = 0 }: { text: string; delay?: number }) {
 }
 
 /* ── HeartParticles ──────────────────────────────── */
-const HEART_EMOJIS = ['❤️', '❤️', '🩷', '💜', '❤️', '🩷']
+const HEART_EMOJIS = ['❤️', '❤️', '👍', '🩷', '💜', '👍', '❤️', '👍', '🩷', '❤️']
 
 interface Heart {
   id: number
@@ -668,10 +669,17 @@ export default function PreviewPage() {
       <section className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
-            {stats.map((s) => (
-              <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
-            ))}
+          <div className="flex items-end justify-center gap-4 md:gap-6">
+            {/* Boris — solo desktop */}
+            <div className="hidden md:block flex-shrink-0 pb-1">
+              <BorisCharacter />
+            </div>
+            {/* Tarjetas de estadísticas */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl flex-1">
+              {stats.map((s) => (
+                <StatCard key={s.label} num={s.num} label={s.label} suffix={s.suffix} />
+              ))}
+            </div>
           </div>
           <div className="line-holo mt-16" />
         </div>
