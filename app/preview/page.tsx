@@ -124,6 +124,135 @@ function HeartParticles({ active }: { active: boolean }) {
   )
 }
 
+/* ── Evento ─────────────────────────────────────── */
+const EVENT_DATE  = new Date('2026-08-22T14:00:00-05:00')
+const EVENT_MAX   = 300
+const EVENT_PRICE = 40000
+const EVENT_IG    = 'https://www.instagram.com/pipesantos93/'
+
+function useCountdown() {
+  const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
+  useEffect(() => {
+    const tick = () => {
+      const diff = EVENT_DATE.getTime() - Date.now()
+      if (diff <= 0) { setTime({ days: 0, hours: 0, minutes: 0, seconds: 0 }); return }
+      setTime({
+        days:    Math.floor(diff / 86400000),
+        hours:   Math.floor((diff % 86400000) / 3600000),
+        minutes: Math.floor((diff % 3600000)  / 60000),
+        seconds: Math.floor((diff % 60000)    / 1000),
+      })
+    }
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+  return time
+}
+
+function CountdownBox({ value, label }: { value: number; label: string }) {
+  return (
+    <div className="flex flex-col items-center">
+      <div className="glass rounded-xl w-14 h-14 md:w-20 md:h-20 flex items-center justify-center mb-1"
+        style={{ border: '1px solid rgba(139,60,247,0.25)' }}>
+        <span className="font-display text-xl md:text-3xl font-light text-white"
+          style={{ textShadow: '0 0 20px rgba(139,60,247,0.5)' }}>
+          {String(value).padStart(2, '0')}
+        </span>
+      </div>
+      <span className="font-mono text-[9px] md:text-xs text-white/30 tracking-widest uppercase">{label}</span>
+    </div>
+  )
+}
+
+function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
+  const [form, setForm]     = useState({ name: '', email: '' })
+  const [quantity, setQty]  = useState(1)
+  const [loading, setLoad]  = useState(false)
+  const [error, setError]   = useState('')
+  const available = EVENT_MAX - sold
+  const maxQty    = Math.min(10, available)
+  const total     = EVENT_PRICE * quantity
+
+  const handleSubmit = async () => {
+    if (!form.name.trim() || !form.email.trim()) { setError('Tu nombre y correo son obligatorios.'); return }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setError('Por favor ingresa un correo válido.'); return }
+    setLoad(true); setError('')
+    try {
+      const res  = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ buyerName: form.name, buyerEmail: form.email, quantity }) })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Error inesperado')
+      window.location.href = data.url
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Algo salió mal. Intenta de nuevo.')
+      setLoad(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+      style={{ background: 'rgba(7,5,8,0.9)', backdropFilter: 'blur(12px)' }}
+      onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className="w-full max-w-md rounded-3xl p-8 animate-fade-up"
+        style={{ background: 'linear-gradient(145deg,#0d0a14,#140e20)', border: '1px solid rgba(139,60,247,0.3)',
+          boxShadow: '0 40px 100px rgba(0,0,0,0.8),0 0 60px rgba(139,60,247,0.08)' }}>
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-1">Entrada General</p>
+            <h2 className="font-display text-2xl text-white">La vida es cule viaje</h2>
+            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>$40.000 COP</p>
+          </div>
+          <button onClick={onClose} className="text-white/30 hover:text-white transition-colors text-3xl leading-none mt-1">×</button>
+        </div>
+        <div className="line-holo mb-6" />
+        <div className="flex items-center justify-between mb-5 rounded-xl px-4 py-3"
+          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
+          <span className="font-body text-white/60 text-sm">Cantidad de entradas</span>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setQty(q => Math.max(1, q - 1))} className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.3)', color: '#a660f9' }}>−</button>
+            <span className="font-display text-xl text-white w-6 text-center">{quantity}</span>
+            <button onClick={() => setQty(q => Math.min(maxQty, q + 1))} className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.3)', color: '#a660f9' }}>+</button>
+          </div>
+        </div>
+        {quantity > 1 && (
+          <div className="flex justify-between items-center mb-4 px-1">
+            <span className="font-mono text-xs text-white/30 uppercase tracking-widest">{quantity} × ${EVENT_PRICE.toLocaleString('es-CO')}</span>
+            <span className="font-display text-lg" style={{ color: '#8B3CF7' }}>${total.toLocaleString('es-CO')}</span>
+          </div>
+        )}
+        {available <= 20 && (
+          <div className="mb-4 rounded-xl px-4 py-2 text-center"
+            style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.25)' }}>
+            <p className="font-mono text-xs tracking-widest uppercase" style={{ color: 'rgba(196,82,0,0.9)' }}>⚡ Solo quedan {available} entradas</p>
+          </div>
+        )}
+        <div className="space-y-4 mb-6">
+          {[{ key: 'name', label: 'Nombre completo *', type: 'text', ph: 'Tu nombre' },
+            { key: 'email', label: 'Correo electrónico *', type: 'email', ph: 'tu@correo.com' }].map(f => (
+            <div key={f.key}>
+              <label className="font-mono text-xs text-white/30 tracking-widest uppercase block mb-2">{f.label}</label>
+              <input type={f.type} value={form[f.key as keyof typeof form]}
+                onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))} placeholder={f.ph}
+                className="w-full rounded-xl px-4 py-3 font-body text-white placeholder-white/20 text-sm outline-none transition-all"
+                style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                onFocus={e => (e.currentTarget.style.borderColor = 'rgba(139,60,247,0.5)')}
+                onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')} />
+            </div>
+          ))}
+        </div>
+        {error && <p className="text-red-400 text-sm mb-4 font-body">{error}</p>}
+        <button onClick={handleSubmit} disabled={loading} className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
+          <span>{loading ? 'Redirigiendo a pago seguro...' : `Continuar al pago — $${total.toLocaleString('es-CO')} →`}</span>
+        </button>
+        <p className="font-mono text-xs text-white/20 text-center mt-4">Pago seguro con Bold · Tu QR llega al instante</p>
+      </div>
+    </div>
+  )
+}
+
 /* ── Framer Motion variants ──────────────────────── */
 const fadeUp = {
   hidden:  { opacity: 0, y: 50 },
@@ -342,6 +471,12 @@ export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
+  const [showEventModal, setShowEventModal] = useState(false)
+  const [eventSold, setEventSold] = useState(0)
+  const countdown = useCountdown()
+  useEffect(() => {
+    fetch('/api/ticket-count').then(r => r.json()).then(d => setEventSold(d.count || 0)).catch(() => {})
+  }, [])
   const heroRef = useRef<HTMLElement>(null)
   const socialRef = useRef<HTMLElement>(null)
   const socialInView = useInView(socialRef, { once: false, margin: '0px 0px -80px 0px' })
@@ -356,6 +491,8 @@ export default function PreviewPage() {
     <main className="grain min-h-screen overflow-x-hidden" style={{ background: '#070508' }}>
       <IntroOverlay />
       <Particles />
+
+      {showEventModal && <EventoModal onClose={() => setShowEventModal(false)} sold={eventSold} />}
 
       {lightboxIndex !== null && (
         <Lightbox
@@ -863,6 +1000,157 @@ export default function PreviewPage() {
             ))}
           </motion.div>
           <div className="line-holo mt-16" />
+        </div>
+      </section>
+
+      {/* ── EVENTO ───────────────────────────────── */}
+      <section id="evento" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
+        <div className="max-w-5xl mx-auto">
+          <div className="line-holo mb-14" />
+
+          {/* Hero: poster + título + countdown + CTA */}
+          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center mb-16">
+            <motion.div initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
+              <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Próximo evento</p>
+              <h2 className="font-display text-5xl md:text-7xl font-light text-white leading-none">La vida es</h2>
+              <p className="text-5xl md:text-7xl leading-none -mt-3 md:-mt-5"
+                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
+                cule viaje
+              </p>
+              <div className="flex flex-col gap-2 mt-7 mb-8">
+                {[{ icon: '📅', text: '22 ago · 2026' }, { icon: '🕑', text: '2:00 – 6:00 PM' }, { icon: '📍', text: 'Barranquilla' }].map(item => (
+                  <div key={item.text} className="flex items-center gap-2">
+                    <span className="text-base">{item.icon}</span>
+                    <span className="font-body text-base text-white/60">{item.text}</span>
+                  </div>
+                ))}
+              </div>
+              {/* Countdown */}
+              <div className="flex gap-3 md:gap-4 mb-8">
+                <CountdownBox value={countdown.days}    label="días" />
+                <div className="font-display text-2xl text-white/20 self-center pb-5">:</div>
+                <CountdownBox value={countdown.hours}   label="hrs"  />
+                <div className="font-display text-2xl text-white/20 self-center pb-5">:</div>
+                <CountdownBox value={countdown.minutes} label="min"  />
+                <div className="font-display text-2xl text-white/20 self-center pb-5">:</div>
+                <CountdownBox value={countdown.seconds} label="seg"  />
+              </div>
+              {/* CTAs */}
+              {EVENT_MAX - eventSold <= 0 ? (
+                <div className="glass rounded-xl px-4 py-2 inline-block">
+                  <p className="font-mono text-xs text-white/50 tracking-widest uppercase">Agotadas</p>
+                </div>
+              ) : (
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                    <span>Atento al lanzamiento</span>
+                  </a>
+                  <button disabled className="btn-ghost opacity-40 cursor-not-allowed">
+                    Comprar entrada · $40.000
+                  </button>
+                </div>
+              )}
+            </motion.div>
+
+            {/* Poster */}
+            <motion.div className="flex justify-center md:justify-end" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
+              <div className="relative">
+                <div className="absolute -inset-4 rounded-3xl pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.2) 0%, transparent 70%)' }} />
+                <Image
+                  src="/evento-hero.jpg"
+                  alt="La vida es cule viaje — Barranquilla 2026"
+                  width={420} height={560}
+                  className="relative rounded-2xl w-full max-w-xs md:max-w-sm"
+                  style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.3))' }}
+                />
+              </div>
+            </motion.div>
+          </div>
+
+          {/* ¿De qué se trata? */}
+          <motion.div className="grid md:grid-cols-2 gap-12 items-center mb-16"
+            initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
+            <motion.div variants={staggerItem}>
+              <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ ¿De qué se trata?</p>
+              <h3 className="font-display text-3xl md:text-4xl font-light text-white leading-tight mb-5">
+                Una tarde que<br />
+                <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>no olvidarás</span>
+              </h3>
+              <p className="font-body text-white/50 leading-relaxed mb-4">
+                Cuatro horas en las que Pipe Santos te llevará a través de las historias que cambiaron su vida, con un mensaje que transformará la tuya.
+              </p>
+              <p className="font-body text-white/50 leading-relaxed">
+                Risas, reflexiones y una energía colectiva que solo se vive en vivo.
+              </p>
+            </motion.div>
+            <motion.div variants={staggerItem} className="glass rounded-3xl p-8 space-y-5"
+              style={{ border: '1px solid rgba(139,60,247,0.15)' }}>
+              {[
+                { icon: '🎭', title: 'Conferencia en vivo', desc: 'Pipe Santos en escenario durante 4 horas' },
+                { icon: '📸', title: 'Espacio de fotos', desc: 'Lleva el recuerdo a casa' },
+                { icon: '✍️', title: 'Firma de libros', desc: 'Trae tu libro o compra uno en el lugar' },
+                { icon: '🤝', title: 'Networking', desc: 'Conoce a la comunidad en persona' },
+              ].map(item => (
+                <div key={item.title} className="flex gap-4 items-start">
+                  <span className="text-2xl">{item.icon}</span>
+                  <div>
+                    <p className="font-body text-white/80 font-medium">{item.title}</p>
+                    <p className="font-body text-white/40 text-sm">{item.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* CTA de entradas */}
+          <motion.div className="max-w-2xl mx-auto" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+            <div className="glass rounded-3xl p-8 mb-8" style={{ border: '1px solid rgba(139,60,247,0.2)' }}>
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <p className="font-body text-white/80 font-medium">Entrada General</p>
+                  <p className="font-mono text-xs text-white/30 mt-1">Acceso completo al evento</p>
+                </div>
+                <p className="font-display text-3xl font-light" style={{ color: '#8B3CF7' }}>$40.000</p>
+              </div>
+              <div className="mb-6">
+                <div className="flex justify-between font-mono text-xs text-white/30 mb-2">
+                  <span>{eventSold} vendidas</span>
+                  <span>{EVENT_MAX - eventSold} disponibles</span>
+                </div>
+                <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                  <div className="h-1 rounded-full transition-all duration-700"
+                    style={{ width: `${(eventSold / EVENT_MAX) * 100}%`, background: 'linear-gradient(90deg,#8B3CF7,#C45200)' }} />
+                </div>
+              </div>
+              {EVENT_MAX - eventSold <= 0 ? (
+                <div className="rounded-xl py-4 text-center"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                  <p className="font-mono text-sm text-white/40 tracking-widest uppercase">Agotado</p>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
+                    className="btn-primary w-full py-5 text-center block">
+                    <span>Atento al lanzamiento</span>
+                  </a>
+                  <button disabled className="btn-primary w-full py-5 opacity-30 cursor-not-allowed">
+                    <span>Comprar ahora — $40.000 COP</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            <div className="flex justify-center gap-8">
+              {[{ icon: '🔒', text: 'Pago 100% seguro con Bold' }, { icon: '⚡', text: 'QR instantáneo por email' }].map(item => (
+                <div key={item.text} className="flex items-center gap-2">
+                  <span>{item.icon}</span>
+                  <span className="font-mono text-xs text-white/30">{item.text}</span>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <div className="line-holo mt-14" />
         </div>
       </section>
 
