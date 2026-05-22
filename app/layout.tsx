@@ -22,18 +22,30 @@ const dmMono = DM_Mono({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://www.pipesantos.com'),
   title: 'Pipe Santos — Escritor, conferencista e influencer',
   description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
   openGraph: {
     title: 'Pipe Santos — Escritor, conferencista e influencer',
     description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
-    images: ['/og-image.png'],
+    url: 'https://www.pipesantos.com',
     siteName: 'Pipe Santos',
+    type: 'website',
+    locale: 'es_CO',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Pipe Santos — Escritor, conferencista e influencer',
     description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
+    images: ['/og-image.png'],
   },
 }
 
