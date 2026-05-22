@@ -664,9 +664,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── STATS ────────────────────────────────── */}
-      <section className="relative z-10 px-6 md:px-12 py-20">
+      <section className="relative z-10 px-6 md:px-12 pt-20 pb-10">
         <div className="max-w-5xl mx-auto">
-          <div className="line-holo mb-16" />
+          <div className="line-holo mb-14" />
           <div className="relative">
             {/* ── Móvil/tablet: 3 tarjetas a ancho completo, Boris superpuesto ── */}
             <div className="lg:hidden max-w-3xl mx-auto grid grid-cols-1 gap-4">
@@ -698,14 +698,13 @@ export default function PreviewPage() {
               <BorisCharacter />
             </div>
           </div>
-          <div className="line-holo mt-16" />
         </div>
       </section>
 
       {/* ── GALERÍA ──────────────────────────────── */}
-      <section id="galeria" className="relative z-10 px-6 md:px-12 py-20">
+      <section id="galeria" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
         <div className="max-w-6xl mx-auto">
-          <div className="line-holo mb-16" />
+          <div className="line-holo mb-14" />
           <div className="text-center mb-14">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Eventos</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-3">
