@@ -57,8 +57,8 @@ function useFloodFill(src: string) {
 
 const borisMessages = [
   'al cesar lo que es del cesar',
-  '¿Tienes jugo de mango por ahí?',
-  'Hola, mi nombre es boris',
+  'Me provocó jugo de mango',
+  'soy amigo de Pipe Santos',
 ]
 
 export default function BorisCharacter() {
