@@ -478,6 +478,18 @@ export default function PreviewPage() {
   useEffect(() => {
     fetch('/api/ticket-count').then(r => r.json()).then(d => setEventSold(d.count || 0)).catch(() => {})
   }, [])
+
+  // Rotación de palabras en el hero
+  const HERO_WORDS = ['Conectando', 'Inspirando', 'Construyendo', 'Sumando']
+  const [heroWordIdx, setHeroWordIdx] = useState(0)
+  const heroWordCycled = useRef(false)
+  useEffect(() => {
+    const id = setInterval(() => {
+      heroWordCycled.current = true
+      setHeroWordIdx(i => (i + 1) % HERO_WORDS.length)
+    }, 3000)
+    return () => clearInterval(id)
+  }, [])
   const heroRef = useRef<HTMLElement>(null)
   const socialRef = useRef<HTMLElement>(null)
   const socialInView = useInView(socialRef, { once: false, margin: '0px 0px -80px 0px' })
@@ -536,8 +548,10 @@ export default function PreviewPage() {
             <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
               ◆ Conferencista · Escritor · Influencer
             </motion.p>
-            <motion.h1 variants={fadeUp} data-text="Conectando" className="glitch-crt font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0">
-              <ScrambleText text="Conectando" delay={2800} />
+            <motion.h1 variants={fadeUp} data-text={HERO_WORDS[heroWordIdx]} className="glitch-crt font-display text-5xl md:text-[7rem] font-light text-white leading-none mb-0">
+              {heroWordIdx === 0 && !heroWordCycled.current
+                ? <ScrambleText text="Conectando" delay={2800} />
+                : <span style={{ position: 'relative', zIndex: 1, color: 'white' }}>{HERO_WORDS[heroWordIdx]}</span>}
             </motion.h1>
             <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
               A partir de historias
