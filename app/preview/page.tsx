@@ -729,7 +729,7 @@ export default function PreviewPage() {
       {/* ── NAV ─────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center md:justify-between items-center px-4 md:px-12 py-3 md:py-4"
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
-        <Image src="/logo-header.png" alt="Pipe Santos" width={300} height={130} className="h-11 md:h-16 w-auto opacity-90" priority />
+        <Image src="/logo-header-v2.png" alt="Pipe Santos" width={300} height={130} className="h-11 md:h-16 w-auto opacity-90" priority />
         <div className="hidden md:flex gap-8">
           {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
             <a key={label} href={href} className="font-mono text-xs tracking-widest text-white/40 hover:text-white uppercase transition-colors">{label}</a>
