@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { sendTicketEmail } from '@/lib/email'
 import { sendWhatsAppTicket } from '@/lib/whatsapp'
+import { createHmac, timingSafeEqual } from 'crypto'
 
 const EVENT = {
   name: 'La vida es cule viaje',
@@ -11,10 +12,30 @@ const EVENT = {
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://pipesantos.com'
 
+function verifyBoldSignature(rawBody: string, signature: string | null): boolean {
+  if (!signature) return false
+  const secret = process.env.BOLD_SECRET_KEY
+  if (!secret) return false
+  const expected = createHmac('sha256', secret).update(rawBody).digest('hex')
+  try {
+    return timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+  } catch {
+    return false
+  }
+}
+
 export async function POST(req: NextRequest) {
+  const rawBody = await req.text()
+  const signature = req.headers.get('x-bold-signature') ?? req.headers.get('bold-signature')
+
+  if (!verifyBoldSignature(rawBody, signature)) {
+    console.warn('Bold webhook: firma inválida o ausente')
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
   let body: Record<string, unknown>
   try {
-    body = await req.json()
+    body = JSON.parse(rawBody)
   } catch {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }

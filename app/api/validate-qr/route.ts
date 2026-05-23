@@ -2,9 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 export async function POST(req: NextRequest) {
-  const { ticketNumber, adminSecret } = await req.json()
+  const auth = req.headers.get('authorization') ?? ''
+  const adminSecret = auth.startsWith('Bearer ') ? auth.slice(7) : null
+  const { ticketNumber } = await req.json()
 
-  if (adminSecret !== process.env.ADMIN_SECRET) {
+  if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 

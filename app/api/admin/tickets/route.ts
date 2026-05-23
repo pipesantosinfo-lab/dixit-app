@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url)
-  const secret = searchParams.get('secret')
+  const auth = req.headers.get('authorization') ?? ''
+  const secret = auth.startsWith('Bearer ') ? auth.slice(7) : null
 
-  if (secret !== process.env.ADMIN_SECRET) {
+  if (!secret || secret !== process.env.ADMIN_SECRET) {
     return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
   }
 

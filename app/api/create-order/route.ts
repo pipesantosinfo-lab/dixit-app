@@ -4,13 +4,37 @@ import { createBoldPaymentLink } from '@/lib/bold'
 import { v4 as uuidv4 } from 'uuid'
 
 const MAX_TICKETS = 300
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/
+
+// Rate limiting: max 3 orders per email per hour
+const orderTimestamps = new Map<string, number[]>()
+function isRateLimited(email: string): boolean {
+  const now = Date.now()
+  const times = (orderTimestamps.get(email) ?? []).filter(t => now - t < 3_600_000)
+  if (times.length >= 3) return true
+  orderTimestamps.set(email, [...times, now])
+  return false
+}
 
 export async function POST(req: NextRequest) {
-  const { buyerName, buyerEmail, buyerPhone, quantity: rawQty } = await req.json()
-  const quantity = Math.min(Math.max(1, parseInt(rawQty) || 1), 10)
+  let body: Record<string, unknown>
+  try { body = await req.json() } catch {
+    return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
+  }
 
-  if (!buyerName?.trim() || !buyerEmail?.trim()) {
+  const buyerName  = String(body.buyerName  ?? '').trim().slice(0, 120)
+  const buyerEmail = String(body.buyerEmail ?? '').trim().toLowerCase().slice(0, 254)
+  const buyerPhone = String(body.buyerPhone ?? '').trim().slice(0, 20) || null
+  const quantity   = Math.min(Math.max(1, parseInt(String(body.quantity)) || 1), 10)
+
+  if (!buyerName || !buyerEmail) {
     return NextResponse.json({ error: 'Nombre y correo son obligatorios.' }, { status: 400 })
+  }
+  if (!EMAIL_RE.test(buyerEmail)) {
+    return NextResponse.json({ error: 'Correo electrónico inválido.' }, { status: 400 })
+  }
+  if (isRateLimited(buyerEmail)) {
+    return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en una hora.' }, { status: 429 })
   }
 
   const db = supabaseAdmin()
