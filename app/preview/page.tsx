@@ -7,6 +7,7 @@ import WavingPipe from '@/components/WavingPipe'
 import TransparentImg from '@/components/TransparentImg'
 import IntroOverlay from '@/components/IntroOverlay'
 import BorisCharacter from '@/components/BorisCharacter'
+import EventoCharacter from '@/components/EventoCharacter'
 
 /* ── ScrambleText ────────────────────────────────── */
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&'
@@ -1004,7 +1005,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
+      <section id="evento" className="relative z-10 px-6 md:px-12 pt-4 pb-20 overflow-x-hidden">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-14" />
 
@@ -1051,6 +1052,11 @@ export default function PreviewPage() {
                 </div>
               )}
             </motion.div>
+
+            {/* Personaje Barranquilla — solo móvil, mismo estilo que WavingPipe */}
+            <div className="md:hidden absolute right-0 top-24 z-20" style={{ transform: 'translateX(5%)' }}>
+              <EventoCharacter />
+            </div>
 
             {/* Poster */}
             <motion.div className="flex justify-center md:justify-end" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
