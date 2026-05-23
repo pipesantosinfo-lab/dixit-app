@@ -19,7 +19,7 @@ const securityHeaders = [
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: blob: https://images.unsplash.com https://*.supabase.co",
       "connect-src 'self' https://*.supabase.co https://integrations.api.bold.co",
-      "frame-src https://checkout.bold.co",
+      "frame-src https://checkout.bold.co https://open.spotify.com",
       "object-src 'none'",
       "base-uri 'self'",
       "form-action 'self'",
