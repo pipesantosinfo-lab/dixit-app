@@ -857,9 +857,11 @@ export default function PreviewPage() {
                 💥 Mi comunidad es grande, sólida y altamente comprometida. Su apoyo es la razón principal detrás de este crecimiento orgánico.
               </p>
               <a href="https://tiktok.com/@pipesantos93" target="_blank" rel="noopener noreferrer"
-                className="mt-5 font-mono text-xs tracking-widest uppercase transition-colors"
-                style={{ color: 'rgba(139,60,247,0.6)' }}>
-                @pipesantos93 →
+                className="social-pill group/link mt-5">
+                <span>@pipesantos93</span>
+                <svg className="social-pill-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17L17 7M9 7h8v8"/>
+                </svg>
               </a>
             </motion.div>
 
@@ -925,9 +927,11 @@ export default function PreviewPage() {
                 </motion.div>
               </div>
               <a href="https://instagram.com/pipesantos93" target="_blank" rel="noopener noreferrer"
-                className="mt-5 font-mono text-xs tracking-widest uppercase transition-colors"
-                style={{ color: 'rgba(139,60,247,0.6)' }}>
-                @pipesantos93 →
+                className="social-pill group/link mt-5">
+                <span>@pipesantos93</span>
+                <svg className="social-pill-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17L17 7M9 7h8v8"/>
+                </svg>
               </a>
             </motion.div>
 
@@ -947,10 +951,12 @@ export default function PreviewPage() {
               <p className="font-body text-white/50 text-sm leading-relaxed mt-3 text-left">
                 🌎 Una comunidad internacional unida por algo poderoso: la fuerza de una historia bien contada.
               </p>
-              <a href="https://facebook.com/pipesantos" target="_blank" rel="noopener noreferrer"
-                className="mt-5 font-mono text-xs tracking-widest uppercase transition-colors"
-                style={{ color: 'rgba(139,60,247,0.6)' }}>
-                Pipe Santos →
+              <a href="https://www.facebook.com/untalpipesantos" target="_blank" rel="noopener noreferrer"
+                className="social-pill group/link mt-5">
+                <span>Pipe Santos</span>
+                <svg className="social-pill-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M7 17L17 7M9 7h8v8"/>
+                </svg>
               </a>
             </motion.div>
 
@@ -1460,7 +1466,7 @@ export default function PreviewPage() {
             {[
               { label: 'Instagram', url: 'https://instagram.com/pipesantos93' },
               { label: 'TikTok', url: 'https://tiktok.com/@pipesantos93' },
-              { label: 'Facebook', url: 'https://facebook.com/pipesantos' },
+              { label: 'Facebook', url: 'https://www.facebook.com/untalpipesantos' },
               { label: 'Spotify', url: 'https://open.spotify.com/show/2MaZs9kPXMWv20RysXRcxG' },
             ].map((s) => (
               <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"

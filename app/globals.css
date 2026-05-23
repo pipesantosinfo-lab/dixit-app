@@ -281,3 +281,80 @@ html {
   animation: glitch-slice 3.8s steps(1) infinite;
   pointer-events: none;
 }
+
+/* ── Social pill — enlace luminoso con estela animada ───────────────── */
+.social-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: 9999px;
+  font-family: var(--font-mono, ui-monospace, monospace);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(220, 195, 255, 0.95);
+  background: linear-gradient(135deg, rgba(139,60,247,0.18), rgba(196,82,235,0.12));
+  border: 1px solid rgba(139, 60, 247, 0.45);
+  box-shadow:
+    0 0 18px rgba(139, 60, 247, 0.18),
+    inset 0 0 12px rgba(139, 60, 247, 0.08);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: social-pill-pulse 2.8s ease-in-out infinite;
+}
+
+.social-pill::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.25) 50%,
+    transparent 75%
+  );
+  background-size: 250% 100%;
+  background-position: 200% 0;
+  animation: social-pill-shimmer 3.2s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.social-pill:hover {
+  color: rgba(255, 255, 255, 1);
+  background: linear-gradient(135deg, rgba(139,60,247,0.32), rgba(196,82,235,0.22));
+  border-color: rgba(139, 60, 247, 0.85);
+  box-shadow:
+    0 0 28px rgba(139, 60, 247, 0.55),
+    0 0 50px rgba(139, 60, 247, 0.25),
+    inset 0 0 16px rgba(139, 60, 247, 0.15);
+  transform: translateY(-2px) scale(1.04);
+}
+
+.social-pill-arrow {
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.social-pill:hover .social-pill-arrow {
+  transform: translate(2px, -2px);
+}
+
+@keyframes social-pill-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 18px rgba(139, 60, 247, 0.18),
+      inset 0 0 12px rgba(139, 60, 247, 0.08);
+  }
+  50% {
+    box-shadow:
+      0 0 26px rgba(139, 60, 247, 0.35),
+      inset 0 0 14px rgba(139, 60, 247, 0.14);
+  }
+}
+
+@keyframes social-pill-shimmer {
+  0%, 100% { background-position: 200% 0; }
+  50% { background-position: -50% 0; }
+}
