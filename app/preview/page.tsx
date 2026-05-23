@@ -729,7 +729,7 @@ export default function PreviewPage() {
       {/* ── NAV ─────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-center md:justify-between items-center px-4 md:px-12 py-3 md:py-4"
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
-        <Image src="/logo.png" alt="Pipe Santos" width={300} height={132} className="h-11 md:h-16 w-auto opacity-90" priority />
+        <Image src="/logo-header.png" alt="Pipe Santos" width={300} height={106} className="h-11 md:h-16 w-auto opacity-90" priority />
         <div className="hidden md:flex gap-8">
           {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
             <a key={label} href={href} className="font-mono text-xs tracking-widest text-white/40 hover:text-white uppercase transition-colors">{label}</a>
@@ -848,7 +848,7 @@ export default function PreviewPage() {
                 </svg>
               </div>
               <p className="font-mono text-xs tracking-widest text-white/30 uppercase mb-2">TikTok</p>
-              <p className="font-display text-4xl font-light text-white mb-1"><SocialCount target={234} /></p>
+              <p className="font-display text-4xl font-light text-white mb-1"><SocialCount target={235} /></p>
               <p className="font-mono text-xs text-white/30 tracking-wider">seguidores</p>
               <p className="font-body text-white/40 text-sm leading-relaxed mt-5 text-left">
                 Los números hablan por sí mismos: publicaciones virales, un alto nivel de interacción y una comunidad que no deja de expandirse.
@@ -873,7 +873,7 @@ export default function PreviewPage() {
                 </svg>
               </div>
               <p className="font-mono text-xs tracking-widest text-white/30 uppercase mb-2">Instagram</p>
-              <p className="font-display text-4xl font-light text-white mb-1"><SocialCount target={164} /></p>
+              <p className="font-display text-4xl font-light text-white mb-1"><SocialCount target={163} /></p>
               <p className="font-mono text-xs text-white/30 tracking-wider">seguidores</p>
               <p className="font-body text-white/40 text-sm leading-relaxed mt-5 text-left">
                 En Instagram cada publicación tiene un propósito: decir mucho en poco espacio. Reels, frases y momentos cargados de intención que generan impacto inmediato.
@@ -943,7 +943,7 @@ export default function PreviewPage() {
                 </svg>
               </div>
               <p className="font-mono text-xs tracking-widest text-white/30 uppercase mb-2">Facebook</p>
-              <p className="font-display text-4xl font-light text-white mb-1"><SocialCount target={520} /></p>
+              <p className="font-display text-4xl font-light text-white mb-1"><SocialCount target={544} /></p>
               <p className="font-mono text-xs text-white/30 tracking-wider">seguidores</p>
               <p className="font-body text-white/40 text-sm leading-relaxed mt-5 text-left">
                 La narrativa es el lenguaje universal que rompe fronteras. En Facebook, las historias de Pipe Santos conectan con personas de distintas culturas, países y realidades.
