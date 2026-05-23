@@ -8,6 +8,7 @@ import TransparentImg from '@/components/TransparentImg'
 import IntroOverlay from '@/components/IntroOverlay'
 import BorisCharacter from '@/components/BorisCharacter'
 import EventoCharacter from '@/components/EventoCharacter'
+import { track } from '@/lib/track'
 
 /* ── ScrambleText ────────────────────────────────── */
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&'
@@ -615,6 +616,53 @@ export default function PreviewPage() {
     fetch('/api/ticket-count').then(r => r.json()).then(d => setEventSold(d.count || 0)).catch(() => {})
   }, [])
 
+  // ── Analítica: page_view + tiempo por sección ──────────────────────────
+  useEffect(() => {
+    track({ type: 'page_view' })
+
+    const enters = new Map<string, number>()
+    const observer = new IntersectionObserver(entries => {
+      const now = Date.now()
+      for (const entry of entries) {
+        const name = (entry.target as HTMLElement).dataset.trackSection
+        if (!name) continue
+        if (entry.isIntersecting) {
+          if (!enters.has(name)) enters.set(name, now)
+        } else if (enters.has(name)) {
+          const duration = now - (enters.get(name) ?? now)
+          enters.delete(name)
+          if (duration > 500 && duration < 600_000) {
+            track({ type: 'section_time', section: name, duration_ms: duration })
+          }
+        }
+      }
+    }, { threshold: 0.5 })
+
+    const els = document.querySelectorAll<HTMLElement>('[data-track-section]')
+    els.forEach(el => observer.observe(el))
+
+    const flushActive = () => {
+      const now = Date.now()
+      enters.forEach((enterTime, name) => {
+        const duration = now - enterTime
+        if (duration > 500 && duration < 600_000) {
+          track({ type: 'section_time', section: name, duration_ms: duration })
+        }
+      })
+      enters.clear()
+    }
+    const onHide = () => { if (document.visibilityState === 'hidden') flushActive() }
+    window.addEventListener('pagehide', flushActive)
+    document.addEventListener('visibilitychange', onHide)
+
+    return () => {
+      flushActive()
+      observer.disconnect()
+      window.removeEventListener('pagehide', flushActive)
+      document.removeEventListener('visibilitychange', onHide)
+    }
+  }, [])
+
   // Rotación de palabras en el hero
   const HERO_WORDS = ['Conectando', 'Inspirando', 'Construyendo', 'Sumando']
   const [heroWordIdx, setHeroWordIdx] = useState(0)
@@ -637,6 +685,7 @@ export default function PreviewPage() {
   const nextPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i + 1) % galleryPhotos.length), [])
 
   async function handleContact() {
+    track({ type: 'click', target: 'send_message' })
     setContactStatus('loading')
     setContactError('')
     try {
@@ -689,7 +738,7 @@ export default function PreviewPage() {
       </nav>
 
       {/* ── HERO ─────────────────────────────────── */}
-      <section ref={heroRef} className="relative min-h-screen flex flex-col justify-start overflow-hidden">
+      <section ref={heroRef} data-track-section="hero" className="relative min-h-screen flex flex-col justify-start overflow-hidden">
         {/* Background photo con parallax */}
         <div className="absolute inset-0">
           <motion.div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')", y: heroY, scale: 1.15 }} />
@@ -777,7 +826,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
-      <section ref={socialRef} className="relative z-10 px-6 md:px-12 py-20">
+      <section ref={socialRef} data-track-section="social" className="relative z-10 px-6 md:px-12 py-20">
         <HeartParticles active={socialInView} />
         <div className="max-w-5xl mx-auto">
           <motion.div className="flex justify-start mb-14" style={{ marginLeft: '-12%' }} initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
@@ -939,7 +988,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── SOBRE MÍ ─────────────────────────────── */}
-      <section id="sobre" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+      <section id="sobre" data-track-section="sobre" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
         {/* Video de fondo en bucle */}
         <video
           autoPlay muted loop playsInline
@@ -1014,7 +1063,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── GALERÍA ──────────────────────────────── */}
-      <section id="galeria" className="relative z-10 px-6 md:px-12 pt-4 pb-10">
+      <section id="galeria" data-track-section="galeria" className="relative z-10 px-6 md:px-12 pt-4 pb-10">
         <div className="max-w-6xl mx-auto">
           <div className="line-holo mb-14" />
           <div className="text-center mb-14">
@@ -1034,7 +1083,7 @@ export default function PreviewPage() {
                 key={src}
                 className="break-inside-avoid relative overflow-hidden rounded-xl cursor-pointer group"
                 style={{ marginBottom: '12px' }}
-                onClick={() => openLightbox(i)}
+                onClick={() => { track({ type: 'click', target: 'view_gallery' }); openLightbox(i) }}
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 viewport={{ once: true, amount: 0.1 }}
@@ -1065,7 +1114,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── LIBRO ────────────────────────────────── */}
-      <section id="libro" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
+      <section id="libro" data-track-section="libro" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-14" />
           <div className="grid md:grid-cols-2 gap-16 items-center">
@@ -1090,11 +1139,11 @@ export default function PreviewPage() {
                 ))}
               </div>
               <div className="flex flex-wrap gap-3 items-center">
-                <a href="https://wa.me/573239386709?text=Hola%20Pipe%2C%20quiero%20comprar%20tu%20libro%20%22Lo%20que%20nunca%20le%20cont%C3%A9%20a%20pap%C3%A1%22" target="_blank" rel="noopener noreferrer" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
+                <a href="https://wa.me/573239386709?text=Hola%20Pipe%2C%20quiero%20comprar%20tu%20libro%20%22Lo%20que%20nunca%20le%20cont%C3%A9%20a%20pap%C3%A1%22" target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'buy_book' })} className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
                   <span>Comprar ahora</span>
                 </a>
                 <button
-                  onClick={() => setShowReaderGallery(true)}
+                  onClick={() => { track({ type: 'click', target: 'view_readers' }); setShowReaderGallery(true) }}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-full font-mono text-xs tracking-widest uppercase transition-all"
                   style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.9)' }}
@@ -1119,7 +1168,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── PODCAST ──────────────────────────────── */}
-      <section id="podcast" className="relative z-10 px-6 md:px-12 py-20">
+      <section id="podcast" data-track-section="podcast" className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
           <motion.div className="text-center mb-16" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Podcast</p>
@@ -1153,7 +1202,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
-      <section id="testimonios" className="relative z-10 px-6 md:px-12 py-20">
+      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
           <div className="text-center mb-16">
@@ -1190,7 +1239,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-x-hidden">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-x-hidden">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-14" />
 
@@ -1228,7 +1277,7 @@ export default function PreviewPage() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" className="btn-primary">
+                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'open_event' })} className="btn-primary">
                     <span>Atento al lanzamiento</span>
                   </a>
                   <button disabled className="btn-ghost opacity-40 cursor-not-allowed">
@@ -1346,7 +1395,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── CONTACTO ─────────────────────────────── */}
-      <section id="contacto" className="relative z-10 px-6 md:px-12 py-20">
+      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20">
         <motion.div className="max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
