@@ -1014,12 +1014,11 @@ export default function PreviewPage() {
               </motion.div>
             ))}
           </motion.div>
-          <div className="line-holo mt-16" />
         </div>
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" className="relative z-10 px-6 md:px-12 pt-4 pb-20 overflow-x-hidden">
+      <section id="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-x-hidden">
         <div className="max-w-5xl mx-auto">
           <div className="line-holo mb-14" />
 
