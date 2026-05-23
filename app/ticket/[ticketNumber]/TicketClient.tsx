@@ -6,7 +6,7 @@ interface Props {
   ticket: {
     ticket_number: string
     buyer_name: string
-    buyer_email: string
+    // buyer_email excluido deliberadamente — no se serializa en el cliente (privacidad)
     status: string
     created_at: string
     qr_data: string

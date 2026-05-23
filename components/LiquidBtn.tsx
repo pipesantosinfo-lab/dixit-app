@@ -13,66 +13,100 @@ interface Props {
 }
 
 /**
- * Envuelve cualquier btn-primary y le agrega un efecto de gotas líquidas
- * usando un SVG posicionado justo debajo del botón.
+ * Botón con efecto de gotas líquidas realistas al pie,
+ * inspirado en pintura/slime fluyendo hacia abajo.
  */
-export default function LiquidBtn({ children, href, className = '', style, ...rest }: Props) {
-  const inner = (
-    <>
-      {children}
-    </>
-  )
-
-  const drip = (
+function DripSVG() {
+  return (
     <svg
       aria-hidden="true"
       className="absolute pointer-events-none select-none"
-      style={{ top: '100%', left: 0, width: '100%', marginTop: '-1px', zIndex: 1 }}
-      viewBox="0 0 200 30"
+      style={{ top: '100%', left: 0, width: '100%', height: '44px', marginTop: '-2px', zIndex: 1 }}
+      viewBox="0 0 300 44"
       preserveAspectRatio="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      {/* 4 gotas de distinta altura - color brand purple/orange */}
-      <path
-        fill="url(#lb-grad)"
-        fillOpacity="0.92"
-        d="M0,0 H200 V5
-          L190,5
-          Q186,5 184,8 Q182,13 180,19 Q178,24 176,26 Q174,28 172,26 Q170,24 168,19 Q166,13 164,8 Q162,5 156,5
-          L143,5
-          Q139,5 137,9 Q135,15 133,22 Q131,27 129,29 Q127,31 125,29 Q123,27 121,22 Q119,15 117,9 Q115,5 109,5
-          L94,5
-          Q90,5 88,7 Q86,11 85,15 Q84,18 83,19 Q82,20 81,19 Q80,18 79,15 Q78,11 76,7 Q74,5 68,5
-          L53,5
-          Q49,5 47,8 Q45,13 43,19 Q41,25 39,27 Q37,29 35,27 Q33,25 31,19 Q29,13 27,8 Q25,5 19,5
-          L0,5 Z"
-      />
       <defs>
-        <linearGradient id="lb-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#8B3CF7" />
+        {/* Gradiente horizontal que sigue el botón */}
+        <linearGradient id="drip-h" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   stopColor="#8B3CF7" />
           <stop offset="100%" stopColor="#C45200" />
         </linearGradient>
+        {/* Sheen 3D — brillo sobre cada gota */}
+        <radialGradient id="drip-shine" cx="30%" cy="28%" r="55%">
+          <stop offset="0%"   stopColor="rgba(255,255,255,0.38)" />
+          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+        </radialGradient>
+        {/* Sombra interna en la base de cada gota */}
+        <radialGradient id="drip-shadow" cx="50%" cy="85%" r="55%">
+          <stop offset="0%"   stopColor="rgba(0,0,0,0.22)" />
+          <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+        </radialGradient>
       </defs>
+
+      {/* ── Barra base (pegada al borde inferior del botón) ── */}
+      <rect x="0" y="0" width="300" height="7" fill="url(#drip-h)" />
+
+      {/* ─── GOTA 1 — izquierda, mediana ─────────────── cx=42 */}
+      <path
+        fill="url(#drip-h)"
+        d="M30,6 C30,6 28,14 28,20 C28,26 31,31 33,34 A9,9 0 0 0 51,34 C53,31 56,26 56,20 C56,14 54,6 54,6 Z"
+      />
+      <ellipse cx="36" cy="17" rx="5" ry="8"  fill="url(#drip-shine)"  />
+      <ellipse cx="42" cy="32" rx="9" ry="5"  fill="url(#drip-shadow)" />
+
+      {/* ─── GOTA 2 — corta ─────────────────────────── cx=88 */}
+      <path
+        fill="url(#drip-h)"
+        d="M78,6 C78,6 76,12 76,17 C76,22 79,27 81,29 A7,7 0 0 0 95,29 C97,27 100,22 100,17 C100,12 98,6 98,6 Z"
+      />
+      <ellipse cx="83" cy="14" rx="4" ry="7"  fill="url(#drip-shine)"  />
+      <ellipse cx="88" cy="27" rx="7" ry="4"  fill="url(#drip-shadow)" />
+
+      {/* ─── GOTA 3 — la más larga, centro ─────────── cx=148 */}
+      <path
+        fill="url(#drip-h)"
+        d="M136,6 C136,6 134,18 133,26 C132,32 135,39 138,42 A10,10 0 0 0 158,42 C161,39 164,32 163,26 C162,18 160,6 160,6 Z"
+      />
+      <ellipse cx="141" cy="20" rx="6" ry="10" fill="url(#drip-shine)"  />
+      <ellipse cx="148" cy="40" rx="10" ry="5" fill="url(#drip-shadow)" />
+
+      {/* ─── GOTA 4 — mediana-alta ────────────────── cx=202 */}
+      <path
+        fill="url(#drip-h)"
+        d="M191,6 C191,6 189,15 189,22 C189,28 192,34 194,37 A8,8 0 0 0 210,37 C212,34 215,28 215,22 C215,15 213,6 213,6 Z"
+      />
+      <ellipse cx="196" cy="18" rx="5" ry="9"  fill="url(#drip-shine)"  />
+      <ellipse cx="202" cy="35" rx="8" ry="4"  fill="url(#drip-shadow)" />
+
+      {/* ─── GOTA 5 — corta, derecha ─────────────── cx=258 */}
+      <path
+        fill="url(#drip-h)"
+        d="M248,6 C248,6 246,13 246,18 C246,24 249,28 251,31 A7,7 0 0 0 265,31 C267,28 270,24 270,18 C270,13 268,6 268,6 Z"
+      />
+      <ellipse cx="253" cy="15" rx="4" ry="7"  fill="url(#drip-shine)"  />
+      <ellipse cx="258" cy="29" rx="7" ry="4"  fill="url(#drip-shadow)" />
     </svg>
   )
+}
 
+export default function LiquidBtn({ children, href, className = '', style, ...rest }: Props) {
   if (href) {
     return (
       <div className="relative inline-block">
         <a href={href} className={`btn-primary ${className}`} style={style} {...rest}>
-          {inner}
+          {children}
         </a>
-        {drip}
+        <DripSVG />
       </div>
     )
   }
-
   return (
     <div className="relative inline-block">
       <button className={`btn-primary ${className}`} style={style} {...rest}>
-        {inner}
+        {children}
       </button>
-      {drip}
+      <DripSVG />
     </div>
   )
 }

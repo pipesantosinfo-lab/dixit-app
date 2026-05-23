@@ -30,7 +30,7 @@ const PRICE = 40000
 const INSTAGRAM_URL = 'https://www.instagram.com/pipesantos93/'
 
 function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number }) {
-  const [form, setForm] = useState({ name: '', email: '' })
+  const [form, setForm] = useState({ name: '', email: '', cedula: '' })
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -40,12 +40,16 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
   const total = PRICE * quantity
 
   const handleSubmit = async () => {
-    if (!form.name.trim() || !form.email.trim()) {
-      setError('Tu nombre y correo son obligatorios.')
+    if (!form.name.trim() || !form.email.trim() || !form.cedula.trim()) {
+      setError('Nombre, correo y cédula son obligatorios.')
       return
     }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       setError('Por favor ingresa un correo válido.')
+      return
+    }
+    if (!/^\d{6,10}$/.test(form.cedula.trim())) {
+      setError('La cédula debe tener entre 6 y 10 dígitos.')
       return
     }
     setLoading(true)
@@ -57,7 +61,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
         body: JSON.stringify({
           buyerName: form.name,
           buyerEmail: form.email,
-
+          buyerCedula: form.cedula,
           quantity,
         }),
       })
@@ -133,8 +137,9 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
 
         <div className="space-y-4 mb-6">
           {[
-            { key: 'name', label: 'Nombre completo *', type: 'text', placeholder: 'Tu nombre' },
-            { key: 'email', label: 'Correo electrónico *', type: 'email', placeholder: 'tu@correo.com' },
+            { key: 'name',   label: 'Nombre completo *',     type: 'text',  placeholder: 'Tu nombre' },
+            { key: 'email',  label: 'Correo electrónico *',  type: 'email', placeholder: 'tu@correo.com' },
+            { key: 'cedula', label: 'Número de cédula *',    type: 'tel',   placeholder: '1234567890' },
           ].map(f => (
             <div key={f.key}>
               <label className="font-mono text-xs text-white/30 tracking-widest uppercase block mb-2">{f.label}</label>

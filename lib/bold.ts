@@ -11,10 +11,13 @@ export async function createBoldPaymentLink({
   buyerEmail: string
   quantity?: number
 }) {
+  const apiKey = process.env.BOLD_API_KEY
+  if (!apiKey) throw new Error('BOLD_API_KEY no está configurado')
+
   const response = await fetch('https://integrations.api.bold.co/online/link/v1', {
     method: 'POST',
     headers: {
-      Authorization: `x-api-key ${process.env.BOLD_API_KEY}`,
+      Authorization: `x-api-key ${apiKey}`,
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({

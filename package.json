@@ -13,18 +13,17 @@
     "@supabase/supabase-js": "^2.43.1",
     "framer-motion": "^11.18.2",
     "html5-qrcode": "^2.3.8",
-    "next": "14.2.3",
-    "nodemailer": "^6.9.13",
+    "next": "^14.2.35",
     "qrcode": "^1.5.3",
     "react": "^18",
     "react-dom": "^18",
     "resend": "^6.12.3",
     "stripe": "^14.21.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/node": "^20",
-    "@types/nodemailer": "^6.4.14",
     "@types/qrcode": "^1.5.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",

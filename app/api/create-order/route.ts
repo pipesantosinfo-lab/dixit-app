@@ -22,16 +22,20 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
   }
 
-  const buyerName  = String(body.buyerName  ?? '').trim().slice(0, 120)
-  const buyerEmail = String(body.buyerEmail ?? '').trim().toLowerCase().slice(0, 254)
-  const buyerPhone = String(body.buyerPhone ?? '').trim().slice(0, 20) || null
-  const quantity   = Math.min(Math.max(1, parseInt(String(body.quantity)) || 1), 10)
+  const buyerName   = String(body.buyerName   ?? '').trim().slice(0, 120)
+  const buyerEmail  = String(body.buyerEmail  ?? '').trim().toLowerCase().slice(0, 254)
+  const buyerPhone  = String(body.buyerPhone  ?? '').trim().slice(0, 20) || null
+  const buyerCedula = String(body.buyerCedula ?? '').replace(/\D/g, '').slice(0, 10) || null
+  const quantity    = Math.min(Math.max(1, parseInt(String(body.quantity)) || 1), 10)
 
   if (!buyerName || !buyerEmail) {
     return NextResponse.json({ error: 'Nombre y correo son obligatorios.' }, { status: 400 })
   }
   if (!EMAIL_RE.test(buyerEmail)) {
     return NextResponse.json({ error: 'Correo electrónico inválido.' }, { status: 400 })
+  }
+  if (buyerCedula && (buyerCedula.length < 6 || buyerCedula.length > 10)) {
+    return NextResponse.json({ error: 'Cédula inválida.' }, { status: 400 })
   }
   if (isRateLimited(buyerEmail)) {
     return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en una hora.' }, { status: 429 })
@@ -57,6 +61,7 @@ export async function POST(req: NextRequest) {
     buyer_name: buyerName.trim(),
     buyer_email: buyerEmail.trim().toLowerCase(),
     buyer_phone: buyerPhone?.trim() || null,
+    buyer_cedula: buyerCedula || null,
     bold_order_id: i === 0 ? orderId : null,
     status: 'pending',
   }))

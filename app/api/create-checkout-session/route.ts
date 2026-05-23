@@ -2,11 +2,38 @@ import { NextRequest, NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe'
 import { supabaseAdmin } from '@/lib/supabase'
 
+const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/
+
+// Rate limiting: max 5 checkout sessions per email por hora
+const checkoutTimestamps = new Map<string, number[]>()
+function isRateLimited(email: string): boolean {
+  const now = Date.now()
+  const times = (checkoutTimestamps.get(email) ?? []).filter(t => now - t < 3_600_000)
+  if (times.length >= 5) return true
+  checkoutTimestamps.set(email, [...times, now])
+  return false
+}
+
 export async function POST(req: NextRequest) {
-  const { tierId, eventId, buyerName, buyerEmail, buyerPhone } = await req.json()
+  let body: Record<string, unknown>
+  try { body = await req.json() } catch {
+    return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
+  }
+
+  const tierId     = String(body.tierId     ?? '').trim().slice(0, 36)
+  const eventId    = String(body.eventId    ?? '').trim().slice(0, 36)
+  const buyerName  = String(body.buyerName  ?? '').trim().slice(0, 120)
+  const buyerEmail = String(body.buyerEmail ?? '').trim().toLowerCase().slice(0, 254)
+  const buyerPhone = String(body.buyerPhone ?? '').trim().slice(0, 20) || ''
 
   if (!tierId || !eventId || !buyerName || !buyerEmail) {
     return NextResponse.json({ error: 'Faltan datos requeridos' }, { status: 400 })
+  }
+  if (!EMAIL_RE.test(buyerEmail)) {
+    return NextResponse.json({ error: 'Correo electrónico inválido.' }, { status: 400 })
+  }
+  if (isRateLimited(buyerEmail)) {
+    return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en una hora.' }, { status: 429 })
   }
 
   const db = supabaseAdmin()

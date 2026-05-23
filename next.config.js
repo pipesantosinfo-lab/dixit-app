@@ -37,6 +37,13 @@ const nextConfig = {
         source: '/(.*)',
         headers: securityHeaders,
       },
+      {
+        // El validador de QR necesita acceso a la cámara — sobreescribe Permissions-Policy solo en esa ruta
+        source: '/validar',
+        headers: [
+          { key: 'Permissions-Policy', value: "camera=(self), microphone=(), geolocation=()" },
+        ],
+      },
     ]
   },
 }

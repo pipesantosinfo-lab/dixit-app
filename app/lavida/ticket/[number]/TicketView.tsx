@@ -6,7 +6,7 @@ import { generateQRDataURL } from '@/lib/qr'
 interface Ticket {
   ticket_number: string
   buyer_name: string
-  buyer_email: string
+  // buyer_email excluido deliberadamente — no se serializa en el cliente (privacidad)
   status: string
   qr_data: string
   created_at: string

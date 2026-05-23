@@ -10,16 +10,40 @@ type Result = {
 }
 
 export default function ValidarPage() {
-  const [pin, setPin] = useState('')
+  const [pin, setPin]                 = useState('')
   const [authenticated, setAuthenticated] = useState(false)
-  const [pinError, setPinError] = useState(false)
-  const [scanning, setScanning] = useState(false)
-  const [manualCode, setManualCode] = useState('')
-  const [result, setResult] = useState<Result | null>(null)
-  const [loading, setLoading] = useState(false)
-  const scannerRef = useRef<HTMLDivElement>(null)
+  const [pinError, setPinError]       = useState('')
+  const [pinLoading, setPinLoading]   = useState(false)
+  const [scanning, setScanning]       = useState(false)
+  const [manualCode, setManualCode]   = useState('')
+  const [result, setResult]           = useState<Result | null>(null)
+  const [loading, setLoading]         = useState(false)
+  const scannerRef                    = useRef<HTMLDivElement>(null)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const html5QrRef = useRef<any>(null)
+  const html5QrRef                    = useRef<any>(null)
+  const authToken                     = useRef<string>('')
+
+  // Verifica el PIN contra la API — nunca en el cliente
+  const handleAuth = async () => {
+    if (!pin.trim()) return
+    setPinLoading(true)
+    setPinError('')
+    try {
+      const res = await fetch('/api/admin/tickets', {
+        headers: { Authorization: `Bearer ${pin}` },
+      })
+      if (res.ok) {
+        authToken.current = pin
+        setAuthenticated(true)
+      } else {
+        setPinError('PIN incorrecto')
+      }
+    } catch {
+      setPinError('Error de conexión. Intenta de nuevo.')
+    } finally {
+      setPinLoading(false)
+    }
+  }
 
   const validate = async (code: string) => {
     const ticketNumber = code.includes('/') ? code.split('/').pop() : code
@@ -31,12 +55,17 @@ export default function ValidarPage() {
     try {
       const res = await fetch('/api/validate-qr', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ticketNumber,
-          adminSecret: process.env.NEXT_PUBLIC_ADMIN_SECRET || pin,
-        }),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken.current}`,
+        },
+        body: JSON.stringify({ ticketNumber }),
       })
+      if (res.status === 401) {
+        setAuthenticated(false)
+        authToken.current = ''
+        return
+      }
       const data = await res.json()
       setResult(data)
     } catch {
@@ -74,7 +103,9 @@ export default function ValidarPage() {
     setScanning(false)
   }
 
-  useEffect(() => () => { if (html5QrRef.current) { try { html5QrRef.current.stop() } catch {} } }, [])
+  useEffect(() => () => {
+    if (html5QrRef.current) { try { html5QrRef.current.stop() } catch {} }
+  }, [])
 
   if (!authenticated) {
     return (
@@ -91,18 +122,19 @@ export default function ValidarPage() {
             <input
               type="password"
               value={pin}
-              onChange={e => { setPin(e.target.value); setPinError(false) }}
-              onKeyDown={e => e.key === 'Enter' && (pin === (process.env.NEXT_PUBLIC_ADMIN_SECRET || 'admin123') ? setAuthenticated(true) : setPinError(true))}
+              onChange={e => { setPin(e.target.value); setPinError('') }}
+              onKeyDown={e => e.key === 'Enter' && handleAuth()}
               placeholder="••••••••"
               className="w-full rounded-xl px-4 py-3 font-body text-white placeholder-white/20 text-lg outline-none mb-4"
               style={{ background: 'rgba(255,255,255,0.05)', border: `1px solid ${pinError ? 'rgba(255,80,80,0.5)' : 'rgba(255,255,255,0.08)'}` }}
             />
-            {pinError && <p className="text-red-400 text-sm mb-4">PIN incorrecto</p>}
+            {pinError && <p className="text-red-400 text-sm mb-4">{pinError}</p>}
             <button
-              onClick={() => pin === (process.env.NEXT_PUBLIC_ADMIN_SECRET || 'admin123') ? setAuthenticated(true) : setPinError(true)}
+              onClick={handleAuth}
+              disabled={pinLoading}
               className="btn-primary w-full"
             >
-              <span>Entrar</span>
+              <span>{pinLoading ? 'Verificando...' : 'Entrar'}</span>
             </button>
           </div>
         </div>
@@ -121,7 +153,6 @@ export default function ValidarPage() {
           </div>
         </div>
 
-        {/* Result */}
         {result && (
           <div className="rounded-2xl p-6 mb-6 text-center"
             style={{
@@ -140,7 +171,6 @@ export default function ValidarPage() {
 
         {!result && (
           <>
-            {/* Camera scanner */}
             <div className="glass rounded-2xl overflow-hidden mb-4" style={{ border: '1px solid rgba(139,60,247,0.2)' }}>
               <div id="qr-scanner" ref={scannerRef} className="w-full" style={{ minHeight: scanning ? '300px' : '0' }} />
               {!scanning && (
@@ -153,14 +183,11 @@ export default function ValidarPage() {
               )}
               {scanning && (
                 <div className="p-4 text-center">
-                  <button onClick={stopScanner} className="btn-ghost text-sm">
-                    Detener cámara
-                  </button>
+                  <button onClick={stopScanner} className="btn-ghost text-sm">Detener cámara</button>
                 </div>
               )}
             </div>
 
-            {/* Manual input */}
             <div className="glass rounded-2xl p-6" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
               <label className="font-mono text-xs text-white/30 tracking-widest uppercase block mb-3">O ingresa el código manualmente</label>
               <input

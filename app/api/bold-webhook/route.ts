@@ -2,7 +2,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { sendTicketEmail } from '@/lib/email'
 import { sendWhatsAppTicket } from '@/lib/whatsapp'
+import { generateLavidaExcel } from '@/lib/analytics'
+import { Resend } from 'resend'
 import { createHmac, timingSafeEqual } from 'crypto'
+
+const OWNER_EMAIL = 'pipesantos93@gmail.com'
 
 const EVENT = {
   name: 'La vida es cule viaje',
@@ -56,6 +60,13 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true })
   }
 
+  // Sanitizar comodines SQL antes de usar en LIKE — solo permitir UUID chars
+  const safeOrderId = orderId.replace(/[^0-9a-f-]/gi, '')
+  if (!safeOrderId) {
+    console.warn('Bold webhook: orderId inválido después de sanitizar')
+    return NextResponse.json({ received: true })
+  }
+
   const isAccepted = ['SALE_APPROVED', 'ACCEPTED', 'APPROVED', 'payment_accepted'].includes(eventType)
 
   if (!isAccepted) {
@@ -65,24 +76,34 @@ export async function POST(req: NextRequest) {
 
   const db = supabaseAdmin()
 
-  // Find all tickets for this order
+  // Find all tickets for this order (usamos safeOrderId para prevenir wildcards SQL)
   const { data: tickets } = await db
     .from('lavida_tickets')
     .select('*')
-    .like('ticket_number', `${orderId}-%`)
+    .like('ticket_number', `${safeOrderId}-%`)
 
   if (!tickets || tickets.length === 0) {
-    console.error('Tickets not found for order:', orderId)
+    console.error('Tickets not found for order:', safeOrderId)
     return NextResponse.json({ error: 'Tickets not found' }, { status: 404 })
   }
 
   if (tickets[0].status === 'active') {
-    console.log('Already processed:', orderId)
+    console.log('Already processed:', safeOrderId)
     return NextResponse.json({ received: true })
   }
 
   const buyer = tickets[0]
   const now = new Date().toISOString()
+
+  // Extraer medio de pago del payload de Bold (varios campos posibles según versión de la API)
+  const payment = data?.payment as Record<string, unknown> | undefined
+  const paymentMethod: string =
+    (payment?.payment_type as string) ||
+    (payment?.payment_method as string) ||
+    (payment?.method as string) ||
+    (data?.payment_method as string) ||
+    (body.payment_method as string) ||
+    'Bold'
 
   // Activate all tickets and generate QR for each
   for (const ticket of tickets) {
@@ -92,6 +113,7 @@ export async function POST(req: NextRequest) {
       status: 'active',
       qr_data: ticketUrl,
       paid_at: now,
+      payment_method: paymentMethod,
     }).eq('ticket_number', ticket.ticket_number)
 
     // Send individual email per ticket
@@ -129,6 +151,49 @@ export async function POST(req: NextRequest) {
     }
   }
 
-  console.log(`✓ ${tickets.length} ticket(s) confirmed: ${orderId} for ${buyer.buyer_email}`)
+  console.log(`✓ ${tickets.length} ticket(s) confirmed: ${safeOrderId} for ${buyer.buyer_email}`)
+
+  // ── Enviar Excel actualizado al dueño del evento ──────────────────────────
+  try {
+    const { buffer, filename, totalBuyers } = await generateLavidaExcel()
+    const resend = new Resend(process.env.RESEND_API_KEY)
+
+    const buyerInfo = [
+      `<b>Nombre:</b> ${buyer.buyer_name}`,
+      `<b>Correo:</b> ${buyer.buyer_email}`,
+      `<b>Cédula:</b> ${buyer.buyer_cedula ?? '-'}`,
+      `<b>Teléfono:</b> ${buyer.buyer_phone ?? '-'}`,
+      `<b>Entradas:</b> ${tickets.length}`,
+      `<b>Medio de pago:</b> ${paymentMethod}`,
+    ].join('<br>')
+
+    await resend.emails.send({
+      from: 'Pipe Santos Entradas <entradas@pipesantos.com>',
+      to: OWNER_EMAIL,
+      subject: `💰 Nueva venta — ${buyer.buyer_name} · ${tickets.length} entrada${tickets.length > 1 ? 's' : ''}`,
+      html: `
+        <div style="font-family:sans-serif;color:#1a1a1a;max-width:480px">
+          <h2 style="color:#8B3CF7;margin:0 0 16px">✅ Pago confirmado</h2>
+          <div style="background:#f8f5ff;border-radius:8px;padding:16px;margin-bottom:16px;line-height:1.8">
+            ${buyerInfo}
+          </div>
+          <p style="color:#666;font-size:13px;margin:0">
+            Total acumulado: <b>${totalBuyers} comprador${totalBuyers !== 1 ? 'es' : ''}</b> ·
+            El Excel completo va adjunto.
+          </p>
+        </div>
+      `,
+      attachments: [{
+        filename,
+        content: buffer.toString('base64'),
+      }],
+    })
+
+    console.log(`📊 Excel enviado a ${OWNER_EMAIL} (${totalBuyers} compradores)`)
+  } catch (analyticsErr) {
+    // No fallar el webhook si el email de analytics falla
+    console.error('Analytics email error:', analyticsErr)
+  }
+
   return NextResponse.json({ received: true })
 }

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import TicketClient from './TicketClient'
 
 interface Props {
@@ -7,10 +7,16 @@ interface Props {
 }
 
 export default async function TicketPage({ params }: Props) {
-  const { data: ticket } = await supabase
+  // Usamos supabaseAdmin para no depender de las políticas RLS del cliente anon
+  const db = supabaseAdmin()
+  const { data: ticket } = await db
     .from('tickets')
     .select(`
-      *,
+      ticket_number,
+      buyer_name,
+      status,
+      qr_data,
+      created_at,
       ticket_tiers ( name, color, currency, price ),
       events ( name, date, location, cover_image, slug )
     `)
@@ -19,5 +25,7 @@ export default async function TicketPage({ params }: Props) {
 
   if (!ticket) notFound()
 
-  return <TicketClient ticket={ticket} />
+  // buyer_email se excluye deliberadamente — no se debe serializar en el HTML del cliente
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return <TicketClient ticket={ticket as any} />
 }

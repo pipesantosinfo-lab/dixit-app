@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { stripe } from '@/lib/stripe'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import Link from 'next/link'
 
 interface Props {
@@ -23,8 +23,8 @@ export default async function CheckoutSuccessPage({ searchParams }: Props) {
     // fallback
   }
 
-  // Try to find the ticket
-  const { data: ticket } = await supabase
+  // Try to find the ticket — admin client para no depender de RLS
+  const { data: ticket } = await supabaseAdmin()
     .from('tickets')
     .select('ticket_number')
     .eq('stripe_payment_id', session_id)

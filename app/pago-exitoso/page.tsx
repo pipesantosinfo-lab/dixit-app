@@ -4,9 +4,13 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 import Particles from '@/components/Particles'
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
 function Content() {
   const params = useSearchParams()
-  const order = params.get('order')
+  const rawOrder = params.get('order')
+  // Validar formato UUID antes de usar en href para prevenir open-redirect y URLs malformadas
+  const order = rawOrder && UUID_RE.test(rawOrder) ? rawOrder : null
 
   return (
     <main className="grain min-h-screen flex flex-col items-center justify-center px-6" style={{ background: '#070508' }}>
