@@ -370,6 +370,124 @@ function Lightbox({ photos, index, onClose, onPrev, onNext }: {
   )
 }
 
+function ReaderGalleryModal({ onClose }: { onClose: () => void }) {
+  const [selectedIdx, setSelectedIdx] = useState<number | null>(null)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (selectedIdx !== null) setSelectedIdx(null)
+        else onClose()
+      }
+      if (selectedIdx !== null) {
+        if (e.key === 'ArrowLeft') setSelectedIdx(i => i === null ? null : (i - 1 + readerPhotos.length) % readerPhotos.length)
+        if (e.key === 'ArrowRight') setSelectedIdx(i => i === null ? null : (i + 1) % readerPhotos.length)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [selectedIdx, onClose])
+
+  return (
+    <div
+      className="fixed inset-0 z-[200] flex flex-col"
+      style={{ background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(20px)' }}
+      onClick={() => { if (selectedIdx !== null) setSelectedIdx(null) }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between px-6 py-5 flex-shrink-0" onClick={e => e.stopPropagation()}>
+        <div>
+          <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase">◆ Mi libro</p>
+          <h3 className="font-display text-2xl text-white font-light mt-1">Algunos de mis lectores</h3>
+        </div>
+        <button
+          onClick={onClose}
+          className="w-10 h-10 rounded-full flex items-center justify-center transition-all"
+          style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      {/* Grid */}
+      {selectedIdx === null && (
+        <div className="flex-1 overflow-y-auto px-6 pb-8" onClick={e => e.stopPropagation()}>
+          <div className="max-w-5xl mx-auto grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            {readerPhotos.map((src, i) => (
+              <button
+                key={src}
+                onClick={() => setSelectedIdx(i)}
+                className="group relative overflow-hidden rounded-xl aspect-square focus:outline-none"
+                style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <img
+                  src={src}
+                  alt={`Lector ${i + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                  style={{ background: 'rgba(139,60,247,0.3)' }}>
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Lightbox */}
+      {selectedIdx !== null && (
+        <div className="flex-1 flex items-center justify-center relative">
+          {/* Prev */}
+          <button
+            onClick={e => { e.stopPropagation(); setSelectedIdx(i => i === null ? null : (i - 1 + readerPhotos.length) % readerPhotos.length) }}
+            className="absolute left-4 md:left-10 z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all"
+            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+
+          {/* Image */}
+          <div
+            className="relative mx-16 max-w-4xl"
+            onClick={e => e.stopPropagation()}
+            style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.8), 0 0 60px rgba(139,60,247,0.08)' }}
+          >
+            <img
+              src={readerPhotos[selectedIdx]}
+              alt=""
+              className="block max-w-full max-h-[75vh] object-contain"
+              style={{ minWidth: '280px' }}
+            />
+            <div className="absolute bottom-0 left-0 right-0 flex justify-center pb-4 pt-12"
+              style={{ background: 'linear-gradient(to top, rgba(7,5,8,0.8), transparent)' }}>
+              <p className="font-mono text-xs text-white/30 tracking-widest">{selectedIdx + 1} / {readerPhotos.length}</p>
+            </div>
+          </div>
+
+          {/* Next */}
+          <button
+            onClick={e => { e.stopPropagation(); setSelectedIdx(i => i === null ? null : (i + 1) % readerPhotos.length) }}
+            className="absolute right-4 md:right-10 z-10 w-12 h-12 rounded-full flex items-center justify-center transition-all"
+            style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+
+          {/* Back to grid */}
+          <button
+            onClick={e => { e.stopPropagation(); setSelectedIdx(null) }}
+            className="absolute top-0 left-6 flex items-center gap-2 font-mono text-xs text-white/30 hover:text-white/70 transition-colors tracking-widest uppercase"
+          >
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+            Ver todas
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 function useCounter(target: number, duration = 2000, triggered: boolean) {
   const [count, setCount] = useState(0)
   useEffect(() => {
@@ -461,6 +579,21 @@ const testimonials = [
   },
 ]
 
+const readerPhotos = [
+  '/libro/3353B0BA-E06C-489E-963A-95A46682E29E.JPG',
+  '/libro/3A623A50-DFC6-4FDC-BAB3-5A483B9B9701.JPG',
+  '/libro/96A99008-B70E-46AC-BACB-5576A02AEA4E.JPG',
+  '/libro/B468930B-B008-432C-A0BB-139444EE004D.JPG',
+  '/libro/C0551101-7681-4A80-B204-E0FBB56E79B8.JPG',
+  '/libro/D6ABBF6D-67B3-49E4-ACDD-642C6165DDF2.JPG',
+  '/libro/D6C4A074-7345-4901-B927-D01227CC4A1A.JPG',
+  '/libro/DDE1A6C3-832B-4811-8FFC-EEDEE52ACB6A.JPG',
+  '/libro/E20C3C28-4C87-49F4-BDF7-344DC8FE1D54.JPG',
+  '/libro/E7208B16-3D29-44C9-91DD-24A67ED7B7B6.JPG',
+  '/libro/FD92B976-F602-4631-99D8-E288C6261748.JPG',
+  '/libro/IMG_2804.PNG',
+]
+
 const bookFeatures = [
   { title: 'Historias reales de inicio a fin', desc: 'Encontrarás información muy valiosa para muchos aspectos de tu vida, mientras disfrutas de un viaje en el tiempo por diferentes etapas de mi vida.' },
   { title: 'Proyectos, sueños y metas', desc: 'Descubrirás formas, tips y métodos para escalar hacia tus objetivos más importantes.' },
@@ -472,6 +605,7 @@ export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
   const [contactError, setContactError] = useState('')
+  const [showReaderGallery, setShowReaderGallery] = useState(false)
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const [showEventModal, setShowEventModal] = useState(false)
@@ -531,6 +665,7 @@ export default function PreviewPage() {
       <Particles />
 
       {showEventModal && <EventoModal onClose={() => setShowEventModal(false)} sold={eventSold} />}
+      {showReaderGallery && <ReaderGalleryModal onClose={() => setShowReaderGallery(false)} />}
 
       {lightboxIndex !== null && (
         <Lightbox
@@ -954,9 +1089,21 @@ export default function PreviewPage() {
                   </div>
                 ))}
               </div>
-              <a href="https://wa.me/573239386709?text=Hola%20Pipe%2C%20quiero%20comprar%20tu%20libro%20%22Lo%20que%20nunca%20le%20cont%C3%A9%20a%20pap%C3%A1%22" target="_blank" rel="noopener noreferrer" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
-                <span>Comprar ahora</span>
-              </a>
+              <div className="flex flex-wrap gap-3 items-center">
+                <a href="https://wa.me/573239386709?text=Hola%20Pipe%2C%20quiero%20comprar%20tu%20libro%20%22Lo%20que%20nunca%20le%20cont%C3%A9%20a%20pap%C3%A1%22" target="_blank" rel="noopener noreferrer" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
+                  <span>Comprar ahora</span>
+                </a>
+                <button
+                  onClick={() => setShowReaderGallery(true)}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full font-mono text-xs tracking-widest uppercase transition-all"
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.15)', color: 'rgba(255,255,255,0.6)' }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.1)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.9)' }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.05)'; (e.currentTarget as HTMLButtonElement).style.color = 'rgba(255,255,255,0.6)' }}
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M19 8v6M22 11h-6"/></svg>
+                  Algunos de mis lectores
+                </button>
+              </div>
             </motion.div>
             <motion.div className="order-1 md:order-2 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
               <div className="relative">
