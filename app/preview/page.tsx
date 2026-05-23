@@ -470,6 +470,8 @@ const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 
 
 export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
+  const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
+  const [contactError, setContactError] = useState('')
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const [showEventModal, setShowEventModal] = useState(false)
@@ -499,6 +501,29 @@ export default function PreviewPage() {
   const closeLightbox = useCallback(() => { setLightboxIndex(null); document.body.style.overflow = '' }, [])
   const prevPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i - 1 + galleryPhotos.length) % galleryPhotos.length), [])
   const nextPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i + 1) % galleryPhotos.length), [])
+
+  async function handleContact() {
+    setContactStatus('loading')
+    setContactError('')
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: form.name, email: form.email, message: form.message }),
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        setContactError(data.error ?? 'Error al enviar. Intenta de nuevo.')
+        setContactStatus('error')
+      } else {
+        setContactStatus('ok')
+        setForm({ name: '', email: '', message: '' })
+      }
+    } catch {
+      setContactError('Error de conexión. Intenta de nuevo.')
+      setContactStatus('error')
+    }
+  }
 
   return (
     <main className="grain min-h-screen overflow-x-hidden" style={{ background: '#070508' }}>
@@ -929,7 +954,7 @@ export default function PreviewPage() {
                   </div>
                 ))}
               </div>
-              <a href="#" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
+              <a href="https://wa.me/573239386709?text=Hola%20Pipe%2C%20quiero%20comprar%20tu%20libro%20%22Lo%20que%20nunca%20le%20cont%C3%A9%20a%20pap%C3%A1%22" target="_blank" rel="noopener noreferrer" className="btn-primary inline-block" style={{ background: 'linear-gradient(135deg, #C45200, #E07820)' }}>
                 <span>Comprar ahora</span>
               </a>
             </motion.div>
@@ -1180,7 +1205,7 @@ export default function PreviewPage() {
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
             Quiero <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>leerte</span>
           </h2>
-          <p className="font-body text-white/40 mb-12">Cuéntame tu proyecto o en qué puedo ayudarte.</p>
+          <p className="font-body text-white/40 mb-12">Cuéntame de tu proyecto y trabajemos juntos.</p>
           <div className="glass rounded-2xl p-6 md:p-8 text-left space-y-5">
             <div>
               <label className="font-mono text-xs text-white/30 tracking-widest uppercase block mb-2">Nombre</label>
@@ -1215,7 +1240,18 @@ export default function PreviewPage() {
                 placeholder="Descríbeme aquí tu proyecto..."
               />
             </div>
-            <button className="btn-primary w-full"><span>Enviar mensaje</span></button>
+            <button
+              className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleContact}
+              disabled={contactStatus === 'loading' || contactStatus === 'ok'}
+            >
+              <span>
+                {contactStatus === 'loading' ? 'Enviando…' : contactStatus === 'ok' ? '¡Mensaje enviado! ✓' : 'Enviar mensaje'}
+              </span>
+            </button>
+            {contactStatus === 'error' && (
+              <p className="font-mono text-xs text-red-400 text-center mt-2">{contactError}</p>
+            )}
           </div>
         </motion.div>
       </section>
@@ -1237,7 +1273,7 @@ export default function PreviewPage() {
               </a>
             ))}
           </div>
-          <p className="font-mono text-xs text-white/15">© 2025 Pipe Santos. Todos los derechos reservados.</p>
+          <p className="font-mono text-xs text-white/15">© 2026 Pipe Santos. Todos los derechos reservados.</p>
         </div>
       </footer>
 
