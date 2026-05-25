@@ -1304,9 +1304,9 @@ export default function PreviewPage() {
                 <div className="absolute -inset-4 rounded-3xl pointer-events-none"
                   style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.2) 0%, transparent 70%)' }} />
                 <Image
-                  src="/evento-hero.jpg"
+                  src="/evento-flyer-v2.jpg"
                   alt="La vida es cule viaje — Barranquilla 2026"
-                  width={420} height={560}
+                  width={900} height={1600}
                   className="relative rounded-2xl w-full max-w-xs md:max-w-sm"
                   style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.3))' }}
                 />
