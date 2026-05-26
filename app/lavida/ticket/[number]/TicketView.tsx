@@ -17,6 +17,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
   const [qrUrl, setQrUrl] = useState('')
   const [sharing, setSharing] = useState(false)
   const [shareMsg, setShareMsg] = useState('')
+  const [isCapturing, setIsCapturing] = useState(false)
   const ticketCardRef = useRef<HTMLDivElement>(null)
   const isUsed = ticket.status === 'used'
   const shortId = ticket.ticket_number.split('-')[0].toUpperCase()
@@ -25,6 +26,10 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
     if (!ticketCardRef.current) return
     setSharing(true)
     setShareMsg('')
+    setIsCapturing(true) // Esconde el QR y muestra el sello promocional
+    // Esperar dos frames para que React actualice el DOM antes de capturar
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+    await new Promise(r => setTimeout(r, 150))
     try {
       const { toBlob } = await import('html-to-image')
       const blob = await toBlob(ticketCardRef.current, {
@@ -63,6 +68,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         setShareMsg('No se pudo compartir. Intenta de nuevo.')
       }
     } finally {
+      setIsCapturing(false)
       setSharing(false)
       setTimeout(() => setShareMsg(''), 4000)
     }
@@ -166,20 +172,39 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
             <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,60,247,0.3), transparent)' }} />
           </div>
 
-          {/* QR */}
+          {/* QR — se reemplaza por sello promocional al compartir (para no exponer el QR) */}
           <div className="px-6 pb-6">
             <div className="flex justify-center mb-5">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 30px rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.2)' }} />
-                <div className="bg-white rounded-xl p-3 relative z-10">
-                  {qrUrl
-                    ? <img src={qrUrl} alt="QR" width={180} height={180} className="block" />
-                    : <div className="w-[180px] h-[180px] flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#8B3CF7 transparent transparent transparent' }} />
-                      </div>
-                  }
+              {isCapturing ? (
+                <div
+                  className="flex flex-col items-center justify-center text-center px-4"
+                  style={{
+                    width: '210px',
+                    height: '210px',
+                    borderRadius: '16px',
+                    background: 'linear-gradient(135deg, rgba(139,60,247,0.25), rgba(196,82,235,0.15))',
+                    border: '2px solid rgba(139,60,247,0.5)',
+                    boxShadow: '0 0 30px rgba(139,60,247,0.35)',
+                  }}
+                >
+                  <div style={{ fontSize: '46px', lineHeight: 1, marginBottom: '10px' }}>⚡🧡</div>
+                  <p className="font-display text-white" style={{ fontSize: '22px', fontWeight: 300, lineHeight: 1.1, marginBottom: '8px' }}>¡VOY A IR!</p>
+                  <p className="font-mono" style={{ fontSize: '9px', color: 'rgba(220,195,255,0.95)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px' }}>Entrada confirmada</p>
+                  <p className="font-mono" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.55)', letterSpacing: '1px' }}>pipesantos.com</p>
                 </div>
-              </div>
+              ) : (
+                <div className="relative">
+                  <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 30px rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.2)' }} />
+                  <div className="bg-white rounded-xl p-3 relative z-10">
+                    {qrUrl
+                      ? <img src={qrUrl} alt="QR" width={180} height={180} className="block" />
+                      : <div className="w-[180px] h-[180px] flex items-center justify-center">
+                          <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#8B3CF7 transparent transparent transparent' }} />
+                        </div>
+                    }
+                  </div>
+                </div>
+              )}
             </div>
 
             <p className="text-center font-display text-lg text-white mb-1">{ticket.buyer_name}</p>
