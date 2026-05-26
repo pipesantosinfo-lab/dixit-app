@@ -549,26 +549,29 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
             </div>
           </div>
 
-          {/* Mensaje de bienvenida */}
+          {/* Mensaje de bienvenida completo */}
           <p style={{
             textAlign: 'center',
-            fontSize: '15px',
-            lineHeight: 1.4,
+            fontSize: '14px',
+            lineHeight: 1.5,
             color: 'white',
             fontWeight: 300,
-            margin: '20px 0 0 0',
+            margin: '16px 0 0 0',
+            padding: 0,
           }}>
-            ¡Felicidades <span style={{ color: '#C45CFF', fontWeight: 500 }}>{firstName}</span>,
+            ¡Felicidades <span style={{ color: '#C45CFF', fontWeight: 500 }}>{firstName}</span>, ya estás dentro!
             <br />
-            ya estás dentro!
+            Nos vemos este <span style={{ color: 'white', fontWeight: 500 }}>22 de agosto</span>
+            <br />
+            con la mejor energía ⚡🧡
           </p>
 
           {/* Sello "¡VOY A IR!" */}
           <div
             style={{
-              marginTop: '20px',
-              width: '210px',
-              padding: '18px 14px',
+              marginTop: '16px',
+              width: '200px',
+              padding: '14px 12px',
               borderRadius: '14px',
               background: 'linear-gradient(135deg, rgba(139,60,247,0.28), rgba(196,82,235,0.18))',
               border: '2px solid rgba(139,60,247,0.55)',
@@ -576,12 +579,12 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '32px', lineHeight: 1, marginBottom: '8px' }}>⚡🧡</div>
+            <div style={{ fontSize: '28px', lineHeight: 1, marginBottom: '6px' }}>⚡🧡</div>
             <p style={{
-              fontSize: '22px',
+              fontSize: '20px',
               fontWeight: 300,
               lineHeight: 1,
-              margin: '0 0 6px 0',
+              margin: '0 0 5px 0',
               color: 'white',
               letterSpacing: '0.8px',
             }}>¡VOY A IR!</p>
@@ -597,11 +600,11 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
 
           {/* Asistente */}
           <p style={{
-            fontSize: '16px',
+            fontSize: '15px',
             color: 'white',
             fontWeight: 300,
             textAlign: 'center',
-            margin: '18px 0 3px 0',
+            margin: '14px 0 3px 0',
           }}>
             {buyerName}
           </p>
@@ -617,22 +620,12 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
         </div>
 
         {/* Footer fijo */}
-        <div style={{ position: 'absolute', bottom: '22px', left: 0, right: 0, textAlign: 'center', zIndex: 1 }}>
+        <div style={{ position: 'absolute', bottom: '18px', left: 0, right: 0, textAlign: 'center', zIndex: 1 }}>
           <p style={{
             fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '9px',
-            color: 'rgba(255,255,255,0.55)',
-            letterSpacing: '2px',
-            textTransform: 'uppercase',
-            margin: '0 0 4px 0',
-          }}>
-            22 ago 2026 · Barranquilla
-          </p>
-          <p style={{
-            fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '8px',
+            fontSize: '10px',
             color: 'rgba(196,82,235,0.85)',
-            letterSpacing: '1.5px',
+            letterSpacing: '2.5px',
             margin: 0,
           }}>
             pipesantos.com
