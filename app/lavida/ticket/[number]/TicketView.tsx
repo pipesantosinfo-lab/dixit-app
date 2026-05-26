@@ -68,13 +68,27 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 50px rgba(139,60,247,0.08)',
           filter: isUsed ? 'grayscale(0.6) opacity(0.6)' : 'none',
         }}>
-          {/* Header */}
-          <div className="relative h-32 overflow-hidden">
-            <div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')" }} />
-            <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.3), rgba(13,10,20,0.95))' }} />
-            <div className="absolute bottom-4 left-6 right-6">
-              <p className="font-mono text-xs tracking-[0.3em] uppercase mb-1" style={{ color: 'rgba(139,60,247,0.9)' }}>Entrada General</p>
-              <h1 className="font-display text-xl font-light text-white">La vida es cule viaje</h1>
+          {/* Diseño de boleta */}
+          <div className="relative w-full" style={{ aspectRatio: '16 / 6' }}>
+            <img
+              src="/ticket-design.jpg"
+              alt="La vida es cule viaje — Pipe Santos"
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+            {/* Número de boleto sobre el rectángulo blanco del diseño */}
+            <div
+              className="absolute flex items-center justify-center font-mono text-black"
+              style={{
+                top: '24.4%',
+                bottom: '68.9%',
+                left: '78.6%',
+                right: '6.3%',
+                fontSize: 'clamp(7px, 1.6vw, 10px)',
+                letterSpacing: '0.5px',
+                fontWeight: 700,
+              }}
+            >
+              {shortId}
             </div>
           </div>
 
@@ -101,22 +115,10 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
               </div>
             </div>
 
-            <p className="text-center font-mono text-xs tracking-[0.3em] mb-5" style={{ color: 'rgba(255,255,255,0.2)' }}>
-              {shortId}
+            <p className="text-center font-display text-lg text-white mb-1">{ticket.buyer_name}</p>
+            <p className="text-center font-mono text-xs tracking-[0.3em] mb-4" style={{ color: 'rgba(139,60,247,0.7)' }}>
+              Boleto · {shortId}
             </p>
-
-            <div className="space-y-3">
-              {[
-                { label: 'Asistente', value: ticket.buyer_name },
-                { label: 'Fecha', value: 'Sáb 22 ago 2026 · 2:00 PM', highlight: true },
-                { label: 'Lugar', value: 'Barranquilla, Colombia' },
-              ].map(({ label, value, highlight }) => (
-                <div key={label} className="flex justify-between items-center">
-                  <span className="font-mono text-xs text-white/30 tracking-widest uppercase">{label}</span>
-                  <span className="font-body text-sm" style={{ color: highlight ? '#8B3CF7' : 'rgba(255,255,255,0.7)' }}>{value}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="h-2" style={{ background: 'linear-gradient(90deg, rgba(139,60,247,0.6), rgba(196,82,0,0.4), transparent)' }} />
