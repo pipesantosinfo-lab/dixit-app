@@ -358,3 +358,58 @@ html {
   0%, 100% { background-position: 200% 0; }
   50% { background-position: -50% 0; }
 }
+
+/* ── Ticket glow — estela morada/naranja que pulsa alrededor del ticket ─── */
+.ticket-wrapper {
+  position: relative;
+}
+/* Estela morada principal (más grande, envuelve el ticket) */
+.ticket-wrapper::before {
+  content: '';
+  position: absolute;
+  left: -8%;
+  right: -8%;
+  top: 10%;
+  bottom: -8%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(139, 60, 247, 0.50) 0%,
+    rgba(196, 60, 255, 0.28) 35%,
+    rgba(139, 60, 247, 0.10) 55%,
+    transparent 75%
+  );
+  filter: blur(28px);
+  pointer-events: none;
+  z-index: 1;
+  animation: ticket-glow-pulse 3.2s ease-in-out infinite;
+}
+/* Estela naranja secundaria (más pequeña, debajo del diseño) */
+.ticket-wrapper::after {
+  content: '';
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  top: 60%;
+  bottom: 0;
+  background: radial-gradient(
+    ellipse at center bottom,
+    rgba(255, 100, 30, 0.35) 0%,
+    rgba(196, 82, 0, 0.18) 30%,
+    transparent 65%
+  );
+  filter: blur(18px);
+  pointer-events: none;
+  z-index: 1;
+  animation: ticket-glow-pulse 3.2s ease-in-out infinite 0.6s;
+}
+
+@keyframes ticket-glow-pulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}

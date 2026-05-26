@@ -61,12 +61,16 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           </div>
         )}
 
+        {/* Wrapper con estela */}
+        <div className="relative ticket-wrapper">
+
         {/* Ticket Card */}
-        <div className="rounded-3xl overflow-hidden" style={{
+        <div className="rounded-3xl overflow-hidden relative" style={{
           background: 'linear-gradient(145deg, #0d0a14, #140e20)',
           border: '1px solid rgba(139,60,247,0.25)',
           boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 50px rgba(139,60,247,0.08)',
           filter: isUsed ? 'grayscale(0.6) opacity(0.6)' : 'none',
+          zIndex: 2,
         }}>
           {/* Diseño de boleta */}
           <div className="relative w-full" style={{ aspectRatio: '16 / 6' }}>
@@ -86,6 +90,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
                 fontSize: 'clamp(7px, 1.6vw, 10px)',
                 letterSpacing: '0.5px',
                 fontWeight: 700,
+                zIndex: 2,
               }}
             >
               {shortId}
@@ -123,6 +128,8 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
 
           <div className="h-2" style={{ background: 'linear-gradient(90deg, rgba(139,60,247,0.6), rgba(196,82,0,0.4), transparent)' }} />
         </div>
+
+        </div>{/* /ticket-wrapper */}
 
         <p className="text-center font-body text-white/20 text-xs mt-6 leading-relaxed">
           Muestra este QR en la entrada · Válido para una persona
