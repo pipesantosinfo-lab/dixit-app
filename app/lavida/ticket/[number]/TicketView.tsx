@@ -99,6 +99,16 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
             </div>
           </div>
 
+          {/* Mensaje de bienvenida personalizado */}
+          <div className="px-6 pt-5 pb-3 text-center">
+            <p className="font-body text-white leading-relaxed" style={{ fontSize: '15px' }}>
+              ¡Felicidades <b style={{ color: '#C45CFF' }}>{ticket.buyer_name.split(' ')[0]}</b>, ya estás dentro!
+              <br />
+              Nos vemos este <b className="text-white">22 de agosto</b> con la mejor energía
+              <span className="ml-1" aria-label="rayo y corazón naranja">⚡🧡</span>
+            </p>
+          </div>
+
           {/* Perforated divider */}
           <div className="relative flex items-center px-6 py-4" style={{ borderTop: '1px dashed rgba(255,255,255,0.08)' }}>
             <div className="absolute -left-3 w-6 h-6 rounded-full" style={{ background: '#070508' }} />
