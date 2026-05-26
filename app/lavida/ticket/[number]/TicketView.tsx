@@ -17,24 +17,42 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
   const [qrUrl, setQrUrl] = useState('')
   const [sharing, setSharing] = useState(false)
   const [shareMsg, setShareMsg] = useState('')
+  const [showCaptureView, setShowCaptureView] = useState(false)
   const shareViewRef = useRef<HTMLDivElement>(null)
   const isUsed = ticket.status === 'used'
   const shortId = ticket.ticket_number.split('-')[0].toUpperCase()
 
   async function shareTicket() {
-    if (!shareViewRef.current) return
+    if (sharing) return
     setSharing(true)
     setShareMsg('')
-    // Esperar a que las imágenes carguen
-    await new Promise(r => setTimeout(r, 200))
+    setShowCaptureView(true) // monta el ShareView visible
+    // Esperar 2 frames para que React lo monte
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
+    // Esperar a que TODAS las imágenes carguen completamente
+    if (shareViewRef.current) {
+      const imgs = Array.from(shareViewRef.current.querySelectorAll('img'))
+      await Promise.all(imgs.map(img => {
+        if (img.complete && img.naturalHeight !== 0) return Promise.resolve()
+        return new Promise<void>(resolve => {
+          img.onload = () => resolve()
+          img.onerror = () => resolve()
+          // Failsafe timeout 3s
+          setTimeout(resolve, 3000)
+        })
+      }))
+    }
+    // Margen extra para renderizado de gradientes/fuentes
+    await new Promise(r => setTimeout(r, 400))
+    if (!shareViewRef.current) { setSharing(false); setShowCaptureView(false); return }
     try {
       const { toBlob } = await import('html-to-image')
       const blob = await toBlob(shareViewRef.current, {
-        pixelRatio: 2, // 540 × 2 = 1080 (ancho de stories) · 960 × 2 = 1920 (alto)
+        pixelRatio: 3, // 360 × 3 = 1080 (ancho de stories) · 640 × 3 = 1920 (alto)
         backgroundColor: '#070508',
-        cacheBust: true,
-        width: 540,
-        height: 960,
+        cacheBust: false,
+        width: 360,
+        height: 640,
       })
       if (!blob) throw new Error('No se pudo generar la imagen')
 
@@ -67,6 +85,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         setShareMsg('No se pudo compartir. Intenta de nuevo.')
       }
     } finally {
+      setShowCaptureView(false)
       setSharing(false)
       setTimeout(() => setShareMsg(''), 4000)
     }
@@ -229,12 +248,40 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         </div>
       </div>
 
-      {/* ── Vista de captura para Instagram Stories (off-screen) ── */}
-      <ShareView
-        ref={shareViewRef}
-        buyerName={ticket.buyer_name}
-        shortId={shortId}
-      />
+      {/* ── Modal de captura: muestra la vista 9:16 mientras se genera la imagen ── */}
+      {showCaptureView && (
+        <div
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(7,5,8,0.95)',
+            backdropFilter: 'blur(8px)',
+            zIndex: 9999,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+          }}
+        >
+          <ShareView
+            ref={shareViewRef}
+            buyerName={ticket.buyer_name}
+            shortId={shortId}
+          />
+          <p style={{
+            position: 'absolute',
+            bottom: '30px',
+            color: 'rgba(255,255,255,0.7)',
+            fontFamily: 'ui-monospace, "Courier New", monospace',
+            fontSize: '11px',
+            letterSpacing: '3px',
+            textTransform: 'uppercase',
+          }}>
+            Generando imagen...
+          </p>
+        </div>
+      )}
     </main>
   )
 }
@@ -421,21 +468,19 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
       <div
         ref={ref}
         style={{
-          position: 'fixed',
-          left: '-10000px',
-          top: 0,
-          width: '540px',
-          height: '960px',
+          width: '360px',
+          height: '640px',
           background: 'linear-gradient(180deg, #070508 0%, #110a1c 50%, #070508 100%)',
           color: 'white',
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-          padding: '50px 36px 40px',
+          padding: '34px 24px 28px',
           boxSizing: 'border-box',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           pointerEvents: 'none',
           overflow: 'hidden',
+          position: 'relative',
         }}
       >
         {/* Aura morada de fondo */}
@@ -469,7 +514,7 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
           <img
             src="/logo-header-v2.png"
             alt="Pipe Santos"
-            style={{ height: '68px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
           />
 
           {/* Ticket design */}
@@ -477,10 +522,10 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
             width: '100%',
             aspectRatio: '16 / 6',
             position: 'relative',
-            borderRadius: '14px',
+            borderRadius: '10px',
             overflow: 'hidden',
-            marginTop: '34px',
-            boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(139,60,247,0.35)',
+            marginTop: '22px',
+            boxShadow: '0 14px 36px rgba(0,0,0,0.6), 0 0 22px rgba(139,60,247,0.35)',
           }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -496,8 +541,8 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
                 fontFamily: 'ui-monospace, "Courier New", monospace',
                 fontWeight: 700,
                 color: '#000',
-                fontSize: '11px',
-                letterSpacing: '0.5px',
+                fontSize: '8px',
+                letterSpacing: '0.3px',
               }}
             >
               {shortId}
@@ -506,13 +551,12 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
 
           {/* Mensaje de bienvenida */}
           <p style={{
-            marginTop: '28px',
             textAlign: 'center',
-            fontSize: '20px',
+            fontSize: '15px',
             lineHeight: 1.4,
             color: 'white',
             fontWeight: 300,
-            margin: '28px 0 0 0',
+            margin: '20px 0 0 0',
           }}>
             ¡Felicidades <span style={{ color: '#C45CFF', fontWeight: 500 }}>{firstName}</span>,
             <br />
@@ -522,29 +566,29 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
           {/* Sello "¡VOY A IR!" */}
           <div
             style={{
-              marginTop: '28px',
-              width: '300px',
-              padding: '24px 20px',
-              borderRadius: '20px',
+              marginTop: '20px',
+              width: '210px',
+              padding: '18px 14px',
+              borderRadius: '14px',
               background: 'linear-gradient(135deg, rgba(139,60,247,0.28), rgba(196,82,235,0.18))',
               border: '2px solid rgba(139,60,247,0.55)',
-              boxShadow: '0 0 40px rgba(139,60,247,0.45)',
+              boxShadow: '0 0 28px rgba(139,60,247,0.45)',
               textAlign: 'center',
             }}
           >
-            <div style={{ fontSize: '44px', lineHeight: 1, marginBottom: '10px' }}>⚡🧡</div>
+            <div style={{ fontSize: '32px', lineHeight: 1, marginBottom: '8px' }}>⚡🧡</div>
             <p style={{
-              fontSize: '32px',
+              fontSize: '22px',
               fontWeight: 300,
               lineHeight: 1,
-              margin: '0 0 8px 0',
+              margin: '0 0 6px 0',
               color: 'white',
-              letterSpacing: '1px',
+              letterSpacing: '0.8px',
             }}>¡VOY A IR!</p>
             <p style={{
               fontFamily: 'ui-monospace, "Courier New", monospace',
-              fontSize: '10px',
-              letterSpacing: '3px',
+              fontSize: '7px',
+              letterSpacing: '2px',
               textTransform: 'uppercase',
               color: 'rgba(220,195,255,0.95)',
               margin: 0,
@@ -553,20 +597,19 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
 
           {/* Asistente */}
           <p style={{
-            marginTop: '26px',
-            fontSize: '22px',
+            fontSize: '16px',
             color: 'white',
             fontWeight: 300,
             textAlign: 'center',
-            margin: '26px 0 4px 0',
+            margin: '18px 0 3px 0',
           }}>
             {buyerName}
           </p>
           <p style={{
             fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '11px',
+            fontSize: '8px',
             color: 'rgba(139,60,247,0.85)',
-            letterSpacing: '3px',
+            letterSpacing: '2px',
             margin: 0,
           }}>
             Boleto · {shortId}
@@ -574,22 +617,22 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
         </div>
 
         {/* Footer fijo */}
-        <div style={{ position: 'absolute', bottom: '32px', left: 0, right: 0, textAlign: 'center', zIndex: 1 }}>
+        <div style={{ position: 'absolute', bottom: '22px', left: 0, right: 0, textAlign: 'center', zIndex: 1 }}>
           <p style={{
             fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '12px',
+            fontSize: '9px',
             color: 'rgba(255,255,255,0.55)',
-            letterSpacing: '2.5px',
+            letterSpacing: '2px',
             textTransform: 'uppercase',
-            margin: '0 0 6px 0',
+            margin: '0 0 4px 0',
           }}>
             22 ago 2026 · Barranquilla
           </p>
           <p style={{
             fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '11px',
+            fontSize: '8px',
             color: 'rgba(196,82,235,0.85)',
-            letterSpacing: '2px',
+            letterSpacing: '1.5px',
             margin: 0,
           }}>
             pipesantos.com
