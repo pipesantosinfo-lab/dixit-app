@@ -243,6 +243,9 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         {/* Dinámicas en vivo */}
         <LiveRaffleSection ticketNumber={ticket.ticket_number} buyerName={ticket.buyer_name} />
 
+        {/* Galería del evento */}
+        <EventGallerySection ticketNumber={ticket.ticket_number} buyerName={ticket.buyer_name} />
+
         <div className="flex justify-center mt-6">
           <Image src="/logo.png" alt="Pipe Santos" width={80} height={30} className="opacity-20" />
         </div>
@@ -453,6 +456,264 @@ function LiveRaffleSection({ ticketNumber, buyerName }: { ticketNumber: string; 
         )}
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+/* ────────────────────────────────────────────────────────────────────
+   Galería del evento: subir foto + ver galería colectiva
+   ──────────────────────────────────────────────────────────────────── */
+
+type GalleryPhoto = {
+  id: number
+  uploader_name: string
+  public_url: string
+  created_at: string
+  short_id: string
+  is_mine: boolean
+}
+
+type GalleryState = {
+  photos: GalleryPhoto[]
+  total: number
+  my_photo?: { id: number; public_url: string } | null
+  ticket_used?: boolean
+}
+
+function EventGallerySection({ ticketNumber, buyerName }: { ticketNumber: string; buyerName: string }) {
+  const [state, setState] = useState<GalleryState>({ photos: [], total: 0 })
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState('')
+  const [lightboxIdx, setLightboxIdx] = useState<number | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const fetchState = useCallback(async () => {
+    try {
+      const res = await fetch(`/api/gallery/photos?ticket=${encodeURIComponent(ticketNumber)}`)
+      if (res.ok) setState(await res.json())
+    } catch {}
+  }, [ticketNumber])
+
+  useEffect(() => {
+    fetchState()
+    const id = setInterval(fetchState, 8000)
+    return () => clearInterval(id)
+  }, [fetchState])
+
+  // Comprimir cliente-side antes de subir
+  async function compressImage(file: File): Promise<Blob> {
+    return new Promise((resolve, reject) => {
+      const img = document.createElement('img')
+      const url = URL.createObjectURL(file)
+      img.onload = () => {
+        URL.revokeObjectURL(url)
+        const MAX = 1800
+        let w = img.naturalWidth, h = img.naturalHeight
+        if (w > MAX || h > MAX) {
+          const scale = Math.min(MAX / w, MAX / h)
+          w = Math.round(w * scale)
+          h = Math.round(h * scale)
+        }
+        const canvas = document.createElement('canvas')
+        canvas.width = w
+        canvas.height = h
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return reject(new Error('canvas no soportado'))
+        ctx.drawImage(img, 0, 0, w, h)
+        canvas.toBlob(blob => {
+          if (!blob) return reject(new Error('toBlob falló'))
+          resolve(blob)
+        }, 'image/jpeg', 0.88)
+      }
+      img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('no se pudo leer')) }
+      img.src = url
+    })
+  }
+
+  async function handleFile(file: File) {
+    setError('')
+    setUploading(true)
+    try {
+      // Comprimir antes de subir (reduce ~70% del tamaño en mobile)
+      const compressed = await compressImage(file).catch(() => file)
+      const form = new FormData()
+      form.append('photo', compressed instanceof Blob && !(compressed instanceof File)
+        ? new File([compressed], 'foto.jpg', { type: 'image/jpeg' })
+        : compressed)
+      form.append('ticket_number', ticketNumber)
+
+      const res = await fetch('/api/gallery/upload', { method: 'POST', body: form })
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error ?? 'No se pudo subir la foto')
+      } else {
+        fetchState()
+      }
+    } catch (e) {
+      setError('Error subiendo la foto. Intenta de nuevo.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  // Mostrar la sección sólo cuando ticket está usado o ya hay fotos en la galería
+  // (para no mostrarla en entradas que aún no han llegado)
+  if (state.total === 0 && state.ticket_used !== true) return null
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+      className="mt-6 rounded-2xl p-5"
+      style={{
+        background: 'linear-gradient(135deg, rgba(139,60,247,0.10), rgba(196,82,235,0.06))',
+        border: '1px solid rgba(139,60,247,0.3)',
+      }}
+    >
+      <p className="font-mono text-[10px] tracking-[0.4em] uppercase mb-2"
+        style={{ color: 'rgba(200,160,255,0.9)' }}>
+        ◆ Galería del evento
+      </p>
+      <h3 className="font-display text-xl text-white font-light mb-1">Comparte tu momento</h3>
+      <p className="font-body text-white/55 text-sm mb-4">
+        Sube una foto del show. En algún momento Pipe va a sortear una al azar para mostrarla en pantalla 📸
+      </p>
+
+      {/* Botón subir / cambiar foto */}
+      {state.ticket_used && (
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            capture="environment"
+            style={{ display: 'none' }}
+            onChange={e => {
+              const f = e.target.files?.[0]
+              if (f) handleFile(f)
+              e.target.value = '' // reset para permitir re-subir misma imagen
+            }}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="btn-primary w-full disabled:opacity-50 mb-3"
+            style={{ background: 'linear-gradient(135deg, #8B3CF7, #C45CFF)' }}
+          >
+            <span>
+              {uploading ? 'Subiendo...' : state.my_photo ? '🔄 Cambiar mi foto' : '📸 Subir foto al evento'}
+            </span>
+          </button>
+        </>
+      )}
+
+      {error && <p className="text-red-400 text-xs mb-3 text-center font-mono">{error}</p>}
+
+      {/* Tu foto destacada */}
+      {state.my_photo && (
+        <div className="mb-4 rounded-xl overflow-hidden border-2"
+          style={{ borderColor: 'rgba(196,92,255,0.6)' }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={state.my_photo.public_url}
+            alt="Tu foto"
+            className="w-full block"
+            style={{ aspectRatio: '1 / 1', objectFit: 'cover' }}
+          />
+          <div className="px-3 py-2 text-center" style={{ background: 'rgba(139,60,247,0.15)' }}>
+            <p className="font-mono text-[10px] tracking-widest uppercase" style={{ color: 'rgba(220,195,255,0.95)' }}>
+              ★ Tu foto · {buyerName.split(' ')[0]}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Grid colectivo */}
+      {state.photos.length > 0 && (
+        <>
+          <p className="font-mono text-xs text-white/40 tracking-wider mb-2">
+            {state.total} {state.total === 1 ? 'foto' : 'fotos'} en la galería
+          </p>
+          <div className="grid grid-cols-3 gap-1.5">
+            {state.photos.filter(p => !p.is_mine).slice(0, 30).map((p, idx) => (
+              <button
+                key={p.id}
+                onClick={() => setLightboxIdx(idx)}
+                className="relative aspect-square overflow-hidden rounded-md focus:outline-none group"
+                style={{ background: 'rgba(255,255,255,0.04)' }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={p.public_url}
+                  alt={p.uploader_name}
+                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
+                  loading="lazy"
+                />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Lightbox */}
+      {lightboxIdx !== null && (() => {
+        const photos = state.photos.filter(p => !p.is_mine)
+        const photo = photos[lightboxIdx]
+        if (!photo) return null
+        return (
+          <div
+            className="fixed inset-0 z-[200] flex items-center justify-center"
+            style={{ background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(16px)' }}
+            onClick={() => setLightboxIdx(null)}
+          >
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxIdx(idx => idx === null ? null : (idx - 1 + photos.length) % photos.length) }}
+              className="absolute left-4 md:left-10 z-10 w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+              aria-label="Anterior"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div
+              className="relative mx-16 max-w-3xl"
+              onClick={(e) => e.stopPropagation()}
+              style={{ borderRadius: '12px', overflow: 'hidden' }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={photo.public_url} alt={photo.uploader_name}
+                className="block max-w-full max-h-[80vh] object-contain" />
+              <div className="absolute bottom-0 left-0 right-0 px-4 py-3 text-center"
+                style={{ background: 'linear-gradient(to top, rgba(7,5,8,0.95), transparent)' }}>
+                <p className="font-display text-white text-lg">{photo.uploader_name}</p>
+              </div>
+            </div>
+            <button
+              onClick={(e) => { e.stopPropagation(); setLightboxIdx(idx => idx === null ? null : (idx + 1) % photos.length) }}
+              className="absolute right-4 md:right-10 z-10 w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+              aria-label="Siguiente"
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+            <button
+              onClick={() => setLightboxIdx(null)}
+              className="absolute top-5 right-5 w-10 h-10 rounded-full flex items-center justify-center"
+              style={{ background: 'rgba(255,255,255,0.07)', border: '1px solid rgba(255,255,255,0.12)' }}
+              aria-label="Cerrar"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+        )
+      })()}
+
+      {/* Mensaje para tickets aún no escaneados */}
+      {!state.ticket_used && state.total > 0 && (
+        <p className="font-mono text-xs text-yellow-400/70 text-center mt-3">
+          Podrás subir tu foto cuando tu QR sea escaneado en la entrada
+        </p>
+      )}
+    </motion.div>
   )
 }
 
