@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateQRDataURL } from '@/lib/qr'
 
@@ -15,8 +15,58 @@ interface Ticket {
 
 export default function TicketView({ ticket }: { ticket: Ticket }) {
   const [qrUrl, setQrUrl] = useState('')
+  const [sharing, setSharing] = useState(false)
+  const [shareMsg, setShareMsg] = useState('')
+  const ticketCardRef = useRef<HTMLDivElement>(null)
   const isUsed = ticket.status === 'used'
   const shortId = ticket.ticket_number.split('-')[0].toUpperCase()
+
+  async function shareTicket() {
+    if (!ticketCardRef.current) return
+    setSharing(true)
+    setShareMsg('')
+    try {
+      const { toBlob } = await import('html-to-image')
+      const blob = await toBlob(ticketCardRef.current, {
+        pixelRatio: 2,
+        backgroundColor: '#070508',
+        cacheBust: true,
+      })
+      if (!blob) throw new Error('No se pudo generar la imagen')
+
+      const file = new File([blob], `entrada-pipesantos-${shortId}.png`, { type: 'image/png' })
+      const shareData = {
+        files: [file],
+        title: '¡Voy a ver a Pipe Santos!',
+        text: '¡Ya tengo mi entrada para La vida es cule viaje! 22 de agosto · Barranquilla ⚡🧡',
+      }
+
+      // navigator.canShare con files es la forma moderna y compatible
+      if (navigator.canShare && navigator.canShare(shareData)) {
+        await navigator.share(shareData)
+        setShareMsg('✓ ¡Listo para compartir!')
+      } else {
+        // Fallback: descargar la imagen
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `entrada-pipesantos-${shortId}.png`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+        setShareMsg('✓ Imagen descargada · ábrela en Instagram para compartir')
+      }
+    } catch (err) {
+      const e = err as { name?: string }
+      if (e?.name !== 'AbortError') {
+        setShareMsg('No se pudo compartir. Intenta de nuevo.')
+      }
+    } finally {
+      setSharing(false)
+      setTimeout(() => setShareMsg(''), 4000)
+    }
+  }
 
   useEffect(() => {
     if (ticket.qr_data) generateQRDataURL(ticket.qr_data).then(url => {
@@ -67,7 +117,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           <div className="ticket-top-glow" aria-hidden />
 
         {/* Ticket Card */}
-        <div className="rounded-3xl overflow-hidden relative" style={{
+        <div ref={ticketCardRef} className="rounded-3xl overflow-hidden relative" style={{
           background: 'linear-gradient(145deg, #0d0a14, #140e20)',
           border: '1px solid rgba(139,60,247,0.25)',
           boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 50px rgba(139,60,247,0.08)',
@@ -141,6 +191,24 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           <div className="h-2" style={{ background: 'linear-gradient(90deg, rgba(139,60,247,0.6), rgba(196,82,0,0.4), transparent)' }} />
         </div>
         </div>{/* /wrapper con estela */}
+
+        {/* Botón compartir en redes — fuera del card para que no salga en la captura */}
+        <div className="mt-6 flex flex-col items-center">
+          <button
+            onClick={shareTicket}
+            disabled={sharing || !qrUrl}
+            className="social-pill disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem' }}
+          >
+            <span>{sharing ? 'Generando imagen...' : 'Comparte con tus amigos'}</span>
+            <svg className="social-pill-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+          </button>
+          {shareMsg && (
+            <p className="mt-3 text-xs font-mono text-white/60 text-center">{shareMsg}</p>
+          )}
+        </div>
 
         <p className="text-center font-body text-white/20 text-xs mt-6 leading-relaxed">
           Muestra este QR en la entrada · Válido para una persona
