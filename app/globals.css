@@ -363,41 +363,42 @@ html {
 .ticket-wrapper {
   position: relative;
 }
-/* Estela morada principal (más grande, envuelve el ticket) */
+/* Estela morada principal (envuelve y se extiende abajo del ticket) */
 .ticket-wrapper::before {
   content: '';
   position: absolute;
-  left: -8%;
-  right: -8%;
-  top: 10%;
-  bottom: -8%;
+  left: -15%;
+  right: -15%;
+  top: -8%;
+  bottom: -25%;
   background: radial-gradient(
     ellipse at center,
-    rgba(139, 60, 247, 0.50) 0%,
-    rgba(196, 60, 255, 0.28) 35%,
-    rgba(139, 60, 247, 0.10) 55%,
-    transparent 75%
+    rgba(167, 80, 255, 0.85) 0%,
+    rgba(139, 60, 247, 0.55) 25%,
+    rgba(196, 60, 255, 0.32) 45%,
+    rgba(139, 60, 247, 0.12) 65%,
+    transparent 80%
   );
-  filter: blur(28px);
+  filter: blur(40px);
   pointer-events: none;
   z-index: 1;
   animation: ticket-glow-pulse 3.2s ease-in-out infinite;
 }
-/* Estela naranja secundaria (más pequeña, debajo del diseño) */
+/* Estela naranja secundaria (más concentrada en la parte inferior) */
 .ticket-wrapper::after {
   content: '';
   position: absolute;
-  left: 8%;
-  right: 8%;
-  top: 60%;
-  bottom: 0;
+  left: -5%;
+  right: -5%;
+  top: 65%;
+  bottom: -20%;
   background: radial-gradient(
     ellipse at center bottom,
-    rgba(255, 100, 30, 0.35) 0%,
-    rgba(196, 82, 0, 0.18) 30%,
+    rgba(255, 130, 50, 0.55) 0%,
+    rgba(196, 82, 0, 0.30) 30%,
     transparent 65%
   );
-  filter: blur(18px);
+  filter: blur(28px);
   pointer-events: none;
   z-index: 1;
   animation: ticket-glow-pulse 3.2s ease-in-out infinite 0.6s;
@@ -405,11 +406,11 @@ html {
 
 @keyframes ticket-glow-pulse {
   0%, 100% {
-    opacity: 0.6;
+    opacity: 0.7;
     transform: scale(1);
   }
   50% {
     opacity: 1;
-    transform: scale(1.06);
+    transform: scale(1.08);
   }
 }
