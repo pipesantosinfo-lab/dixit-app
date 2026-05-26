@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image'
-import { useEffect, useState, useCallback, useRef } from 'react'
+import { useEffect, useState, useCallback, useRef, forwardRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateQRDataURL } from '@/lib/qr'
 
@@ -17,25 +17,24 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
   const [qrUrl, setQrUrl] = useState('')
   const [sharing, setSharing] = useState(false)
   const [shareMsg, setShareMsg] = useState('')
-  const [isCapturing, setIsCapturing] = useState(false)
-  const ticketCardRef = useRef<HTMLDivElement>(null)
+  const shareViewRef = useRef<HTMLDivElement>(null)
   const isUsed = ticket.status === 'used'
   const shortId = ticket.ticket_number.split('-')[0].toUpperCase()
 
   async function shareTicket() {
-    if (!ticketCardRef.current) return
+    if (!shareViewRef.current) return
     setSharing(true)
     setShareMsg('')
-    setIsCapturing(true) // Esconde el QR y muestra el sello promocional
-    // Esperar dos frames para que React actualice el DOM antes de capturar
-    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
-    await new Promise(r => setTimeout(r, 150))
+    // Esperar a que las imágenes carguen
+    await new Promise(r => setTimeout(r, 200))
     try {
       const { toBlob } = await import('html-to-image')
-      const blob = await toBlob(ticketCardRef.current, {
-        pixelRatio: 2,
+      const blob = await toBlob(shareViewRef.current, {
+        pixelRatio: 2, // 540 × 2 = 1080 (ancho de stories) · 960 × 2 = 1920 (alto)
         backgroundColor: '#070508',
         cacheBust: true,
+        width: 540,
+        height: 960,
       })
       if (!blob) throw new Error('No se pudo generar la imagen')
 
@@ -68,7 +67,6 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         setShareMsg('No se pudo compartir. Intenta de nuevo.')
       }
     } finally {
-      setIsCapturing(false)
       setSharing(false)
       setTimeout(() => setShareMsg(''), 4000)
     }
@@ -123,7 +121,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           <div className="ticket-top-glow" aria-hidden />
 
         {/* Ticket Card */}
-        <div ref={ticketCardRef} className="rounded-3xl overflow-hidden relative" style={{
+        <div className="rounded-3xl overflow-hidden relative" style={{
           background: 'linear-gradient(145deg, #0d0a14, #140e20)',
           border: '1px solid rgba(139,60,247,0.25)',
           boxShadow: '0 40px 80px rgba(0,0,0,0.7), 0 0 50px rgba(139,60,247,0.08)',
@@ -172,39 +170,20 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
             <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,60,247,0.3), transparent)' }} />
           </div>
 
-          {/* QR — se reemplaza por sello promocional al compartir (para no exponer el QR) */}
+          {/* QR */}
           <div className="px-6 pb-6">
             <div className="flex justify-center mb-5">
-              {isCapturing ? (
-                <div
-                  className="flex flex-col items-center justify-center text-center px-4"
-                  style={{
-                    width: '210px',
-                    height: '210px',
-                    borderRadius: '16px',
-                    background: 'linear-gradient(135deg, rgba(139,60,247,0.25), rgba(196,82,235,0.15))',
-                    border: '2px solid rgba(139,60,247,0.5)',
-                    boxShadow: '0 0 30px rgba(139,60,247,0.35)',
-                  }}
-                >
-                  <div style={{ fontSize: '46px', lineHeight: 1, marginBottom: '10px' }}>⚡🧡</div>
-                  <p className="font-display text-white" style={{ fontSize: '22px', fontWeight: 300, lineHeight: 1.1, marginBottom: '8px' }}>¡VOY A IR!</p>
-                  <p className="font-mono" style={{ fontSize: '9px', color: 'rgba(220,195,255,0.95)', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '4px' }}>Entrada confirmada</p>
-                  <p className="font-mono" style={{ fontSize: '10px', color: 'rgba(255,255,255,0.55)', letterSpacing: '1px' }}>pipesantos.com</p>
+              <div className="relative">
+                <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 30px rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.2)' }} />
+                <div className="bg-white rounded-xl p-3 relative z-10">
+                  {qrUrl
+                    ? <img src={qrUrl} alt="QR" width={180} height={180} className="block" />
+                    : <div className="w-[180px] h-[180px] flex items-center justify-center">
+                        <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#8B3CF7 transparent transparent transparent' }} />
+                      </div>
+                  }
                 </div>
-              ) : (
-                <div className="relative">
-                  <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 30px rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.2)' }} />
-                  <div className="bg-white rounded-xl p-3 relative z-10">
-                    {qrUrl
-                      ? <img src={qrUrl} alt="QR" width={180} height={180} className="block" />
-                      : <div className="w-[180px] h-[180px] flex items-center justify-center">
-                          <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#8B3CF7 transparent transparent transparent' }} />
-                        </div>
-                    }
-                  </div>
-                </div>
-              )}
+              </div>
             </div>
 
             <p className="text-center font-display text-lg text-white mb-1">{ticket.buyer_name}</p>
@@ -249,6 +228,13 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           <Image src="/logo.png" alt="Pipe Santos" width={80} height={30} className="opacity-20" />
         </div>
       </div>
+
+      {/* ── Vista de captura para Instagram Stories (off-screen) ── */}
+      <ShareView
+        ref={shareViewRef}
+        buyerName={ticket.buyer_name}
+        shortId={shortId}
+      />
     </main>
   )
 }
@@ -422,3 +408,194 @@ function LiveRaffleSection({ ticketNumber, buyerName }: { ticketNumber: string; 
     </AnimatePresence>
   )
 }
+
+/* ────────────────────────────────────────────────────────────────────
+   ShareView: Vista 9:16 optimizada para Instagram Stories
+   Se renderiza off-screen y se captura con html-to-image al compartir.
+   ──────────────────────────────────────────────────────────────────── */
+
+const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: string }>(
+  function ShareView({ buyerName, shortId }, ref) {
+    const firstName = buyerName.split(' ')[0]
+    return (
+      <div
+        ref={ref}
+        style={{
+          position: 'fixed',
+          left: '-10000px',
+          top: 0,
+          width: '540px',
+          height: '960px',
+          background: 'linear-gradient(180deg, #070508 0%, #110a1c 50%, #070508 100%)',
+          color: 'white',
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+          padding: '50px 36px 40px',
+          boxSizing: 'border-box',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          pointerEvents: 'none',
+          overflow: 'hidden',
+        }}
+      >
+        {/* Aura morada de fondo */}
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '120%',
+          height: '40%',
+          background: 'radial-gradient(ellipse at center, rgba(167,80,255,0.55) 0%, rgba(139,60,247,0.30) 30%, transparent 65%)',
+          filter: 'blur(50px)',
+        }} />
+        {/* Aura naranja inferior */}
+        <div style={{
+          position: 'absolute',
+          bottom: '15%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '90%',
+          height: '25%',
+          background: 'radial-gradient(ellipse at center, rgba(255,130,50,0.40) 0%, rgba(196,82,0,0.20) 30%, transparent 65%)',
+          filter: 'blur(40px)',
+        }} />
+
+        {/* Contenido sobre las auras */}
+        <div style={{ position: 'relative', zIndex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+
+          {/* Logo arriba */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/logo-header-v2.png"
+            alt="Pipe Santos"
+            style={{ height: '68px', width: 'auto', objectFit: 'contain' }}
+          />
+
+          {/* Ticket design */}
+          <div style={{
+            width: '100%',
+            aspectRatio: '16 / 6',
+            position: 'relative',
+            borderRadius: '14px',
+            overflow: 'hidden',
+            marginTop: '34px',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(139,60,247,0.35)',
+          }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/ticket-design.jpg"
+              alt=""
+              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+            />
+            <div
+              style={{
+                position: 'absolute',
+                top: '24.4%', bottom: '68.9%', left: '78.6%', right: '6.3%',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontFamily: 'ui-monospace, "Courier New", monospace',
+                fontWeight: 700,
+                color: '#000',
+                fontSize: '11px',
+                letterSpacing: '0.5px',
+              }}
+            >
+              {shortId}
+            </div>
+          </div>
+
+          {/* Mensaje de bienvenida */}
+          <p style={{
+            marginTop: '28px',
+            textAlign: 'center',
+            fontSize: '20px',
+            lineHeight: 1.4,
+            color: 'white',
+            fontWeight: 300,
+            margin: '28px 0 0 0',
+          }}>
+            ¡Felicidades <span style={{ color: '#C45CFF', fontWeight: 500 }}>{firstName}</span>,
+            <br />
+            ya estás dentro!
+          </p>
+
+          {/* Sello "¡VOY A IR!" */}
+          <div
+            style={{
+              marginTop: '28px',
+              width: '300px',
+              padding: '24px 20px',
+              borderRadius: '20px',
+              background: 'linear-gradient(135deg, rgba(139,60,247,0.28), rgba(196,82,235,0.18))',
+              border: '2px solid rgba(139,60,247,0.55)',
+              boxShadow: '0 0 40px rgba(139,60,247,0.45)',
+              textAlign: 'center',
+            }}
+          >
+            <div style={{ fontSize: '44px', lineHeight: 1, marginBottom: '10px' }}>⚡🧡</div>
+            <p style={{
+              fontSize: '32px',
+              fontWeight: 300,
+              lineHeight: 1,
+              margin: '0 0 8px 0',
+              color: 'white',
+              letterSpacing: '1px',
+            }}>¡VOY A IR!</p>
+            <p style={{
+              fontFamily: 'ui-monospace, "Courier New", monospace',
+              fontSize: '10px',
+              letterSpacing: '3px',
+              textTransform: 'uppercase',
+              color: 'rgba(220,195,255,0.95)',
+              margin: 0,
+            }}>Entrada confirmada</p>
+          </div>
+
+          {/* Asistente */}
+          <p style={{
+            marginTop: '26px',
+            fontSize: '22px',
+            color: 'white',
+            fontWeight: 300,
+            textAlign: 'center',
+            margin: '26px 0 4px 0',
+          }}>
+            {buyerName}
+          </p>
+          <p style={{
+            fontFamily: 'ui-monospace, "Courier New", monospace',
+            fontSize: '11px',
+            color: 'rgba(139,60,247,0.85)',
+            letterSpacing: '3px',
+            margin: 0,
+          }}>
+            Boleto · {shortId}
+          </p>
+        </div>
+
+        {/* Footer fijo */}
+        <div style={{ position: 'absolute', bottom: '32px', left: 0, right: 0, textAlign: 'center', zIndex: 1 }}>
+          <p style={{
+            fontFamily: 'ui-monospace, "Courier New", monospace',
+            fontSize: '12px',
+            color: 'rgba(255,255,255,0.55)',
+            letterSpacing: '2.5px',
+            textTransform: 'uppercase',
+            margin: '0 0 6px 0',
+          }}>
+            22 ago 2026 · Barranquilla
+          </p>
+          <p style={{
+            fontFamily: 'ui-monospace, "Courier New", monospace',
+            fontSize: '11px',
+            color: 'rgba(196,82,235,0.85)',
+            letterSpacing: '2px',
+            margin: 0,
+          }}>
+            pipesantos.com
+          </p>
+        </div>
+      </div>
+    )
+  }
+)
