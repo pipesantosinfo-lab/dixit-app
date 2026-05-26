@@ -61,8 +61,10 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           </div>
         )}
 
-        {/* Wrapper con estela */}
-        <div className="relative ticket-wrapper">
+        {/* Wrapper para que la estela superior no quede clipeada */}
+        <div className="relative">
+          {/* Estela superior — sólo alrededor del diseño del ticket */}
+          <div className="ticket-top-glow" aria-hidden />
 
         {/* Ticket Card */}
         <div className="rounded-3xl overflow-hidden relative" style={{
@@ -128,8 +130,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
 
           <div className="h-2" style={{ background: 'linear-gradient(90deg, rgba(139,60,247,0.6), rgba(196,82,0,0.4), transparent)' }} />
         </div>
-
-        </div>{/* /ticket-wrapper */}
+        </div>{/* /wrapper con estela */}
 
         <p className="text-center font-body text-white/20 text-xs mt-6 leading-relaxed">
           Muestra este QR en la entrada · Válido para una persona

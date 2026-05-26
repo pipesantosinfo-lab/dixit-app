@@ -359,48 +359,43 @@ html {
   50% { background-position: -50% 0; }
 }
 
-/* ── Ticket glow — estela morada/naranja que pulsa alrededor del ticket ─── */
-.ticket-wrapper {
-  position: relative;
+/* ── Ticket top glow — halo amplio alrededor del diseño del ticket (parte superior) ─── */
+.ticket-top-glow {
+  position: absolute;
+  top: -70px;
+  left: -70px;
+  right: -70px;
+  /* Cubre la zona alrededor del ticket image solamente (no hasta abajo) */
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
 }
-/* Estela morada principal (envuelve y se extiende abajo del ticket) */
-.ticket-wrapper::before {
+.ticket-top-glow::before {
   content: '';
   position: absolute;
-  left: -15%;
-  right: -15%;
-  top: -8%;
-  bottom: -25%;
+  inset: 0;
   background: radial-gradient(
-    ellipse at center,
-    rgba(167, 80, 255, 0.85) 0%,
-    rgba(139, 60, 247, 0.55) 25%,
-    rgba(196, 60, 255, 0.32) 45%,
-    rgba(139, 60, 247, 0.12) 65%,
+    ellipse at center 40%,
+    rgba(167, 80, 255, 0.90) 0%,
+    rgba(139, 60, 247, 0.60) 22%,
+    rgba(196, 60, 255, 0.35) 42%,
+    rgba(139, 60, 247, 0.12) 62%,
     transparent 80%
   );
-  filter: blur(40px);
-  pointer-events: none;
-  z-index: 1;
+  filter: blur(50px);
   animation: ticket-glow-pulse 3.2s ease-in-out infinite;
 }
-/* Estela naranja secundaria (más concentrada en la parte inferior) */
-.ticket-wrapper::after {
+.ticket-top-glow::after {
   content: '';
   position: absolute;
-  left: -5%;
-  right: -5%;
-  top: 65%;
-  bottom: -20%;
+  inset: 25% 10% 0 10%;
   background: radial-gradient(
-    ellipse at center bottom,
+    ellipse at center,
     rgba(255, 130, 50, 0.55) 0%,
-    rgba(196, 82, 0, 0.30) 30%,
-    transparent 65%
+    rgba(196, 82, 0, 0.28) 30%,
+    transparent 70%
   );
-  filter: blur(28px);
-  pointer-events: none;
-  z-index: 1;
+  filter: blur(32px);
   animation: ticket-glow-pulse 3.2s ease-in-out infinite 0.6s;
 }
 
@@ -411,6 +406,6 @@ html {
   }
   50% {
     opacity: 1;
-    transform: scale(1.08);
+    transform: scale(1.06);
   }
 }
