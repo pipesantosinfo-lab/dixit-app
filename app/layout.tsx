@@ -53,11 +53,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}>
       <head>
-        {/* Preload del hero (mejora LCP — Largest Contentful Paint) */}
-        <link rel="preload" as="image" href="/hero.jpg" fetchPriority="high" />
-        {/* Preload del logo del header */}
-        <link rel="preload" as="image" href="/logo-header-v2.png" fetchPriority="high" />
-        {/* DNS prefetch para subdominios externos */}
+        {/*
+          El hero y el logo usan next/image con priority — Next.js inyecta
+          automáticamente los <link rel="preload"> con la URL optimizada,
+          así que no se duplica acá.
+        */}
+        {/* DNS prefetch para subdominios externos (parallel) */}
         <link rel="dns-prefetch" href="https://checkout.bold.co" />
         <link rel="dns-prefetch" href="https://open.spotify.com" />
       </head>

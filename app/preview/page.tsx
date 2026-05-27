@@ -739,9 +739,18 @@ export default function PreviewPage() {
 
       {/* ── HERO ─────────────────────────────────── */}
       <section ref={heroRef} data-track-section="hero" className="relative min-h-screen flex flex-col justify-start overflow-hidden">
-        {/* Background photo con parallax */}
+        {/* Background photo con parallax — next/image servida por tamaño de viewport (mobile=750px, desktop=2400px) */}
         <div className="absolute inset-0">
-          <motion.div className="absolute inset-0 bg-cover bg-center bg-top" style={{ backgroundImage: "url('/hero.jpg')", y: heroY, scale: 1.15 }} />
+          {/* La imagen está fija dentro de su contenedor; el parallax se aplica por separado vía CSS transform */}
+          <Image
+            src="/hero.jpg"
+            alt=""
+            fill
+            priority
+            quality={85}
+            sizes="100vw"
+            style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'scale(1.15)' }}
+          />
           {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.4) 40%, transparent 58%)' }} />
           {/* Oscuridad mínima en la parte inferior para transición suave */}
