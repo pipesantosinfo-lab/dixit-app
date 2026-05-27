@@ -28,8 +28,17 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  // Compresión de respuestas (gzip/brotli) automática
+  compress: true,
+  // Remueve la cabecera X-Powered-By: Next.js (pequeña reducción + seguridad)
+  poweredByHeader: false,
+  // Optimizaciones de imágenes
   images: {
     domains: ['images.unsplash.com'],
+    // Formatos modernos: AVIF (30% menor que WebP) y WebP (30% menor que JPEG)
+    formats: ['image/avif', 'image/webp'],
+    // Cache de 60s para imágenes optimizadas — reduce procesamiento repetido
+    minimumCacheTTL: 60 * 60 * 24 * 7, // 7 días
   },
   async headers() {
     return [
@@ -42,6 +51,27 @@ const nextConfig = {
         source: '/validar',
         headers: [
           { key: 'Permissions-Policy', value: "camera=(self), microphone=(), geolocation=()" },
+        ],
+      },
+      {
+        // Assets estáticos: cache largo + immutable (los nombres tienen hash)
+        source: '/_next/static/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        // Imágenes en /public: cache de 1 día con revalidación
+        source: '/:path*\\.(png|jpg|jpeg|webp|avif|gif|svg|ico)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
+        ],
+      },
+      {
+        // Videos: cache de 1 día
+        source: '/:path*\\.(mp4|webm)',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' },
         ],
       },
     ]
