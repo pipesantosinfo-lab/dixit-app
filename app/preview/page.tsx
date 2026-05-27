@@ -89,6 +89,97 @@ function makeHeart(burst = false): Heart {
   }
 }
 
+/* ── Fondo animado de la sección de redes — orbes de luz + grid sutil ── */
+function SocialSectionBg() {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden style={{ zIndex: 0 }}>
+      {/* Orbe morado — arriba izquierda, drift lento */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: 'clamp(360px, 50vw, 620px)',
+          height: 'clamp(360px, 50vw, 620px)',
+          top: '-15%',
+          left: '-10%',
+          background: 'radial-gradient(circle, rgba(139,60,247,0.45) 0%, rgba(139,60,247,0.18) 40%, transparent 70%)',
+          filter: 'blur(40px)',
+          willChange: 'transform',
+        }}
+        animate={{ x: [0, 80, -40, 0], y: [0, 60, 120, 0], scale: [1, 1.15, 0.9, 1] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbe cyan — derecha inferior */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: 'clamp(380px, 55vw, 700px)',
+          height: 'clamp(380px, 55vw, 700px)',
+          bottom: '-20%',
+          right: '-15%',
+          background: 'radial-gradient(circle, rgba(34,211,238,0.28) 0%, rgba(34,211,238,0.10) 40%, transparent 70%)',
+          filter: 'blur(50px)',
+          willChange: 'transform',
+        }}
+        animate={{ x: [0, -100, 50, 0], y: [0, -80, -40, 0], scale: [1, 0.85, 1.2, 1] }}
+        transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbe naranja — centro, drift más rápido */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: 'clamp(280px, 38vw, 480px)',
+          height: 'clamp(280px, 38vw, 480px)',
+          top: '35%',
+          left: '40%',
+          background: 'radial-gradient(circle, rgba(255,130,50,0.30) 0%, rgba(196,82,0,0.12) 40%, transparent 70%)',
+          filter: 'blur(45px)',
+          willChange: 'transform',
+        }}
+        animate={{ x: [-40, 80, -40], y: [-30, 60, -30], scale: [0.9, 1.1, 0.9] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbe magenta — segundo del lado izquierdo */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: 'clamp(260px, 35vw, 460px)',
+          height: 'clamp(260px, 35vw, 460px)',
+          top: '55%',
+          left: '5%',
+          background: 'radial-gradient(circle, rgba(196,60,255,0.30) 0%, rgba(196,60,255,0.10) 40%, transparent 70%)',
+          filter: 'blur(50px)',
+          willChange: 'transform',
+        }}
+        animate={{ x: [0, 60, -30, 0], y: [0, -50, 40, 0], scale: [1, 1.1, 0.95, 1] }}
+        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+      />
+
+      {/* Grid sutil sobre los orbes */}
+      <div
+        className="absolute inset-0"
+        style={{
+          backgroundImage: `
+            linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)
+          `,
+          backgroundSize: '80px 80px',
+          maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%)',
+        }}
+      />
+
+      {/* Vignettes en bordes superior e inferior para fundir con secciones vecinas */}
+      <div className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+        style={{ background: 'linear-gradient(180deg, #070508 0%, transparent 100%)' }} />
+      <div className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+        style={{ background: 'linear-gradient(0deg, #070508 0%, transparent 100%)' }} />
+    </div>
+  )
+}
+
 function HeartParticles({ active }: { active: boolean }) {
   const [hearts, setHearts] = useState<Heart[]>([])
 
@@ -850,9 +941,11 @@ export default function PreviewPage() {
       </section>
 
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
-      <section ref={socialRef} data-track-section="social" className="relative z-10 px-6 md:px-12 py-20">
+      <section ref={socialRef} data-track-section="social" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+        {/* Fondo animado: orbes de luz flotando + grid sutil */}
+        <SocialSectionBg />
         <HeartParticles active={socialInView} />
-        <div className="max-w-5xl mx-auto">
+        <div className="relative z-10 max-w-5xl mx-auto">
           <motion.div className="flex justify-start mb-14" style={{ marginLeft: '-12%' }} initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <Image
               src="/comunidad-logo.png"
