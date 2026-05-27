@@ -1008,6 +1008,7 @@ export default function PreviewPage() {
               controls
               playsInline
               preload="metadata"
+              poster="/showreel-poster.jpg"
               className="w-full block"
               style={{ maxHeight: '600px', background: '#070508' }}
             >
