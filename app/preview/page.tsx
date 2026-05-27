@@ -760,7 +760,7 @@ export default function PreviewPage() {
               alt=""
               fill
               priority
-              quality={85}
+              quality={95}
               sizes="100vw"
               style={{ objectFit: 'cover', objectPosition: 'center top' }}
             />
