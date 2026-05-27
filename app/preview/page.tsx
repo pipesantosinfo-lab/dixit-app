@@ -774,7 +774,7 @@ export default function PreviewPage() {
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
-        <div className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '20vh' }}>
+        <div className="relative z-10 w-full max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '20vh' }}>
           {/* Texto */}
           <motion.div initial="hidden" animate="visible" variants={stagger}>
             <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
