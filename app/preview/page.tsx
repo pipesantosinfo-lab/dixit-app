@@ -109,20 +109,36 @@ function SocialSectionBg() {
         transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe naranja — detrás de la tarjeta CENTRO (Instagram) */}
+      {/* Orbe naranja principal — detrás de la tarjeta CENTRO (Instagram) */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          width: 'clamp(360px, 42vw, 520px)',
-          height: 'clamp(360px, 42vw, 520px)',
-          top: '25%',
-          left: '38%',
-          background: 'radial-gradient(circle, rgba(255,130,50,0.62) 0%, rgba(196,82,0,0.28) 35%, transparent 70%)',
-          filter: 'blur(40px)',
+          width: 'clamp(420px, 50vw, 620px)',
+          height: 'clamp(420px, 50vw, 620px)',
+          top: '15%',
+          left: '32%',
+          background: 'radial-gradient(circle, rgba(255,140,50,0.95) 0%, rgba(255,100,30,0.50) 30%, rgba(196,82,0,0.20) 55%, transparent 75%)',
+          filter: 'blur(38px)',
           willChange: 'transform',
         }}
-        animate={{ x: [-40, 80, -40], y: [-30, 60, -30], scale: [0.9, 1.15, 0.9] }}
+        animate={{ x: [-40, 80, -40], y: [-30, 60, -30], scale: [0.95, 1.2, 0.95] }}
         transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbe naranja-rojo secundario — refuerza el área de Instagram */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: 'clamp(280px, 32vw, 400px)',
+          height: 'clamp(280px, 32vw, 400px)',
+          top: '45%',
+          left: '40%',
+          background: 'radial-gradient(circle, rgba(255,80,30,0.70) 0%, rgba(255,60,20,0.30) 35%, transparent 70%)',
+          filter: 'blur(36px)',
+          willChange: 'transform',
+        }}
+        animate={{ x: [30, -50, 30], y: [20, -40, 20], scale: [1, 1.15, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
       />
 
       {/* Orbe cyan — detrás de la tarjeta DERECHA (Facebook) */}
