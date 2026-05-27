@@ -93,68 +93,84 @@ function makeHeart(burst = false): Heart {
 function SocialSectionBg() {
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden style={{ zIndex: 0 }}>
-      {/* Orbe morado — arriba izquierda, drift lento */}
+      {/* Orbe morado — detrás de la tarjeta IZQUIERDA (TikTok) */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          width: 'clamp(360px, 50vw, 620px)',
-          height: 'clamp(360px, 50vw, 620px)',
-          top: '-15%',
-          left: '-10%',
-          background: 'radial-gradient(circle, rgba(139,60,247,0.45) 0%, rgba(139,60,247,0.18) 40%, transparent 70%)',
+          width: 'clamp(380px, 45vw, 560px)',
+          height: 'clamp(380px, 45vw, 560px)',
+          top: '15%',
+          left: '5%',
+          background: 'radial-gradient(circle, rgba(139,60,247,0.75) 0%, rgba(139,60,247,0.35) 35%, transparent 70%)',
+          filter: 'blur(36px)',
+          willChange: 'transform',
+        }}
+        animate={{ x: [0, 80, -40, 0], y: [0, 60, 100, 0], scale: [1, 1.2, 0.85, 1] }}
+        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      {/* Orbe naranja — detrás de la tarjeta CENTRO (Instagram) */}
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: 'clamp(360px, 42vw, 520px)',
+          height: 'clamp(360px, 42vw, 520px)',
+          top: '25%',
+          left: '38%',
+          background: 'radial-gradient(circle, rgba(255,130,50,0.62) 0%, rgba(196,82,0,0.28) 35%, transparent 70%)',
           filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, 80, -40, 0], y: [0, 60, 120, 0], scale: [1, 1.15, 0.9, 1] }}
-        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ x: [-40, 80, -40], y: [-30, 60, -30], scale: [0.9, 1.15, 0.9] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe cyan — derecha inferior */}
+      {/* Orbe cyan — detrás de la tarjeta DERECHA (Facebook) */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          width: 'clamp(380px, 55vw, 700px)',
-          height: 'clamp(380px, 55vw, 700px)',
-          bottom: '-20%',
-          right: '-15%',
-          background: 'radial-gradient(circle, rgba(34,211,238,0.28) 0%, rgba(34,211,238,0.10) 40%, transparent 70%)',
-          filter: 'blur(50px)',
+          width: 'clamp(400px, 48vw, 600px)',
+          height: 'clamp(400px, 48vw, 600px)',
+          top: '20%',
+          right: '5%',
+          background: 'radial-gradient(circle, rgba(34,211,238,0.55) 0%, rgba(34,211,238,0.22) 35%, transparent 70%)',
+          filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, -100, 50, 0], y: [0, -80, -40, 0], scale: [1, 0.85, 1.2, 1] }}
-        transition={{ duration: 28, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ x: [0, -90, 40, 0], y: [0, -70, -30, 0], scale: [1, 0.85, 1.2, 1] }}
+        transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe naranja — centro, drift más rápido */}
+      {/* Orbe magenta — bottom-left para cubrir parte inferior */}
       <motion.div
         className="absolute rounded-full"
         style={{
           width: 'clamp(280px, 38vw, 480px)',
           height: 'clamp(280px, 38vw, 480px)',
-          top: '35%',
-          left: '40%',
-          background: 'radial-gradient(circle, rgba(255,130,50,0.30) 0%, rgba(196,82,0,0.12) 40%, transparent 70%)',
-          filter: 'blur(45px)',
+          bottom: '5%',
+          left: '15%',
+          background: 'radial-gradient(circle, rgba(196,60,255,0.65) 0%, rgba(196,60,255,0.22) 35%, transparent 70%)',
+          filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [-40, 80, -40], y: [-30, 60, -30], scale: [0.9, 1.1, 0.9] }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ x: [0, 70, -40, 0], y: [0, -50, 40, 0], scale: [1, 1.15, 0.9, 1] }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
-      {/* Orbe magenta — segundo del lado izquierdo */}
+      {/* Orbe aurora verde-azul — bottom-right para balancear */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          width: 'clamp(260px, 35vw, 460px)',
-          height: 'clamp(260px, 35vw, 460px)',
-          top: '55%',
-          left: '5%',
-          background: 'radial-gradient(circle, rgba(196,60,255,0.30) 0%, rgba(196,60,255,0.10) 40%, transparent 70%)',
-          filter: 'blur(50px)',
+          width: 'clamp(280px, 38vw, 480px)',
+          height: 'clamp(280px, 38vw, 480px)',
+          bottom: '10%',
+          right: '20%',
+          background: 'radial-gradient(circle, rgba(80,200,255,0.55) 0%, rgba(80,200,255,0.18) 35%, transparent 70%)',
+          filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, 60, -30, 0], y: [0, -50, 40, 0], scale: [1, 1.1, 0.95, 1] }}
-        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut', delay: 3 }}
+        animate={{ x: [0, -60, 30, 0], y: [0, 40, -50, 0], scale: [0.9, 1.1, 0.95, 0.9] }}
+        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2.8 }}
       />
 
       {/* Grid sutil sobre los orbes */}
@@ -162,19 +178,19 @@ function SocialSectionBg() {
         className="absolute inset-0"
         style={{
           backgroundImage: `
-            linear-gradient(rgba(255,255,255,0.028) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.028) 1px, transparent 1px)
+            linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)
           `,
           backgroundSize: '80px 80px',
-          maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.85) 30%, transparent 80%)',
+          maskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 30%, transparent 80%)',
+          WebkitMaskImage: 'radial-gradient(ellipse at center, rgba(0,0,0,0.9) 30%, transparent 80%)',
         }}
       />
 
       {/* Vignettes en bordes superior e inferior para fundir con secciones vecinas */}
-      <div className="absolute inset-x-0 top-0 h-32 pointer-events-none"
+      <div className="absolute inset-x-0 top-0 h-24 pointer-events-none"
         style={{ background: 'linear-gradient(180deg, #070508 0%, transparent 100%)' }} />
-      <div className="absolute inset-x-0 bottom-0 h-32 pointer-events-none"
+      <div className="absolute inset-x-0 bottom-0 h-24 pointer-events-none"
         style={{ background: 'linear-gradient(0deg, #070508 0%, transparent 100%)' }} />
     </div>
   )
