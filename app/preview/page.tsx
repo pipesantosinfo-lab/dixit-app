@@ -775,8 +775,9 @@ export default function PreviewPage() {
         </div>
 
         <div className="relative z-10 w-full max-w-5xl mx-auto px-6 md:px-12 pb-16" style={{ paddingTop: '20vh' }}>
-          {/* Texto */}
-          <motion.div initial="hidden" animate="visible" variants={stagger}>
+          {/* Texto — wrapper con w-full + items-start para anclar todos los hijos a la izquierda */}
+          <motion.div initial="hidden" animate="visible" variants={stagger}
+            className="w-full flex flex-col items-start">
             <motion.p variants={fadeUp} className="font-mono text-[9px] md:text-xs tracking-[0.2em] md:tracking-[0.4em] text-aurora/80 uppercase mb-5">
               ◆ Conferencista · Escritor · Influencer
             </motion.p>
