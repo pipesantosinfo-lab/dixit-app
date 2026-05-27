@@ -410,37 +410,18 @@ html {
   }
 }
 
-/* ── Brands marquee — filas horizontales infinitas ──────────────────── */
+/* ── Brands marquee — una sola fila horizontal infinita ─────────────── */
 .brands-marquee {
   overflow: hidden;
   width: 100%;
 }
-/* Transiciones suaves arriba/abajo entre la sección crema y las oscuras vecinas */
-.brands-section::before,
-.brands-section::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 60px;
-  pointer-events: none;
-  z-index: 5;
-}
-.brands-section::before {
-  top: 0;
-  background: linear-gradient(180deg, #070508 0%, transparent 100%);
-}
-.brands-section::after {
-  bottom: 0;
-  background: linear-gradient(0deg, #070508 0%, transparent 100%);
-}
 .brands-marquee-track {
   display: flex;
   width: max-content;
-  gap: 60px;
   animation-name: brands-scroll;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
+  animation-duration: 50s;
   will-change: transform;
 }
 .brands-marquee-track:hover {
@@ -448,13 +429,15 @@ html {
 }
 .brands-marquee-img {
   flex-shrink: 0;
-  height: clamp(56px, 9vw, 110px);
+  height: clamp(60px, 9vw, 100px);
   width: auto;
+  margin-right: 60px;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
 }
+/* Loop perfecto: el track contiene 2 copias idénticas → translate -50% */
 @keyframes brands-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(calc(-50% - 30px)); }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }

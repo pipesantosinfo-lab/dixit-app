@@ -241,9 +241,9 @@ function BrandsSection() {
         </h2>
       </motion.div>
 
-      {/* Marquee de una sola fila */}
+      {/* Marquee de una sola fila — loop infinito */}
       <div className="relative z-10 brands-marquee">
-        <div className="brands-marquee-track" style={{ animationDuration: '60s' }}>
+        <div className="brands-marquee-track">
           {[0, 1].map(copy => (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
@@ -251,7 +251,6 @@ function BrandsSection() {
               src="/marcas/all-logos.png"
               alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
               className="brands-marquee-img"
-              loading="lazy"
             />
           ))}
         </div>
