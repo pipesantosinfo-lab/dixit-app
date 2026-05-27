@@ -212,77 +212,52 @@ function SocialSectionBg() {
   )
 }
 
-/* ── Sección Marcas: marquee horizontal infinito con filas alternadas ─── */
+/* ── Sección Marcas: marquee de una sola fila infinita ──────────────── */
 function BrandsSection() {
-  // 4 filas con direcciones y velocidades distintas para un efecto dinámico
-  const rows = [
-    { src: '/marcas/row-1.png', direction: 'left' as const,  duration: 35 },
-    { src: '/marcas/row-2.png', direction: 'right' as const, duration: 40 },
-    { src: '/marcas/row-3.png', direction: 'left' as const,  duration: 38 },
-    { src: '/marcas/row-4.png', direction: 'right' as const, duration: 42 },
-  ]
-
   return (
-    <section className="relative z-10 py-20 overflow-hidden brands-section">
-      {/* Fondo crema con textura sutil — hace visible cualquier logo (claro u oscuro) */}
+    <section className="relative z-10 py-10 md:py-12 overflow-hidden brands-section">
+      {/* Fondo crema con textura sutil */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
-        {/* Base color crema */}
         <div className="absolute inset-0" style={{ background: '#f5f1ea' }} />
-        {/* Textura papel: noise pattern via SVG inline */}
         <div className="absolute inset-0" style={{
           backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
           backgroundSize: '200px 200px',
-          opacity: 0.55,
+          opacity: 0.5,
           mixBlendMode: 'multiply',
         }} />
-        {/* Gradiente sutil morado/cyan apenas perceptible */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 25% 30%, rgba(139,60,247,0.06) 0%, transparent 55%), radial-gradient(ellipse at 75% 70%, rgba(34,211,238,0.05) 0%, transparent 55%)',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.07) 0%, transparent 60%)',
         }} />
       </div>
 
       {/* Título */}
       <motion.div
         initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}
-        className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 text-center mb-12"
+        className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 text-center mb-6 md:mb-8"
       >
-        <p className="font-mono text-xs tracking-[0.4em] uppercase mb-4" style={{ color: 'rgba(139,60,247,0.85)' }}>◆ Han confiado en mí</p>
-        <h2 className="font-display text-3xl md:text-5xl font-light mb-3" style={{ color: '#1a1a1a' }}>
+        <p className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase mb-2" style={{ color: 'rgba(139,60,247,0.85)' }}>◆ Han confiado en mí</p>
+        <h2 className="font-display text-2xl md:text-4xl font-light" style={{ color: '#1a1a1a' }}>
           Algunas <span className="italic" style={{ color: 'rgba(139,60,247,0.95)' }}>marcas</span> con las que trabajo
         </h2>
-        <p className="font-body text-sm md:text-base max-w-2xl mx-auto" style={{ color: 'rgba(26,26,26,0.6)' }}>
-          Empresas, instituciones y proyectos que me han abierto sus puertas para transformar audiencias con storytelling.
-        </p>
       </motion.div>
 
-      {/* Filas en marquee */}
-      <div className="relative z-10 space-y-4 md:space-y-6">
-        {rows.map((row, idx) => (
-          <div key={idx} className="brands-marquee" aria-hidden={idx > 0 ? 'true' : 'false'}>
-            <div
-              className="brands-marquee-track"
-              style={{
-                animationDuration: `${row.duration}s`,
-                animationDirection: row.direction === 'left' ? 'normal' : 'reverse',
-              }}
-            >
-              {/* Duplicamos el contenido dos veces para loop seamless */}
-              {[0, 1].map(copy => (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  key={copy}
-                  src={row.src}
-                  alt={idx === 0 && copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
-                  className="brands-marquee-img"
-                  loading="lazy"
-                />
-              ))}
-            </div>
-          </div>
-        ))}
+      {/* Marquee de una sola fila */}
+      <div className="relative z-10 brands-marquee">
+        <div className="brands-marquee-track" style={{ animationDuration: '60s' }}>
+          {[0, 1].map(copy => (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              key={copy}
+              src="/marcas/all-logos.png"
+              alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
+              className="brands-marquee-img"
+              loading="lazy"
+            />
+          ))}
+        </div>
       </div>
 
-      {/* Vignettes laterales (color crema) para fade in/out de los logos */}
+      {/* Vignettes laterales en crema */}
       <div className="absolute inset-y-0 left-0 w-20 md:w-32 pointer-events-none z-20"
         style={{ background: 'linear-gradient(90deg, #f5f1ea 0%, transparent 100%)' }} />
       <div className="absolute inset-y-0 right-0 w-20 md:w-32 pointer-events-none z-20"
