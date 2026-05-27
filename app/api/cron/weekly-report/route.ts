@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { Resend } from 'resend'
+import { requireBearer } from '@/lib/auth'
 
 const OWNER_EMAIL = 'pipesantos93@gmail.com'
 
@@ -42,11 +43,9 @@ function fmtDate(d: Date): string {
 }
 
 export async function GET(req: NextRequest) {
-  // Vercel Cron envía Authorization: Bearer <CRON_SECRET>
-  const auth = req.headers.get('authorization')
-  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  }
+  // Vercel Cron envía Authorization: Bearer <CRON_SECRET> — comparación timing-safe
+  const denied = requireBearer(req, process.env.CRON_SECRET)
+  if (denied) return denied
 
   const now = new Date()
   const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)

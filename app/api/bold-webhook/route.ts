@@ -20,12 +20,23 @@ function verifyBoldSignature(rawBody: string, signature: string | null): boolean
   if (!signature) return false
   const secret = process.env.BOLD_SECRET_KEY
   if (!secret) return false
+  // Normalizar ambas firmas a minúsculas hex para comparación consistente
+  const normalized = signature.trim().toLowerCase().replace(/^sha256=/, '')
   const expected = createHmac('sha256', secret).update(rawBody).digest('hex')
   try {
-    return timingSafeEqual(Buffer.from(signature), Buffer.from(expected))
+    const a = Buffer.from(normalized, 'hex')
+    const b = Buffer.from(expected, 'hex')
+    if (a.length !== b.length || a.length === 0) return false
+    return timingSafeEqual(a, b)
   } catch {
     return false
   }
+}
+
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
 }
 
 export async function POST(req: NextRequest) {
@@ -158,19 +169,23 @@ export async function POST(req: NextRequest) {
     const { buffer, filename, totalBuyers } = await generateLavidaExcel()
     const resend = new Resend(process.env.RESEND_API_KEY)
 
+    // Escapar todos los campos del usuario antes de embeber en HTML
     const buyerInfo = [
-      `<b>Nombre:</b> ${buyer.buyer_name}`,
-      `<b>Correo:</b> ${buyer.buyer_email}`,
-      `<b>Cédula:</b> ${buyer.buyer_cedula ?? '-'}`,
-      `<b>Teléfono:</b> ${buyer.buyer_phone ?? '-'}`,
+      `<b>Nombre:</b> ${escapeHtml(buyer.buyer_name)}`,
+      `<b>Correo:</b> ${escapeHtml(buyer.buyer_email)}`,
+      `<b>Cédula:</b> ${escapeHtml(buyer.buyer_cedula ?? '-')}`,
+      `<b>Teléfono:</b> ${escapeHtml(buyer.buyer_phone ?? '-')}`,
       `<b>Entradas:</b> ${tickets.length}`,
-      `<b>Medio de pago:</b> ${paymentMethod}`,
+      `<b>Medio de pago:</b> ${escapeHtml(paymentMethod)}`,
     ].join('<br>')
+
+    // Subject es plain text — sin escapar pero sin HTML
+    const safeSubjectName = buyer.buyer_name.replace(/[\r\n<>]/g, '').slice(0, 80)
 
     await resend.emails.send({
       from: 'Pipe Santos Entradas <entradas@pipesantos.com>',
       to: OWNER_EMAIL,
-      subject: `💰 Nueva venta — ${buyer.buyer_name} · ${tickets.length} entrada${tickets.length > 1 ? 's' : ''}`,
+      subject: `💰 Nueva venta — ${safeSubjectName} · ${tickets.length} entrada${tickets.length > 1 ? 's' : ''}`,
       html: `
         <div style="font-family:sans-serif;color:#1a1a1a;max-width:480px">
           <h2 style="color:#8B3CF7;margin:0 0 16px">✅ Pago confirmado</h2>

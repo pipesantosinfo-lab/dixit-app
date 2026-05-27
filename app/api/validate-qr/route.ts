@@ -1,26 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdmin } from '@/lib/auth'
+
+// Formato: <uuid>-<digit(s)>
+const TICKET_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-\d+$/i
 
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization') ?? ''
-  const adminSecret = auth.startsWith('Bearer ') ? auth.slice(7) : null
-  const { ticketNumber } = await req.json()
+  const denied = requireAdmin(req)
+  if (denied) return denied
 
-  if (!adminSecret || adminSecret !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
+  let body: Record<string, unknown>
+  try { body = await req.json() } catch {
+    return NextResponse.json({ error: 'Body inválido' }, { status: 400 })
   }
 
-  if (!ticketNumber) {
-    return NextResponse.json({ error: 'ticketNumber requerido' }, { status: 400 })
+  const ticketNumber = String(body.ticketNumber ?? '').slice(0, 64)
+  if (!ticketNumber || !TICKET_RE.test(ticketNumber)) {
+    return NextResponse.json({ valid: false, message: 'Número inválido ❌' })
   }
 
   const db = supabaseAdmin()
 
   const { data: ticket } = await db
     .from('lavida_tickets')
-    .select('*')
+    .select('id, status, buyer_name')
     .eq('ticket_number', ticketNumber)
-    .single()
+    .maybeSingle()
 
   if (!ticket) {
     return NextResponse.json({ valid: false, message: 'Entrada no encontrada ❌' })
@@ -43,11 +48,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ valid: false, message: 'Entrada cancelada ❌' })
   }
 
-  // Mark as used
-  await db.from('lavida_tickets').update({
-    status: 'used',
-    used_at: new Date().toISOString(),
-  }).eq('id', ticket.id)
+  // Atomic update: solo marca como usada si todavía está 'active'.
+  // Si otro request concurrente la marcó primero, este UPDATE no afecta filas.
+  const usedAt = new Date().toISOString()
+  const { data: updated } = await db
+    .from('lavida_tickets')
+    .update({ status: 'used', used_at: usedAt })
+    .eq('id', ticket.id)
+    .eq('status', 'active')
+    .select('id')
+    .maybeSingle()
+
+  if (!updated) {
+    // Alguien la marcó como usada entre el SELECT y este UPDATE
+    return NextResponse.json({
+      valid: false,
+      status: 'already_used',
+      message: 'Entrada ya utilizada ⚠️',
+      buyer: ticket.buyer_name,
+    })
+  }
 
   return NextResponse.json({
     valid: true,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdmin } from '@/lib/auth'
 
 /**
  * Recibe una lista de tickets validados offline y los marca como usados
@@ -10,12 +11,8 @@ import { supabaseAdmin } from '@/lib/supabase'
  * Response: { synced: number, conflicts: [{ ticket_number, existing_used_at, attempted_used_at }] }
  */
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization') ?? ''
-  const secret = auth.startsWith('Bearer ') ? auth.slice(7) : null
-
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  }
+  const denied = requireAdmin(req)
+  if (denied) return denied
 
   let body: Record<string, unknown>
   try { body = await req.json() } catch {

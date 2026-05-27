@@ -1,6 +1,6 @@
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://pipesantos.com'
 
-const UNIT_PRICE = 2000
+const UNIT_PRICE = 40000 // COP por entrada (no cambiar — la página muestra $40.000)
 
 export async function createBoldPaymentLink({
   orderId,

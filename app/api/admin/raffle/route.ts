@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { isValidAdmin } from '@/lib/auth'
 
 function checkAuth(req: NextRequest): boolean {
-  const auth = req.headers.get('authorization') ?? ''
-  const secret = auth.startsWith('Bearer ') ? auth.slice(7) : null
-  return !!secret && secret === process.env.ADMIN_SECRET
+  return isValidAdmin(req)
 }
 
 /* ── GET: estado del sorteo actual + lista de participantes ──────── */

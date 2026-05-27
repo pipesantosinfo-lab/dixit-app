@@ -1,17 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { randomInt } from 'crypto'
+import { requireAdmin } from '@/lib/auth'
 
 /**
  * Selecciona una foto al azar de la galería y la marca como ganadora.
  * Usa crypto.randomInt (CSPRNG) — no Math.random.
  */
 export async function POST(req: NextRequest) {
-  const auth = req.headers.get('authorization') ?? ''
-  const secret = auth.startsWith('Bearer ') ? auth.slice(7) : null
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  }
+  const denied = requireAdmin(req)
+  if (denied) return denied
 
   let body: Record<string, unknown> = {}
   try { body = await req.json() } catch { /* opcional */ }

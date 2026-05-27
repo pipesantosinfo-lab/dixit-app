@@ -5,14 +5,15 @@ import { v4 as uuidv4 } from 'uuid'
 
 const MAX_TICKETS = 300
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/
+const PHONE_RE = /^[+]?[\d\s()-]{6,20}$/
 
-// Rate limiting: max 3 orders per email per hour
+// Rate limiting por email + IP para que no se pueda evadir cambiando solo el email
 const orderTimestamps = new Map<string, number[]>()
-function isRateLimited(email: string): boolean {
+function isRateLimited(key: string, max = 3, windowMs = 3_600_000): boolean {
   const now = Date.now()
-  const times = (orderTimestamps.get(email) ?? []).filter(t => now - t < 3_600_000)
-  if (times.length >= 3) return true
-  orderTimestamps.set(email, [...times, now])
+  const times = (orderTimestamps.get(key) ?? []).filter(t => now - t < windowMs)
+  if (times.length >= max) return true
+  orderTimestamps.set(key, [...times, now])
   return false
 }
 
@@ -21,6 +22,8 @@ export async function POST(req: NextRequest) {
   try { body = await req.json() } catch {
     return NextResponse.json({ error: 'Solicitud inválida.' }, { status: 400 })
   }
+
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
 
   const buyerName   = String(body.buyerName   ?? '').trim().slice(0, 120)
   const buyerEmail  = String(body.buyerEmail  ?? '').trim().toLowerCase().slice(0, 254)
@@ -34,10 +37,17 @@ export async function POST(req: NextRequest) {
   if (!EMAIL_RE.test(buyerEmail)) {
     return NextResponse.json({ error: 'Correo electrónico inválido.' }, { status: 400 })
   }
+  if (buyerPhone && !PHONE_RE.test(buyerPhone)) {
+    return NextResponse.json({ error: 'Teléfono inválido.' }, { status: 400 })
+  }
   if (buyerCedula && (buyerCedula.length < 6 || buyerCedula.length > 10)) {
     return NextResponse.json({ error: 'Cédula inválida.' }, { status: 400 })
   }
-  if (isRateLimited(buyerEmail)) {
+  // Rate limit por email (3/h) y por IP (10/h — más permisivo para familias en mismo wifi)
+  if (isRateLimited('email:' + buyerEmail, 3)) {
+    return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en una hora.' }, { status: 429 })
+  }
+  if (isRateLimited('ip:' + ip, 10)) {
     return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en una hora.' }, { status: 429 })
   }
 

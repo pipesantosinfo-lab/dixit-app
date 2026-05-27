@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
+import { requireAdmin } from '@/lib/auth'
 
 export async function GET(req: NextRequest) {
-  const auth = req.headers.get('authorization') ?? ''
-  const secret = auth.startsWith('Bearer ') ? auth.slice(7) : null
-
-  if (!secret || secret !== process.env.ADMIN_SECRET) {
-    return NextResponse.json({ error: 'No autorizado' }, { status: 401 })
-  }
+  const denied = requireAdmin(req)
+  if (denied) return denied
 
   const db = supabaseAdmin()
 
