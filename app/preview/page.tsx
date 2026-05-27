@@ -105,8 +105,8 @@ function SocialSectionBg() {
           filter: 'blur(36px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, 80, -40, 0], y: [0, 60, 100, 0], scale: [1, 1.2, 0.85, 1] }}
-        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ x: [0, 160, -80, 0], y: [0, 120, 180, 0], scale: [1, 1.3, 0.75, 1] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* Orbe naranja principal — detrás de la tarjeta CENTRO (Instagram) */}
@@ -121,24 +121,24 @@ function SocialSectionBg() {
           filter: 'blur(38px)',
           willChange: 'transform',
         }}
-        animate={{ x: [-40, 80, -40], y: [-30, 60, -30], scale: [0.95, 1.2, 0.95] }}
-        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ x: [-80, 140, -80], y: [-50, 100, -50], scale: [0.85, 1.3, 0.85] }}
+        transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe naranja-rojo secundario — refuerza el área de Instagram */}
+      {/* Orbe rosa Instagram — acompaña al naranja con identidad de marca IG */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          width: 'clamp(280px, 32vw, 400px)',
-          height: 'clamp(280px, 32vw, 400px)',
-          top: '45%',
-          left: '40%',
-          background: 'radial-gradient(circle, rgba(255,80,30,0.70) 0%, rgba(255,60,20,0.30) 35%, transparent 70%)',
-          filter: 'blur(36px)',
+          width: 'clamp(320px, 38vw, 460px)',
+          height: 'clamp(320px, 38vw, 460px)',
+          top: '40%',
+          left: '38%',
+          background: 'radial-gradient(circle, rgba(244,114,182,0.85) 0%, rgba(231,72,153,0.40) 30%, rgba(190,40,130,0.18) 55%, transparent 75%)',
+          filter: 'blur(38px)',
           willChange: 'transform',
         }}
-        animate={{ x: [30, -50, 30], y: [20, -40, 20], scale: [1, 1.15, 1] }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        animate={{ x: [60, -90, 60], y: [40, -70, 40], scale: [1, 1.25, 1] }}
+        transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
       />
 
       {/* Orbe cyan — detrás de la tarjeta DERECHA (Facebook) */}
@@ -153,8 +153,8 @@ function SocialSectionBg() {
           filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, -90, 40, 0], y: [0, -70, -30, 0], scale: [1, 0.85, 1.2, 1] }}
-        transition={{ duration: 13, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ x: [0, -160, 80, 0], y: [0, -120, -50, 0], scale: [1, 0.75, 1.3, 1] }}
+        transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* Orbe magenta — bottom-left para cubrir parte inferior */}
@@ -169,8 +169,8 @@ function SocialSectionBg() {
           filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, 70, -40, 0], y: [0, -50, 40, 0], scale: [1, 1.15, 0.9, 1] }}
-        transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+        animate={{ x: [0, 130, -70, 0], y: [0, -90, 70, 0], scale: [1, 1.25, 0.8, 1] }}
+        transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
       {/* Orbe aurora verde-azul — bottom-right para balancear */}
@@ -185,8 +185,8 @@ function SocialSectionBg() {
           filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, -60, 30, 0], y: [0, 40, -50, 0], scale: [0.9, 1.1, 0.95, 0.9] }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'easeInOut', delay: 2.8 }}
+        animate={{ x: [0, -100, 50, 0], y: [0, 70, -90, 0], scale: [0.85, 1.2, 0.9, 0.85] }}
+        transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut', delay: 2.8 }}
       />
 
       {/* Grid sutil sobre los orbes */}
