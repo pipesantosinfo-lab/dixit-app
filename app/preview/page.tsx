@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence, useInView } from 'framer-motion'
+import { motion, useScroll, AnimatePresence, useInView, useMotionValueEvent } from 'framer-motion'
 import Particles from '@/components/Particles'
 import WavingPipe from '@/components/WavingPipe'
 import TransparentImg from '@/components/TransparentImg'
@@ -675,10 +675,18 @@ export default function PreviewPage() {
     return () => clearInterval(id)
   }, [])
   const heroRef = useRef<HTMLElement>(null)
+  const heroParallaxRef = useRef<HTMLDivElement>(null)
   const socialRef = useRef<HTMLElement>(null)
   const socialInView = useInView(socialRef, { once: false, margin: '0px 0px -80px 0px' })
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
+
+  // Parallax aplicado vía ref (no motion.div) — evita conflicto de hidratación con <Image>
+  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
+    if (heroParallaxRef.current) {
+      const translateY = progress * 30 // 0% → 30% al scrollear el hero
+      heroParallaxRef.current.style.transform = `translateY(${translateY}%) scale(1.15)`
+    }
+  })
   const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
   const closeLightbox = useCallback(() => { setLightboxIndex(null); document.body.style.overflow = '' }, [])
   const prevPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i - 1 + galleryPhotos.length) % galleryPhotos.length), [])
@@ -740,17 +748,23 @@ export default function PreviewPage() {
       {/* ── HERO ─────────────────────────────────── */}
       <section ref={heroRef} data-track-section="hero" className="relative min-h-screen flex flex-col justify-start overflow-hidden">
         {/* Background photo con parallax — next/image servida por tamaño de viewport (mobile=750px, desktop=2400px) */}
-        <div className="absolute inset-0">
-          {/* La imagen está fija dentro de su contenedor; el parallax se aplica por separado vía CSS transform */}
-          <Image
-            src="/hero.jpg"
-            alt=""
-            fill
-            priority
-            quality={85}
-            sizes="100vw"
-            style={{ objectFit: 'cover', objectPosition: 'center top', transform: 'scale(1.15)' }}
-          />
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Wrapper que se desplaza con parallax aplicado vía ref imperativo (no motion.div para no conflictuar con Image) */}
+          <div
+            ref={heroParallaxRef}
+            className="absolute inset-0"
+            style={{ transform: 'scale(1.15)', willChange: 'transform' }}
+          >
+            <Image
+              src="/hero.jpg"
+              alt=""
+              fill
+              priority
+              quality={85}
+              sizes="100vw"
+              style={{ objectFit: 'cover', objectPosition: 'center top' }}
+            />
+          </div>
           {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.4) 40%, transparent 58%)' }} />
           {/* Oscuridad mínima en la parte inferior para transición suave */}
