@@ -414,8 +414,25 @@ html {
 .brands-marquee {
   overflow: hidden;
   width: 100%;
-  /* Filtro para integrar mejor los logos al tema oscuro */
-  filter: brightness(1.05) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+/* Transiciones suaves arriba/abajo entre la sección crema y las oscuras vecinas */
+.brands-section::before,
+.brands-section::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 60px;
+  pointer-events: none;
+  z-index: 5;
+}
+.brands-section::before {
+  top: 0;
+  background: linear-gradient(180deg, #070508 0%, transparent 100%);
+}
+.brands-section::after {
+  bottom: 0;
+  background: linear-gradient(0deg, #070508 0%, transparent 100%);
 }
 .brands-marquee-track {
   display: flex;
