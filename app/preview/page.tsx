@@ -233,12 +233,15 @@ function BrandsSection() {
       {/* Título */}
       <motion.div
         initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}
-        className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 text-center mb-6 md:mb-8"
+        className="relative z-10 max-w-3xl mx-auto px-6 md:px-12 text-center mb-7 md:mb-9"
       >
         <p className="font-mono text-[10px] md:text-xs tracking-[0.4em] uppercase mb-2" style={{ color: 'rgba(139,60,247,0.85)' }}>◆ Han confiado en mí</p>
-        <h2 className="font-display text-2xl md:text-4xl font-light" style={{ color: '#1a1a1a' }}>
+        <h2 className="font-display text-2xl md:text-4xl font-light mb-3" style={{ color: '#1a1a1a' }}>
           Algunas <span className="italic" style={{ color: 'rgba(139,60,247,0.95)' }}>marcas</span> con las que trabajo
         </h2>
+        <p className="font-body text-sm md:text-base leading-relaxed" style={{ color: 'rgba(26,26,26,0.6)' }}>
+          Empresas, instituciones y proyectos que me han abierto sus puertas para transformar audiencias con storytelling.
+        </p>
       </motion.div>
 
       {/* Marquee de una sola fila — loop infinito */}
