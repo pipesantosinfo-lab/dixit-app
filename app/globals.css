@@ -409,3 +409,35 @@ html {
     transform: scale(1.06);
   }
 }
+
+/* ── Brands marquee — filas horizontales infinitas ──────────────────── */
+.brands-marquee {
+  overflow: hidden;
+  width: 100%;
+  /* Filtro para integrar mejor los logos al tema oscuro */
+  filter: brightness(1.05) drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+}
+.brands-marquee-track {
+  display: flex;
+  width: max-content;
+  gap: 60px;
+  animation-name: brands-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+.brands-marquee-track:hover {
+  animation-play-state: paused;
+}
+.brands-marquee-img {
+  flex-shrink: 0;
+  height: clamp(56px, 9vw, 110px);
+  width: auto;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+@keyframes brands-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(calc(-50% - 30px)); }
+}

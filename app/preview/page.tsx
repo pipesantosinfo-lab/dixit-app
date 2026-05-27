@@ -212,6 +212,76 @@ function SocialSectionBg() {
   )
 }
 
+/* ── Sección Marcas: marquee horizontal infinito con filas alternadas ─── */
+function BrandsSection() {
+  // 4 filas con direcciones y velocidades distintas para un efecto dinámico
+  const rows = [
+    { src: '/marcas/row-1.png', direction: 'left' as const,  duration: 35 },
+    { src: '/marcas/row-2.png', direction: 'right' as const, duration: 40 },
+    { src: '/marcas/row-3.png', direction: 'left' as const,  duration: 38 },
+    { src: '/marcas/row-4.png', direction: 'right' as const, duration: 42 },
+  ]
+
+  return (
+    <section className="relative z-10 px-0 md:px-0 py-20 overflow-hidden">
+      {/* Fondo sutil con aura morada-cyan */}
+      <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse at 30% 50%, rgba(139,60,247,0.10) 0%, transparent 50%), radial-gradient(ellipse at 70% 50%, rgba(34,211,238,0.08) 0%, transparent 55%)',
+          filter: 'blur(20px)',
+        }} />
+      </div>
+
+      {/* Título */}
+      <motion.div
+        initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}
+        className="relative z-10 max-w-5xl mx-auto px-6 md:px-12 text-center mb-12"
+      >
+        <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Han confiado en mí</p>
+        <h2 className="font-display text-3xl md:text-5xl font-light text-white mb-3">
+          Algunas <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>marcas</span> con las que trabajo
+        </h2>
+        <p className="font-body text-white/45 text-sm md:text-base max-w-2xl mx-auto">
+          Empresas, instituciones y proyectos que me han abierto sus puertas para transformar audiencias con storytelling.
+        </p>
+      </motion.div>
+
+      {/* Filas en marquee */}
+      <div className="relative z-10 space-y-4 md:space-y-6">
+        {rows.map((row, idx) => (
+          <div key={idx} className="brands-marquee" aria-hidden={idx > 0 ? 'true' : 'false'}>
+            <div
+              className="brands-marquee-track"
+              style={{
+                animationDuration: `${row.duration}s`,
+                animationDirection: row.direction === 'left' ? 'normal' : 'reverse',
+              }}
+            >
+              {/* Duplicamos el contenido dos veces para loop seamless */}
+              {[0, 1].map(copy => (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  key={copy}
+                  src={row.src}
+                  alt={idx === 0 && copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
+                  className="brands-marquee-img"
+                  loading="lazy"
+                />
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Vignettes laterales para que las marcas aparezcan/desaparezcan con fundido */}
+      <div className="absolute inset-y-0 left-0 w-20 md:w-32 pointer-events-none z-20"
+        style={{ background: 'linear-gradient(90deg, #070508 0%, transparent 100%)' }} />
+      <div className="absolute inset-y-0 right-0 w-20 md:w-32 pointer-events-none z-20"
+        style={{ background: 'linear-gradient(270deg, #070508 0%, transparent 100%)' }} />
+    </section>
+  )
+}
+
 function HeartParticles({ active }: { active: boolean }) {
   const [hearts, setHearts] = useState<Heart[]>([])
 
@@ -1356,6 +1426,9 @@ export default function PreviewPage() {
           </div>
         </div>
       </section>
+
+      {/* ── MARCAS CON LAS QUE TRABAJO ───────────── */}
+      <BrandsSection />
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
       <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20">
