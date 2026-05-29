@@ -459,29 +459,19 @@ const staggerItem = {
   hidden:  { opacity: 0, y: 30, scale: 0.97 },
   visible: { opacity: 1, y: 0,  scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
 }
-/* Stagger lateral para tarjetas de redes sociales */
+/* Entrada ligera y orgánica para tarjetas de redes sociales:
+ * solo opacity + translateY → operaciones puras de GPU, sin blur ni rotate */
 const stagger3D = {
   hidden:  {},
-  visible: { transition: { staggerChildren: 0.08, delayChildren: 0 } },
+  visible: { transition: { staggerChildren: 0.09 } },
 }
-/* Entrada desde la izquierda (TikTok) — sin blur para sentirse fluida */
 const socialCardEntryLeft = {
-  hidden:  { opacity: 0, x: -70, rotateY: -10, scale: 0.96 },
-  visible: { opacity: 1, x: 0,   rotateY: 0,   scale: 1,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
+  hidden:  { opacity: 0, y: 22 },
+  visible: { opacity: 1, y: 0,
+    transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
 }
-/* Entrada desde la derecha (Facebook) */
-const socialCardEntryRight = {
-  hidden:  { opacity: 0, x: 70,  rotateY: 10,  scale: 0.96 },
-  visible: { opacity: 1, x: 0,   rotateY: 0,   scale: 1,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-}
-/* Entrada desde abajo (Instagram en el centro) */
-const socialCardEntryCenter = {
-  hidden:  { opacity: 0, y: 40, scale: 0.94 },
-  visible: { opacity: 1, y: 0,  scale: 1,
-    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] } },
-}
+const socialCardEntryRight = socialCardEntryLeft
+const socialCardEntryCenter = socialCardEntryLeft
 /* Viewport que vuelve a disparar la animación cada vez que entra a la vista */
 const VP_REPLAY = { once: false, amount: 0.2, margin: '0px 0px -80px 0px' as string }
 const VP = { once: true, amount: 0.15 }
