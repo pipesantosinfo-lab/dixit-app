@@ -1623,7 +1623,7 @@ export default function PreviewPage() {
                 <img src="/bold-logo.png" alt="Bold" className="trust-badge-bold-logo" />
               </div>
 
-              {/* Badge 2: QR instantáneo */}
+              {/* Badge 2: QR de ingreso */}
               <div className="trust-badge">
                 <span className="trust-badge-bolt" aria-hidden>
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="#8B3CF7" stroke="#8B3CF7" strokeWidth="1.5" strokeLinejoin="round">
@@ -1631,7 +1631,7 @@ export default function PreviewPage() {
                   </svg>
                 </span>
                 <span className="trust-badge-text">
-                  <span className="trust-badge-label">QR instantáneo por email</span>
+                  <span className="trust-badge-label">QR de ingreso al evento directo a tu email</span>
                 </span>
               </div>
             </div>
