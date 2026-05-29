@@ -470,35 +470,25 @@ html {
     0 0 60px rgba(139, 60, 247, 0.30);
 }
 
-/* Borde con conic gradient rotando — efecto "luz que recorre el borde" */
+/* Borde estático con gradiente diagonal */
 .tc-border {
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(
-    from 0deg,
-    rgba(139, 60, 247, 0.5) 0%,
-    rgba(196, 92, 255, 0.85) 12%,
-    rgba(139, 60, 247, 0.2) 25%,
-    rgba(34, 211, 238, 0.7) 40%,
-    rgba(139, 60, 247, 0.2) 55%,
-    rgba(196, 82, 0, 0.7) 70%,
-    rgba(139, 60, 247, 0.2) 85%,
-    rgba(139, 60, 247, 0.5) 100%
+  background: linear-gradient(
+    135deg,
+    rgba(196, 92, 255, 0.85) 0%,
+    rgba(139, 60, 247, 0.4) 30%,
+    rgba(139, 60, 247, 0.15) 55%,
+    rgba(196, 82, 0, 0.5) 100%
   );
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  animation: tc-border-rotate 12s linear infinite;
-  animation-delay: var(--card-delay, 0s);
   z-index: 0;
   pointer-events: none;
-}
-
-@keyframes tc-border-rotate {
-  to { transform: rotate(360deg); }
 }
 
 /* Comilla decorativa flotante de fondo */
@@ -562,7 +552,7 @@ html {
   z-index: 3;
 }
 
-/* Anillo neón en el avatar */
+/* Anillo neón estático en el avatar */
 .tc-avatar-ring {
   position: relative;
   width: 52px;
@@ -570,17 +560,8 @@ html {
   border-radius: 50%;
   flex-shrink: 0;
   padding: 2px;
-  background: conic-gradient(
-    from 0deg,
-    rgba(139, 60, 247, 0.9),
-    rgba(196, 92, 255, 1),
-    rgba(34, 211, 238, 0.9),
-    rgba(196, 82, 0, 0.95),
-    rgba(139, 60, 247, 0.9)
-  );
+  background: linear-gradient(135deg, rgba(196, 92, 255, 1) 0%, rgba(139, 60, 247, 0.85) 100%);
   box-shadow: 0 0 20px rgba(139, 60, 247, 0.5);
-  animation: tc-border-rotate 8s linear infinite;
-  animation-delay: var(--card-delay, 0s);
 }
 .tc-avatar-ring img {
   background: #0d0a14;
