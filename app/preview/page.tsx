@@ -1429,22 +1429,34 @@ export default function PreviewPage() {
               Descubre cómo he ayudado a muchos de mis clientes a través de la comunicación.
             </p>
           </div>
-          <motion.div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
-            {testimonials.map((t) => (
-              <motion.div key={t.name} variants={staggerItem} className="glass rounded-2xl p-6 md:p-8">
-                <div className="flex gap-1 mb-6">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} style={{ color: '#C45200' }}>★</span>
-                  ))}
-                </div>
-                <p className="font-body text-white/60 text-lg leading-relaxed mb-8 italic">"{t.quote}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full overflow-hidden flex-shrink-0" style={{ border: '2px solid rgba(139,60,247,0.3)' }}>
-                    <img src={t.photo} alt={t.name} className="w-full h-full object-cover object-top" />
+          <motion.div className="grid md:grid-cols-2 gap-7 max-w-4xl mx-auto" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
+            {testimonials.map((t, idx) => (
+              <motion.div key={t.name} variants={staggerItem} className="testimonial-card-pro" style={{ ['--card-delay' as string]: `${idx * -3}s` }}>
+                {/* Borde con gradiente conic animado */}
+                <div className="tc-border" aria-hidden />
+                {/* Comilla decorativa gigante de fondo */}
+                <div className="tc-quote-mark" aria-hidden>"</div>
+                {/* Highlight superior (efecto reflejo glass) */}
+                <div className="tc-top-shine" aria-hidden />
+                {/* Glow ambiente que pulsa */}
+                <div className="tc-ambient-glow" aria-hidden />
+
+                {/* Contenido */}
+                <div className="tc-content">
+                  <div className="flex gap-1 mb-5 tc-stars">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} style={{ color: '#E07820', textShadow: '0 0 10px rgba(196,82,0,0.6)' }}>★</span>
+                    ))}
                   </div>
-                  <div>
-                    <p className="font-body text-white/80 font-medium text-sm">{t.name}</p>
-                    <p className="font-mono text-xs text-white/30 leading-relaxed">{t.role}</p>
+                  <p className="font-body text-white/75 text-lg leading-relaxed mb-7 italic relative z-10">"{t.quote}"</p>
+                  <div className="flex items-center gap-3 relative z-10">
+                    <div className="tc-avatar-ring">
+                      <img src={t.photo} alt={t.name} className="w-full h-full object-cover object-top rounded-full" />
+                    </div>
+                    <div>
+                      <p className="font-body text-white font-medium text-sm">{t.name}</p>
+                      <p className="font-mono text-xs text-white/40 leading-relaxed">{t.role}</p>
+                    </div>
                   </div>
                 </div>
               </motion.div>

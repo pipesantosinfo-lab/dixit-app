@@ -441,3 +441,161 @@ html {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }
 }
+
+/* ── Testimonial card PRO — borde con gradiente conic + glass + glow ─── */
+.testimonial-card-pro {
+  position: relative;
+  border-radius: 22px;
+  padding: 32px 28px 28px;
+  background: linear-gradient(155deg, rgba(20, 14, 32, 0.85) 0%, rgba(13, 10, 20, 0.95) 100%);
+  backdrop-filter: blur(20px) saturate(1.4);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.5) inset,
+    0 25px 60px -15px rgba(0, 0, 0, 0.7),
+    0 0 40px rgba(139, 60, 247, 0.12);
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.testimonial-card-pro:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.5) inset,
+    0 35px 80px -15px rgba(0, 0, 0, 0.8),
+    0 0 60px rgba(139, 60, 247, 0.30);
+}
+
+/* Borde con conic gradient rotando — efecto "luz que recorre el borde" */
+.tc-border {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(139, 60, 247, 0.5) 0%,
+    rgba(196, 92, 255, 0.85) 12%,
+    rgba(139, 60, 247, 0.2) 25%,
+    rgba(34, 211, 238, 0.7) 40%,
+    rgba(139, 60, 247, 0.2) 55%,
+    rgba(196, 82, 0, 0.7) 70%,
+    rgba(139, 60, 247, 0.2) 85%,
+    rgba(139, 60, 247, 0.5) 100%
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: tc-border-rotate 12s linear infinite;
+  animation-delay: var(--card-delay, 0s);
+  z-index: 0;
+  pointer-events: none;
+}
+
+@keyframes tc-border-rotate {
+  to { transform: rotate(360deg); }
+}
+
+/* Comilla decorativa flotante de fondo */
+.tc-quote-mark {
+  position: absolute;
+  top: -30px;
+  right: 16px;
+  font-family: Georgia, serif;
+  font-size: 220px;
+  line-height: 1;
+  color: rgba(139, 60, 247, 0.10);
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.05em;
+}
+
+/* Highlight reflejo superior tipo cristal */
+.tc-top-shine {
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 100%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Glow ambiente que pulsa */
+.tc-ambient-glow {
+  position: absolute;
+  bottom: -60%;
+  left: -20%;
+  right: -20%;
+  height: 80%;
+  background: radial-gradient(ellipse at center,
+    rgba(139, 60, 247, 0.25) 0%,
+    transparent 60%
+  );
+  filter: blur(40px);
+  z-index: 0;
+  pointer-events: none;
+  animation: tc-ambient-pulse 4s ease-in-out infinite;
+  animation-delay: var(--card-delay, 0s);
+}
+
+@keyframes tc-ambient-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.08); }
+}
+
+.tc-content {
+  position: relative;
+  z-index: 3;
+}
+
+/* Anillo neón en el avatar */
+.tc-avatar-ring {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  padding: 2px;
+  background: conic-gradient(
+    from 0deg,
+    rgba(139, 60, 247, 0.9),
+    rgba(196, 92, 255, 1),
+    rgba(34, 211, 238, 0.9),
+    rgba(196, 82, 0, 0.95),
+    rgba(139, 60, 247, 0.9)
+  );
+  box-shadow: 0 0 20px rgba(139, 60, 247, 0.5);
+  animation: tc-border-rotate 8s linear infinite;
+  animation-delay: var(--card-delay, 0s);
+}
+.tc-avatar-ring img {
+  background: #0d0a14;
+}
+
+/* Las estrellas brillan suavemente */
+.tc-stars span {
+  animation: tc-star-pulse 3s ease-in-out infinite;
+}
+.tc-stars span:nth-child(2) { animation-delay: 0.2s; }
+.tc-stars span:nth-child(3) { animation-delay: 0.4s; }
+.tc-stars span:nth-child(4) { animation-delay: 0.6s; }
+.tc-stars span:nth-child(5) { animation-delay: 0.8s; }
+
+@keyframes tc-star-pulse {
+  0%, 100% { text-shadow: 0 0 8px rgba(196, 82, 0, 0.5); }
+  50%      { text-shadow: 0 0 16px rgba(255, 130, 50, 1), 0 0 30px rgba(255, 130, 50, 0.5); }
+}
