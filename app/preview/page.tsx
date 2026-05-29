@@ -1607,13 +1607,33 @@ export default function PreviewPage() {
                 </div>
               )}
             </div>
-            <div className="flex justify-center gap-8">
-              {[{ icon: '🔒', text: 'Pago 100% seguro con Bold' }, { icon: '⚡', text: 'QR instantáneo por email' }].map(item => (
-                <div key={item.text} className="flex items-center gap-2">
-                  <span>{item.icon}</span>
-                  <span className="font-mono text-xs text-white/30">{item.text}</span>
-                </div>
-              ))}
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mt-6">
+              {/* Badge 1: Bold seguro */}
+              <div className="trust-badge">
+                <span className="trust-badge-shield" aria-hidden>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0d4d2b" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 12V6.5a1 1 0 0 0-.6-.92l-7-3a1 1 0 0 0-.8 0l-7 3A1 1 0 0 0 4 6.5V12c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                </span>
+                <span className="trust-badge-text">
+                  <span className="trust-badge-label">Pago 100% seguro con</span>
+                </span>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/bold-logo.png" alt="Bold" className="trust-badge-bold-logo" />
+              </div>
+
+              {/* Badge 2: QR instantáneo */}
+              <div className="trust-badge">
+                <span className="trust-badge-bolt" aria-hidden>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="#8B3CF7" stroke="#8B3CF7" strokeWidth="1.5" strokeLinejoin="round">
+                    <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                </span>
+                <span className="trust-badge-text">
+                  <span className="trust-badge-label">QR instantáneo por email</span>
+                </span>
+              </div>
             </div>
           </motion.div>
 
