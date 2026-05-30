@@ -686,7 +686,13 @@ html {
   .trust-badge-bolt { width: 20px; height: 20px; }
 }
 
-/* ── Social card 3D entrance ──────────────────────────────────────── */
+/* ── Social card entrance — hints GPU para que la animación corra fluido ── */
 .social-card-3d {
   position: relative;
+  /* Forzar capa de compositing propia para que opacity/transform corran
+     en GPU sin tocar repaint del backdrop-filter del .glass */
+  will-change: opacity, transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  contain: layout style paint;
 }
