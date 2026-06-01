@@ -245,12 +245,11 @@ function BrandsSection() {
       </motion.div>
 
       {/* Marquee de una sola fila — loop infinito.
-          6 copias garantizan que la cinta cubra el viewport en cualquier tamaño
-          (la nueva imagen es más cuadrada → cada copia es más angosta);
-          translate -50% mueve exactamente 3 copias → loop sin saltos. */}
+          La imagen combinada (2 filas → 1 fila) es ya muy ancha, 4 copias bastan
+          para llenar viewports grandes. translate -50% mueve 2 copias = 1 ciclo. */}
       <div className="relative z-10 brands-marquee">
         <div className="brands-marquee-track">
-          {[0, 1, 2, 3, 4, 5].map(copy => (
+          {[0, 1, 2, 3].map(copy => (
             <picture key={copy}>
               <source srcSet="/marcas/logos-mejor.webp" type="image/webp" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
