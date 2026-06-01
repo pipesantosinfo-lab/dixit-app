@@ -414,21 +414,15 @@ html {
 .brands-marquee {
   overflow: hidden;
   width: 100%;
-  /* Capa de compositing propia → animación corre en GPU sin repintar el fondo */
-  transform: translateZ(0);
-  contain: layout paint;
+  /* Reservar altura → evita layout shift y colapso si la img tarda en cargar */
+  min-height: clamp(130px, 20vw, 220px);
 }
 .brands-marquee-track {
   display: flex;
+  align-items: center;
   width: max-content;
-  animation-name: brands-scroll;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  animation-duration: 32s;
+  animation: brands-scroll 32s linear infinite;
   will-change: transform;
-  /* Fuerza GPU layer en iOS Safari */
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
 }
 .brands-marquee-track:hover {
   animation-play-state: paused;
@@ -439,25 +433,17 @@ html {
   height: clamp(130px, 20vw, 220px);
   width: auto;
   display: block;
-  /* Sin separación: una sola línea continua */
   margin: 0;
   padding: 0;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
 }
-.brands-marquee picture {
-  display: flex;
-  flex-shrink: 0;
-  margin: 0;
-  padding: 0;
-}
 /* Loop perfecto: el track contiene 2 copias idénticas → translate -50% */
 @keyframes brands-scroll {
-  from { transform: translate3d(0, 0, 0); }
-  to   { transform: translate3d(-50%, 0, 0); }
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
-/* Respeta usuarios que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   .brands-marquee-track {
     animation-duration: 90s;
