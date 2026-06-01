@@ -246,10 +246,11 @@ function BrandsSection() {
 
       {/* Marquee de una sola fila — loop infinito.
           PNG con fondo transparente para que se vea la textura blanca debajo.
-          4 copias cubren cualquier viewport; translate -50% = 2 copias = 1 ciclo. */}
+          La cinta combinada (logos 1 + logos 2) es muy ancha, basta con 2 copias
+          para cubrir cualquier viewport ≤ ~3344px y mantener la velocidad previa. */}
       <div className="relative z-10 brands-marquee">
         <div className="brands-marquee-track">
-          {[0, 1, 2, 3].map(copy => (
+          {[0, 1].map(copy => (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               key={copy}
