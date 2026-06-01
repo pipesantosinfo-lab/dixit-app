@@ -424,7 +424,7 @@ html {
   animation-name: brands-scroll;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
-  animation-duration: 50s;
+  animation-duration: 32s;
   will-change: transform;
   /* Fuerza GPU layer en iOS Safari */
   transform: translate3d(0, 0, 0);
@@ -460,7 +460,7 @@ html {
 /* Respeta usuarios que prefieren menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   .brands-marquee-track {
-    animation-duration: 120s;
+    animation-duration: 90s;
   }
 }
 
