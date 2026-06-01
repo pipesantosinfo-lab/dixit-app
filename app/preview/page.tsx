@@ -216,17 +216,17 @@ function SocialSectionBg() {
 function BrandsSection() {
   return (
     <section className="relative z-10 py-10 md:py-12 overflow-hidden brands-section">
-      {/* Fondo crema con textura sutil */}
+      {/* Fondo blanco con textura sutil */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
-        <div className="absolute inset-0" style={{ background: '#f5f1ea' }} />
+        <div className="absolute inset-0" style={{ background: '#ffffff' }} />
         <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.12 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
           backgroundSize: '200px 200px',
-          opacity: 0.5,
+          opacity: 0.6,
           mixBlendMode: 'multiply',
         }} />
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.07) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.06) 0%, transparent 60%)',
         }} />
       </div>
 
@@ -245,33 +245,31 @@ function BrandsSection() {
       </motion.div>
 
       {/* Marquee de una sola fila — loop infinito.
-          La imagen combinada (2 filas → 1 fila) es ya muy ancha, 4 copias bastan
-          para llenar viewports grandes. translate -50% mueve 2 copias = 1 ciclo. */}
+          PNG con fondo transparente para que se vea la textura blanca debajo.
+          4 copias cubren cualquier viewport; translate -50% = 2 copias = 1 ciclo. */}
       <div className="relative z-10 brands-marquee">
         <div className="brands-marquee-track">
           {[0, 1, 2, 3].map(copy => (
-            <picture key={copy}>
-              <source srcSet="/marcas/logos-mejor.webp" type="image/webp" />
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/marcas/logos-mejor.png"
-                alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
-                className="brands-marquee-img"
-                loading="eager"
-                decoding="async"
-                draggable={false}
-                aria-hidden={copy !== 0}
-              />
-            </picture>
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              key={copy}
+              src="/marcas/logos-mejor.png"
+              alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
+              className="brands-marquee-img"
+              loading="eager"
+              decoding="async"
+              draggable={false}
+              aria-hidden={copy !== 0}
+            />
           ))}
         </div>
       </div>
 
-      {/* Vignettes laterales en crema */}
+      {/* Vignettes laterales en blanco para fundido limpio */}
       <div className="absolute inset-y-0 left-0 w-20 md:w-32 pointer-events-none z-20"
-        style={{ background: 'linear-gradient(90deg, #f5f1ea 0%, transparent 100%)' }} />
+        style={{ background: 'linear-gradient(90deg, #ffffff 0%, transparent 100%)' }} />
       <div className="absolute inset-y-0 right-0 w-20 md:w-32 pointer-events-none z-20"
-        style={{ background: 'linear-gradient(270deg, #f5f1ea 0%, transparent 100%)' }} />
+        style={{ background: 'linear-gradient(270deg, #ffffff 0%, transparent 100%)' }} />
     </section>
   )
 }
