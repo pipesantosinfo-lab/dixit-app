@@ -813,8 +813,8 @@ function ScrollScale({ children, className }: { children: React.ReactNode; class
   })
   // Suavizado con spring para evitar tirones en scroll rápido
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.4 })
-  const scale = useTransform(smooth, [0, 0.5, 1], [0.9, 1, 0.9])
-  const opacity = useTransform(smooth, [0, 0.25, 0.75, 1], [0.55, 1, 1, 0.55])
+  const scale = useTransform(smooth, [0, 0.5, 1], [0.78, 1.04, 0.78])
+  const opacity = useTransform(smooth, [0, 0.3, 0.7, 1], [0.3, 1, 1, 0.3])
   return (
     <motion.div ref={ref} className={className} style={{ scale, opacity, willChange: 'transform, opacity' }}>
       {children}
