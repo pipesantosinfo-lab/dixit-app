@@ -825,8 +825,15 @@ function ScrollScale({
   })
   // Suavizado con spring para evitar tirones en scroll rápido
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.4 })
-  const scale = useTransform(smooth, [0, 0.5, 1], scaleRange)
-  const opacity = useTransform(smooth, [0, 0.3, 0.7, 1], opacityRange)
+  /* Curva con "meseta" en el peak: alcanza el tamaño máximo pronto (25%)
+   * y se mantiene hasta 75% del recorrido. Evita la sensación de
+   * "entran tarde" porque están a su tamaño natural durante más scroll. */
+  const scale = useTransform(
+    smooth,
+    [0, 0.25, 0.75, 1],
+    [scaleRange[0], scaleRange[1], scaleRange[1], scaleRange[2]],
+  )
+  const opacity = useTransform(smooth, [0, 0.2, 0.8, 1], opacityRange)
   return (
     <motion.div
       ref={ref}
@@ -1246,6 +1253,8 @@ export default function PreviewPage() {
           <ScrollScale
             className="relative rounded-2xl overflow-hidden"
             style={{ boxShadow: '0 0 0 1px rgba(139,60,247,0.15), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(139,60,247,0.08)' }}
+            scaleRange={[0.93, 1.02, 0.93]}
+            opacityRange={[0.7, 1, 1, 0.7]}
           >
             <div className="absolute -inset-1 rounded-2xl" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.12) 0%, transparent 70%)', zIndex: -1 }} />
             <video
