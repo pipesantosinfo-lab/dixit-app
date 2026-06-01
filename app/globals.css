@@ -414,6 +414,9 @@ html {
 .brands-marquee {
   overflow: hidden;
   width: 100%;
+  /* Capa de compositing propia → animación corre en GPU sin repintar el fondo */
+  transform: translateZ(0);
+  contain: layout paint;
 }
 .brands-marquee-track {
   display: flex;
@@ -423,23 +426,39 @@ html {
   animation-iteration-count: infinite;
   animation-duration: 50s;
   will-change: transform;
+  /* Fuerza GPU layer en iOS Safari */
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
 }
 .brands-marquee-track:hover {
   animation-play-state: paused;
 }
 .brands-marquee-img {
   flex-shrink: 0;
-  height: clamp(60px, 9vw, 100px);
+  height: clamp(56px, 9vw, 100px);
   width: auto;
-  margin-right: 60px;
+  /* Sin separación: una sola línea continua */
+  margin: 0;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
+  /* Renderizado nítido en pantallas hi-DPI */
+  image-rendering: -webkit-optimize-contrast;
+}
+.brands-marquee picture {
+  display: block;
+  flex-shrink: 0;
 }
 /* Loop perfecto: el track contiene 2 copias idénticas → translate -50% */
 @keyframes brands-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+/* Respeta usuarios que prefieren menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+  .brands-marquee-track {
+    animation-duration: 120s;
+  }
 }
 
 /* ── Testimonial card PRO — borde con gradiente conic + glass + glow ─── */

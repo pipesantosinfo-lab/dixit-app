@@ -248,13 +248,19 @@ function BrandsSection() {
       <div className="relative z-10 brands-marquee">
         <div className="brands-marquee-track">
           {[0, 1].map(copy => (
-            /* eslint-disable-next-line @next/next/no-img-element */
-            <img
-              key={copy}
-              src="/marcas/all-logos.png"
-              alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
-              className="brands-marquee-img"
-            />
+            <picture key={copy}>
+              <source srcSet="/marcas/logos-mejor.webp" type="image/webp" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/marcas/logos-mejor.png"
+                alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
+                className="brands-marquee-img"
+                loading="eager"
+                decoding="async"
+                draggable={false}
+                aria-hidden={copy === 1}
+              />
+            </picture>
           ))}
         </div>
       </div>
