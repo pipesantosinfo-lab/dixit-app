@@ -1289,12 +1289,12 @@ export default function PreviewPage() {
                 Como conferencista, escritor e influencer, he tenido el privilegio de impactar a miles de personas en su crecimiento personal, profesional y financiero.
               </p>
             </motion.div>
-            <motion.div className="relative" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
+            <ScrollScale className="relative">
               <div className="absolute inset-0 rounded-3xl" style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.15) 0%, transparent 70%)', transform: 'scale(1.2)' }} />
               <div className="relative rounded-3xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
                 <div className="w-full h-full bg-cover bg-center bg-top" style={{ backgroundImage: "url('/gallery/DSC01807.jpg')" }} />
               </div>
-            </motion.div>
+            </ScrollScale>
           </div>
         </div>
       </section>
@@ -1429,14 +1429,14 @@ export default function PreviewPage() {
                 </button>
               </div>
             </motion.div>
-            <motion.div className="order-1 md:order-2 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
+            <ScrollScale className="order-1 md:order-2 flex justify-center">
               <div className="relative">
                 <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse, rgba(196,82,0,0.25) 0%, transparent 65%)', transform: 'scale(1.4)' }} />
                 <div className="relative rounded-2xl overflow-hidden shadow-2xl" style={{ maxWidth: '280px', boxShadow: '0 30px 80px rgba(0,0,0,0.6), 0 0 40px rgba(196,82,0,0.15)' }}>
                   <Image src="/book-cover.png" alt="Lo que nunca le conté a papá" width={280} height={400} className="w-full h-auto" />
                 </div>
               </div>
-            </motion.div>
+            </ScrollScale>
           </div>
           <div className="line-holo mt-16" />
         </div>
@@ -1492,9 +1492,9 @@ export default function PreviewPage() {
               Descubre cómo he ayudado a muchos de mis clientes a través de la comunicación.
             </p>
           </div>
-          <motion.div className="grid md:grid-cols-2 gap-7 max-w-4xl mx-auto" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
+          <div className="grid md:grid-cols-2 gap-7 max-w-4xl mx-auto">
             {testimonials.map((t, idx) => (
-              <motion.div key={t.name} variants={staggerItem} className="testimonial-card-pro" style={{ ['--card-delay' as string]: `${idx * -3}s` }}>
+              <ScrollScale key={t.name} className="testimonial-card-pro" style={{ ['--card-delay' as string]: `${idx * -3}s` } as React.CSSProperties}>
                 {/* Borde con gradiente conic animado */}
                 <div className="tc-border" aria-hidden />
                 {/* Comilla decorativa gigante de fondo */}
@@ -1522,9 +1522,9 @@ export default function PreviewPage() {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </ScrollScale>
             ))}
-          </motion.div>
+          </div>
         </div>
       </section>
 
