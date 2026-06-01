@@ -805,7 +805,15 @@ const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 
 /* ── Wrapper con escala ligada al scroll ────────────────────────────────
  * El hijo crece a medida que entra al viewport, alcanza su tamaño máximo
  * cuando está centrado, y se achica al salir. Sutil (0.9 → 1 → 0.9). */
-function ScrollScale({ children, className }: { children: React.ReactNode; className?: string }) {
+function ScrollScale({
+  children,
+  className,
+  style,
+}: {
+  children: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
+}) {
   const ref = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -816,7 +824,11 @@ function ScrollScale({ children, className }: { children: React.ReactNode; class
   const scale = useTransform(smooth, [0, 0.5, 1], [0.78, 1.04, 0.78])
   const opacity = useTransform(smooth, [0, 0.3, 0.7, 1], [0.3, 1, 1, 0.3])
   return (
-    <motion.div ref={ref} className={className} style={{ scale, opacity, willChange: 'transform, opacity' }}>
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{ ...style, scale, opacity, willChange: 'transform, opacity' }}
+    >
       {children}
     </motion.div>
   )
@@ -1223,8 +1235,10 @@ export default function PreviewPage() {
             </p>
           </motion.div>
 
-          <motion.div className="relative rounded-2xl overflow-hidden" initial="hidden" whileInView="visible" viewport={VP} variants={fadeIn}
-            style={{ boxShadow: '0 0 0 1px rgba(139,60,247,0.15), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(139,60,247,0.08)' }}>
+          <ScrollScale
+            className="relative rounded-2xl overflow-hidden"
+            style={{ boxShadow: '0 0 0 1px rgba(139,60,247,0.15), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(139,60,247,0.08)' }}
+          >
             <div className="absolute -inset-1 rounded-2xl" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.12) 0%, transparent 70%)', zIndex: -1 }} />
             <video
               controls
@@ -1236,7 +1250,7 @@ export default function PreviewPage() {
             >
               <source src="/showreel.mp4" type="video/mp4" />
             </video>
-          </motion.div>
+          </ScrollScale>
         </div>
       </section>
 
