@@ -435,19 +435,21 @@ html {
 }
 .brands-marquee-img {
   flex-shrink: 0;
-  height: clamp(56px, 9vw, 100px);
+  height: clamp(90px, 13vw, 170px);
   width: auto;
+  display: block;
   /* Sin separación: una sola línea continua */
   margin: 0;
+  padding: 0;
   user-select: none;
   -webkit-user-drag: none;
   pointer-events: none;
-  /* Renderizado nítido en pantallas hi-DPI */
-  image-rendering: -webkit-optimize-contrast;
 }
 .brands-marquee picture {
-  display: block;
+  display: flex;
   flex-shrink: 0;
+  margin: 0;
+  padding: 0;
 }
 /* Loop perfecto: el track contiene 2 copias idénticas → translate -50% */
 @keyframes brands-scroll {
