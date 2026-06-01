@@ -435,7 +435,8 @@ html {
 }
 .brands-marquee-img {
   flex-shrink: 0;
-  height: clamp(90px, 13vw, 170px);
+  /* Logos grandes incluso en mobile: mínimo 130px en celular */
+  height: clamp(130px, 20vw, 220px);
   width: auto;
   display: block;
   /* Sin separación: una sola línea continua */
