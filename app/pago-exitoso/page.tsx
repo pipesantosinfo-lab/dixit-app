@@ -32,26 +32,24 @@ function HighFiveCelebration() {
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       />
 
-      {/* Ilustración: entrada con rebote + 'shake' breve en el momento del choque */}
+      {/* Ilustración GIF: entrada clean con scale + fade.
+          (Sin rotate-shake porque el GIF ya trae su propia animación interna
+          y dos motion conflictivos se ven feos). */}
       <motion.div
         className="relative w-full h-full"
-        initial={{ scale: 0, rotate: -8, opacity: 0 }}
-        animate={{
-          scale: [0, 1.08, 0.97, 1.02, 1],
-          rotate: [-8, 4, -2, 1, 0],
-          opacity: [0, 1, 1, 1, 1],
-        }}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: [0.6, 1.06, 1], opacity: [0, 1, 1] }}
         transition={{
-          duration: 0.9,
-          times: [0, 0.45, 0.65, 0.82, 1],
-          ease: 'easeOut',
+          duration: 0.7,
+          times: [0, 0.6, 1],
+          ease: [0.16, 1, 0.3, 1],
         }}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/high-five.svg"
+          src="/high-five.gif"
           alt="¡Choca esos cinco!"
-          className="w-full h-full"
+          className="w-full h-full object-contain"
           draggable={false}
         />
       </motion.div>
