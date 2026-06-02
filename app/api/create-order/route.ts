@@ -53,14 +53,30 @@ export async function POST(req: NextRequest) {
 
   const db = supabaseAdmin()
 
-  // Check availability
-  const { count } = await db
-    .from('lavida_tickets')
-    .select('*', { count: 'exact', head: true })
-    .neq('status', 'cancelled')
+  /* Inventario:
+   *  - 'active' / 'used'   → confirmados, siempre ocupan asiento
+   *  - 'pending' RECIENTE  → ocupa asiento temporalmente (durante checkout)
+   *  - 'pending' VIEJO     → checkout abandonado, NO debe ocupar asiento
+   *
+   * Sin este filtro, un atacante podría iniciar 300 órdenes sin pagar y
+   * agotar el evento (DoS de inventario). La ventana de 30 min cubre buyers
+   * lentos sin permitir abuso indefinido. */
+  const PENDING_TTL_MIN = 30
+  const pendingCutoff = new Date(Date.now() - PENDING_TTL_MIN * 60_000).toISOString()
 
-  if ((count ?? 0) + quantity > MAX_TICKETS) {
-    return NextResponse.json({ error: `Solo quedan ${MAX_TICKETS - (count ?? 0)} entradas disponibles.` }, { status: 400 })
+  const [{ count: confirmed }, { count: pendingRecent }] = await Promise.all([
+    db.from('lavida_tickets')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['active', 'used']),
+    db.from('lavida_tickets')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending')
+      .gte('created_at', pendingCutoff),
+  ])
+  const occupied = (confirmed ?? 0) + (pendingRecent ?? 0)
+
+  if (occupied + quantity > MAX_TICKETS) {
+    return NextResponse.json({ error: `Solo quedan ${MAX_TICKETS - occupied} entradas disponibles.` }, { status: 400 })
   }
 
   const orderId = uuidv4()
