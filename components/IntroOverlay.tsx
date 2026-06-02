@@ -100,27 +100,6 @@ export default function IntroOverlay() {
           className="w-[72vw] max-w-sm md:max-w-md h-auto"
           priority
         />
-
-        {/* Guiño sobre el ● rojo del REC */}
-        <motion.div
-          className="absolute rounded-full pointer-events-none"
-          style={{
-            background: '#070508',
-            width: '8%',
-            aspectRatio: '1',
-            top: '61%',
-            left: '33%',
-            transformOrigin: 'center center',
-          }}
-          animate={{ scaleY: [0, 1, 0, 0, 0, 1, 0] }}
-          transition={{
-            duration: 3.2,
-            repeat: Infinity,
-            times: [0, 0.05, 0.1, 0.45, 0.6, 0.65, 0.7],
-            ease: 'easeInOut',
-            delay: 1.3,
-          }}
-        />
       </motion.div>
 
       {/* ── Tagline tipográfico debajo del logo ─────────────────────── */}
