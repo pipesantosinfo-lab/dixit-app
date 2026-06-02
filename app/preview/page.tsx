@@ -127,12 +127,13 @@ function SocialSectionBg({ active = true }: { active?: boolean }) {
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe rosa Instagram — OCULTO EN MOBILE para reducir capas blur */}
+      {/* Orbe rosa Instagram — clave para la identidad IG; lo mantenemos en
+          mobile pero ligeramente más pequeño para no comer fps */}
       <motion.div
-        className="absolute rounded-full orb-blur hidden md:block"
+        className="absolute rounded-full orb-blur"
         style={{
-          width: 'clamp(320px, 38vw, 460px)',
-          height: 'clamp(320px, 38vw, 460px)',
+          width: 'clamp(260px, 38vw, 460px)',
+          height: 'clamp(260px, 38vw, 460px)',
           top: '40%',
           left: '38%',
           background: 'radial-gradient(circle, rgba(244,114,182,0.85) 0%, rgba(231,72,153,0.40) 30%, rgba(190,40,130,0.18) 55%, transparent 75%)',
@@ -800,6 +801,61 @@ const bookFeatures = [
 
 const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 🎟️', '¡Nos vemos en Barranquilla!', '¡Gracias por estar aquí! ✨']
 
+/* ── Hint de scroll en el hero ─────────────────────────────────────────
+ * Aparece al fondo del hero con una pista visual ("Descubre más" + chevron
+ * con bounce sutil). Se desvanece cuando el usuario hace scroll > 80px,
+ * y desaparece del DOM tras la transición para no consumir recursos. */
+function ScrollHint() {
+  // Siempre montado; controlamos visibilidad solo con opacity para evitar
+  // saltos de AnimatePresence (que en el dev server a veces no monta a tiempo).
+  const [scrolled, setScrolled] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const check = () => setScrolled(window.scrollY > 80)
+    check()  // estado inicial real
+    window.addEventListener('scroll', check, { passive: true })
+    return () => window.removeEventListener('scroll', check)
+  }, [])
+
+  return (
+    <div
+      className="absolute left-1/2 z-20 flex flex-col items-center gap-2 pointer-events-none"
+      style={{
+        bottom: 'clamp(16px, 4vh, 36px)',
+        transform: 'translateX(-50%)',
+        opacity: scrolled ? 0 : 1,
+        transition: 'opacity 0.5s ease-out',
+      }}
+      aria-hidden
+    >
+      <span
+        className="font-mono text-[9px] md:text-[10px] tracking-[0.35em] uppercase"
+        style={{ color: 'rgba(255,255,255,0.6)' }}
+      >
+        Descubre más
+      </span>
+      <motion.div
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+        style={{ willChange: 'transform' }}
+      >
+        <svg width="20" height="24" viewBox="0 0 20 24" fill="none">
+          {/* Mouse outline */}
+          <rect x="1.5" y="1.5" width="17" height="21" rx="8.5"
+            stroke="rgba(255,255,255,0.5)" strokeWidth="1.3" />
+          {/* Wheel dot animado */}
+          <motion.circle
+            cx="10" r="1.8"
+            fill="rgba(139,60,247,1)"
+            animate={{ cy: [7, 12, 7], opacity: [1, 0.3, 1] }}
+            transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
+          />
+        </svg>
+      </motion.div>
+    </div>
+  )
+}
+
 /* ── Botón magnético: el elemento "es atraído" hacia el cursor cuando éste
  * se acerca. Solo desktop (pointer:fine). Spring suave para evitar tirones. */
 function MagneticButton({
@@ -1295,6 +1351,9 @@ export default function PreviewPage() {
         <div className="absolute right-0 bottom-0 z-20" style={{ transform: 'translateX(28%)' }}>
           <WavingPipe onAvatarClick={() => setPipeMsgIndex(i => (i + 1) % pipeMessages.length)} />
         </div>
+
+        {/* Indicador "descubre más" — desaparece cuando empiezas a scrollear */}
+        <ScrollHint />
       </section>
 
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
