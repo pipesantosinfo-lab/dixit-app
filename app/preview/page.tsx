@@ -1529,11 +1529,49 @@ export default function PreviewPage() {
 
           <ScrollScale
             className="relative rounded-2xl overflow-hidden"
-            style={{ boxShadow: '0 0 0 1px rgba(139,60,247,0.15), 0 40px 80px rgba(0,0,0,0.6), 0 0 60px rgba(139,60,247,0.08)' }}
+            style={{
+              boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 40px 80px rgba(0,0,0,0.7), 0 0 60px rgba(139,60,247,0.08)',
+            }}
             scaleRange={[0.93, 1.02, 0.93]}
             opacityRange={[0.7, 1, 1, 0.7]}
           >
+            {/* Halo morado sutil detrás de la ventana */}
             <div className="absolute -inset-1 rounded-2xl" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.12) 0%, transparent 70%)', zIndex: -1 }} />
+
+            {/* ── Chrome de ventana macOS ─────────────────────────────── */}
+            <div
+              className="relative flex items-center px-3.5 md:px-4 py-2.5 md:py-3"
+              style={{
+                background: 'linear-gradient(180deg, #2a2630 0%, #1f1c25 100%)',
+                borderBottom: '1px solid rgba(255,255,255,0.06)',
+              }}
+            >
+              {/* Traffic lights */}
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <span className="block rounded-full" style={{ width: 12, height: 12, background: '#FF5F57', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
+                <span className="block rounded-full" style={{ width: 12, height: 12, background: '#FEBC2E', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
+                <span className="block rounded-full" style={{ width: 12, height: 12, background: '#28C840', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
+              </div>
+
+              {/* URL pill centrada */}
+              <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-md"
+                style={{
+                  background: 'rgba(255,255,255,0.06)',
+                  border: '1px solid rgba(255,255,255,0.04)',
+                  maxWidth: '60%',
+                }}
+              >
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.4" strokeLinecap="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                <span className="font-mono text-[10px] md:text-[11px] tracking-wider truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                  pipesantos.com/eventos
+                </span>
+              </div>
+            </div>
+
+            {/* Video */}
             <video
               controls
               playsInline
