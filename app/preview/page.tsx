@@ -90,102 +90,100 @@ function makeHeart(burst = false): Heart {
 }
 
 /* ── Fondo animado de la sección de redes — orbes de luz + grid sutil ── */
-function SocialSectionBg() {
+function SocialSectionBg({ active = true }: { active?: boolean }) {
+  // Cuando la sección está fuera de viewport, pasamos animate={undefined} →
+  // los orbes se quedan estáticos y Framer NO programa rAFs. Ahorra CPU/GPU
+  // en mobile cuando ya scrolleaste más allá.
+  const inf = (def: { x: number[]; y: number[]; scale: number[] }) => active ? def : undefined
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden style={{ zIndex: 0 }}>
       {/* Orbe morado — detrás de la tarjeta IZQUIERDA (TikTok) */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute rounded-full orb-blur"
         style={{
-          width: 'clamp(380px, 45vw, 560px)',
-          height: 'clamp(380px, 45vw, 560px)',
+          width: 'clamp(280px, 45vw, 560px)',
+          height: 'clamp(280px, 45vw, 560px)',
           top: '15%',
           left: '5%',
           background: 'radial-gradient(circle, rgba(139,60,247,0.75) 0%, rgba(139,60,247,0.35) 35%, transparent 70%)',
-          filter: 'blur(36px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, 160, -80, 0], y: [0, 120, 180, 0], scale: [1, 1.3, 0.75, 1] }}
+        animate={inf({ x: [0, 160, -80, 0], y: [0, 120, 180, 0], scale: [1, 1.3, 0.75, 1] })}
         transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* Orbe naranja principal — detrás de la tarjeta CENTRO (Instagram) */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute rounded-full orb-blur"
         style={{
-          width: 'clamp(420px, 50vw, 620px)',
-          height: 'clamp(420px, 50vw, 620px)',
+          width: 'clamp(320px, 50vw, 620px)',
+          height: 'clamp(320px, 50vw, 620px)',
           top: '15%',
           left: '32%',
           background: 'radial-gradient(circle, rgba(255,140,50,0.95) 0%, rgba(255,100,30,0.50) 30%, rgba(196,82,0,0.20) 55%, transparent 75%)',
-          filter: 'blur(38px)',
           willChange: 'transform',
         }}
-        animate={{ x: [-80, 140, -80], y: [-50, 100, -50], scale: [0.85, 1.3, 0.85] }}
+        animate={inf({ x: [-80, 140, -80], y: [-50, 100, -50], scale: [0.85, 1.3, 0.85] })}
         transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe rosa Instagram — acompaña al naranja con identidad de marca IG */}
+      {/* Orbe rosa Instagram — OCULTO EN MOBILE para reducir capas blur */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute rounded-full orb-blur hidden md:block"
         style={{
           width: 'clamp(320px, 38vw, 460px)',
           height: 'clamp(320px, 38vw, 460px)',
           top: '40%',
           left: '38%',
           background: 'radial-gradient(circle, rgba(244,114,182,0.85) 0%, rgba(231,72,153,0.40) 30%, rgba(190,40,130,0.18) 55%, transparent 75%)',
-          filter: 'blur(38px)',
           willChange: 'transform',
         }}
-        animate={{ x: [60, -90, 60], y: [40, -70, 40], scale: [1, 1.25, 1] }}
+        animate={inf({ x: [60, -90, 60], y: [40, -70, 40], scale: [1, 1.25, 1] })}
         transition={{ duration: 5.5, repeat: Infinity, ease: 'easeInOut', delay: 0.7 }}
       />
 
       {/* Orbe cyan — detrás de la tarjeta DERECHA (Facebook) */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute rounded-full orb-blur"
         style={{
-          width: 'clamp(400px, 48vw, 600px)',
-          height: 'clamp(400px, 48vw, 600px)',
+          width: 'clamp(300px, 48vw, 600px)',
+          height: 'clamp(300px, 48vw, 600px)',
           top: '20%',
           right: '5%',
           background: 'radial-gradient(circle, rgba(34,211,238,0.55) 0%, rgba(34,211,238,0.22) 35%, transparent 70%)',
-          filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, -160, 80, 0], y: [0, -120, -50, 0], scale: [1, 0.75, 1.3, 1] }}
+        animate={inf({ x: [0, -160, 80, 0], y: [0, -120, -50, 0], scale: [1, 0.75, 1.3, 1] })}
         transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Orbe magenta — bottom-left para cubrir parte inferior */}
+      {/* Orbe magenta — OCULTO EN MOBILE */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute rounded-full orb-blur hidden md:block"
         style={{
           width: 'clamp(280px, 38vw, 480px)',
           height: 'clamp(280px, 38vw, 480px)',
           bottom: '5%',
           left: '15%',
           background: 'radial-gradient(circle, rgba(196,60,255,0.65) 0%, rgba(196,60,255,0.22) 35%, transparent 70%)',
-          filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, 130, -70, 0], y: [0, -90, 70, 0], scale: [1, 1.25, 0.8, 1] }}
+        animate={inf({ x: [0, 130, -70, 0], y: [0, -90, 70, 0], scale: [1, 1.25, 0.8, 1] })}
         transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
       {/* Orbe aurora verde-azul — bottom-right para balancear */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute rounded-full orb-blur"
         style={{
-          width: 'clamp(280px, 38vw, 480px)',
-          height: 'clamp(280px, 38vw, 480px)',
+          width: 'clamp(240px, 38vw, 480px)',
+          height: 'clamp(240px, 38vw, 480px)',
           bottom: '10%',
           right: '20%',
           background: 'radial-gradient(circle, rgba(80,200,255,0.55) 0%, rgba(80,200,255,0.18) 35%, transparent 70%)',
-          filter: 'blur(40px)',
           willChange: 'transform',
         }}
-        animate={{ x: [0, -100, 50, 0], y: [0, 70, -90, 0], scale: [0.85, 1.2, 0.9, 0.85] }}
+        animate={inf({ x: [0, -100, 50, 0], y: [0, 70, -90, 0], scale: [0.85, 1.2, 0.9, 0.85] })}
         transition={{ duration: 7.5, repeat: Infinity, ease: 'easeInOut', delay: 2.8 }}
       />
 
@@ -951,6 +949,18 @@ function ScrollScale({
   offset?: Array<string | number>
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  // prefers-reduced-motion: desactivamos el efecto completamente (sin springs/rAFs).
+  // ~20% de usuarios mobile lo tiene activado; ahorrarles los hooks reduce CPU.
+  const [reduced, setReduced] = useState(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
+    setReduced(mq.matches)
+    const onChange = () => setReduced(mq.matches)
+    mq.addEventListener('change', onChange)
+    return () => mq.removeEventListener('change', onChange)
+  }, [])
+
   const { scrollYProgress } = useScroll({
     target: ref,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -960,6 +970,10 @@ function ScrollScale({
   const smooth = useSpring(scrollYProgress, { stiffness: 140, damping: 28, mass: 0.4 })
   const scale = useTransform(smooth, [0, 0.5, 1], scaleRange)
   const opacity = useTransform(smooth, [0, 0.3, 0.7, 1], opacityRange)
+
+  if (reduced) {
+    return <div className={className} style={style}>{children}</div>
+  }
   return (
     <motion.div
       ref={ref}
@@ -1071,17 +1085,16 @@ export default function PreviewPage() {
     }
 
     let rafId = 0
+    let running = false
     const loop = () => {
       const parEl = heroParallaxRef.current
       const heroEl = heroRef.current
       if (parEl && heroEl) {
-        // Progress de scroll calculado directamente del DOM cada frame
         const rect = heroEl.getBoundingClientRect()
         const scrolled = Math.max(0, -rect.top)
         const progress = Math.min(1, rect.height > 0 ? scrolled / rect.height : 0)
-        const ty = progress * rect.height * 0.3  // px puros (no %)
+        const ty = progress * rect.height * 0.3
 
-        // Mouse parallax (solo cursor fino)
         let mx = 0, my = 0
         if (isFinePointer) {
           heroMouseSmooth.current.x += (heroMouse.current.x - heroMouseSmooth.current.x) * 0.08
@@ -1089,14 +1102,35 @@ export default function PreviewPage() {
           mx = heroMouseSmooth.current.x * 12
           my = heroMouseSmooth.current.y * 8
         }
-
         parEl.style.transform = `translate3d(${mx}px, ${ty + my}px, 0) scale(1.15)`
       }
       rafId = requestAnimationFrame(loop)
     }
-    rafId = requestAnimationFrame(loop)
+    const start = () => {
+      if (running) return
+      running = true
+      rafId = requestAnimationFrame(loop)
+    }
+    const stop = () => {
+      if (!running) return
+      running = false
+      cancelAnimationFrame(rafId)
+    }
+
+    // Solo correr el rAF cuando el hero esté en (o cerca de) viewport.
+    // Una vez scrolleaste pasado el hero, no hay nada que actualizar.
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) start()
+        else stop()
+      },
+      { rootMargin: '100px' },
+    )
+    if (heroRef.current) io.observe(heroRef.current)
+    start()  // arranque inicial mientras IO procesa
 
     return () => {
+      io.disconnect()
       window.removeEventListener('mousemove', onMove)
       cancelAnimationFrame(rafId)
     }
@@ -1266,7 +1300,7 @@ export default function PreviewPage() {
       {/* ── ESTADÍSTICAS ─────────────────────────── */}
       <section ref={socialRef} data-track-section="social" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
         {/* Fondo animado: orbes de luz flotando + grid sutil */}
-        <SocialSectionBg />
+        <SocialSectionBg active={socialInView} />
         <HeartParticles active={socialInView} />
         <div className="relative z-10 max-w-5xl mx-auto">
           <motion.div className="flex justify-start mb-14" style={{ marginLeft: '-12%' }} initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>

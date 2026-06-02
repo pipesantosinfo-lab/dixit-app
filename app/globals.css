@@ -410,6 +410,18 @@ html {
   }
 }
 
+/* ── Orbes de la sección social: blur responsive ─────────────────────
+ * En desktop blur(38px) se ve bien y la GPU lo aguanta.
+ * En mobile bajamos a blur(22px): Gaussian blur cuesta O(sigma) por pixel
+ * y los celulares de gama media sufren. El efecto visual no se pierde tanto
+ * porque los orbes están detrás de un grid y vignettes. */
+.orb-blur {
+  filter: blur(22px);
+}
+@media (min-width: 768px) {
+  .orb-blur { filter: blur(38px); }
+}
+
 /* ── Brands marquee — una sola fila horizontal infinita ─────────────── */
 .brands-marquee {
   overflow: hidden;
