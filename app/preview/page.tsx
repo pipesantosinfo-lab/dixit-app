@@ -1049,47 +1049,56 @@ export default function PreviewPage() {
   const socialInView = useInView(socialRef, { once: false, margin: '0px 0px -80px 0px' })
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
 
-  // Parallax aplicado vía ref (no motion.div) — evita conflicto de hidratación con <Image>.
-  // Combina scroll + mouse: el scroll baja la imagen 0→30%; el cursor la mueve ±10px (X/Y).
-  const heroScrollProgress = useRef(0)
+  // Parallax del hero: scroll + mouse calculados en un solo rAF.
+  // Leemos scroll position DIRECTAMENTE cada frame (sincronizado con Lenis)
+  // en lugar de useMotionValueEvent → evita el efecto "escalonado" al combinar
+  // un valor discreto con un loop continuo. Pixels puros + translate3d → GPU.
   const heroMouse = useRef({ x: 0, y: 0 })
   const heroMouseSmooth = useRef({ x: 0, y: 0 })
-  const heroRafId = useRef<number | null>(null)
-
-  useMotionValueEvent(scrollYProgress, 'change', (progress) => {
-    heroScrollProgress.current = progress
-  })
 
   useEffect(() => {
     if (typeof window === 'undefined') return
-    if (!window.matchMedia('(pointer: fine)').matches) return  // skip touch
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
+    const isFinePointer = window.matchMedia('(pointer: fine)').matches
+
     const onMove = (e: MouseEvent) => {
-      // Normalizar a -1 / +1 respecto al centro de la ventana
       heroMouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2
       heroMouse.current.y = (e.clientY / window.innerHeight - 0.5) * 2
     }
-    window.addEventListener('mousemove', onMove, { passive: true })
-
-    const loop = () => {
-      // Lerp suave hacia el target
-      heroMouseSmooth.current.x += (heroMouse.current.x - heroMouseSmooth.current.x) * 0.06
-      heroMouseSmooth.current.y += (heroMouse.current.y - heroMouseSmooth.current.y) * 0.06
-      const el = heroParallaxRef.current
-      if (el) {
-        const ty = heroScrollProgress.current * 30  // scroll: 0→30%
-        const mx = heroMouseSmooth.current.x * 12   // mouse: ±12px horizontal
-        const my = heroMouseSmooth.current.y * 8    // mouse: ±8px vertical
-        el.style.transform = `translate(${mx}px, calc(${ty}% + ${my}px)) scale(1.15)`
-      }
-      heroRafId.current = requestAnimationFrame(loop)
+    if (isFinePointer) {
+      window.addEventListener('mousemove', onMove, { passive: true })
     }
-    heroRafId.current = requestAnimationFrame(loop)
+
+    let rafId = 0
+    const loop = () => {
+      const parEl = heroParallaxRef.current
+      const heroEl = heroRef.current
+      if (parEl && heroEl) {
+        // Progress de scroll calculado directamente del DOM cada frame
+        const rect = heroEl.getBoundingClientRect()
+        const scrolled = Math.max(0, -rect.top)
+        const progress = Math.min(1, rect.height > 0 ? scrolled / rect.height : 0)
+        const ty = progress * rect.height * 0.3  // px puros (no %)
+
+        // Mouse parallax (solo cursor fino)
+        let mx = 0, my = 0
+        if (isFinePointer) {
+          heroMouseSmooth.current.x += (heroMouse.current.x - heroMouseSmooth.current.x) * 0.08
+          heroMouseSmooth.current.y += (heroMouse.current.y - heroMouseSmooth.current.y) * 0.08
+          mx = heroMouseSmooth.current.x * 12
+          my = heroMouseSmooth.current.y * 8
+        }
+
+        parEl.style.transform = `translate3d(${mx}px, ${ty + my}px, 0) scale(1.15)`
+      }
+      rafId = requestAnimationFrame(loop)
+    }
+    rafId = requestAnimationFrame(loop)
 
     return () => {
       window.removeEventListener('mousemove', onMove)
-      if (heroRafId.current) cancelAnimationFrame(heroRafId.current)
+      cancelAnimationFrame(rafId)
     }
   }, [])
   const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
