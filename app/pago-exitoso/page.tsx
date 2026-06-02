@@ -2,9 +2,86 @@
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
+import { motion } from 'framer-motion'
 import Particles from '@/components/Particles'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+/* Pequeñas chispas que salen del punto de choque de las manos.
+ * Posiciones precomputadas para que sea determinista (no rehidrata distinto). */
+const SPARKLES = [
+  { x: -54, y: -28, delay: 0.25, size: 7, color: '#94ccd4' },
+  { x:  48, y: -34, delay: 0.30, size: 8, color: '#8B3CF7' },
+  { x: -42, y:  44, delay: 0.35, size: 6, color: '#FFC832' },
+  { x:  56, y:  38, delay: 0.28, size: 7, color: '#94ccd4' },
+  { x: -68, y:   8, delay: 0.40, size: 5, color: '#8B3CF7' },
+  { x:  72, y:   4, delay: 0.32, size: 6, color: '#FFC832' },
+  { x: -22, y: -58, delay: 0.42, size: 5, color: '#94ccd4' },
+  { x:  18, y:  62, delay: 0.38, size: 5, color: '#8B3CF7' },
+]
+
+function HighFiveCelebration() {
+  return (
+    <div className="relative w-40 h-40 md:w-48 md:h-48 mx-auto mb-2" aria-hidden>
+      {/* Halo radial detrás del choque — pulsa al inicio */}
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{ background: 'radial-gradient(circle, rgba(139,60,247,0.35) 0%, rgba(148,204,212,0.18) 35%, transparent 70%)', filter: 'blur(20px)' }}
+        initial={{ scale: 0.6, opacity: 0 }}
+        animate={{ scale: [0.6, 1.15, 1], opacity: [0, 0.9, 0.55] }}
+        transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
+      />
+
+      {/* Ilustración: entrada con rebote + 'shake' breve en el momento del choque */}
+      <motion.div
+        className="relative w-full h-full"
+        initial={{ scale: 0, rotate: -8, opacity: 0 }}
+        animate={{
+          scale: [0, 1.08, 0.97, 1.02, 1],
+          rotate: [-8, 4, -2, 1, 0],
+          opacity: [0, 1, 1, 1, 1],
+        }}
+        transition={{
+          duration: 0.9,
+          times: [0, 0.45, 0.65, 0.82, 1],
+          ease: 'easeOut',
+        }}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/high-five.svg"
+          alt="¡Choca esos cinco!"
+          className="w-full h-full"
+          draggable={false}
+        />
+      </motion.div>
+
+      {/* Chispas emanando del centro */}
+      {SPARKLES.map((s, i) => (
+        <motion.div
+          key={i}
+          className="absolute top-1/2 left-1/2 rounded-full pointer-events-none"
+          style={{
+            width: s.size,
+            height: s.size,
+            background: s.color,
+            boxShadow: `0 0 ${s.size * 1.5}px ${s.color}`,
+            x: -s.size / 2,
+            y: -s.size / 2,
+          }}
+          initial={{ opacity: 0, scale: 0, x: -s.size / 2, y: -s.size / 2 }}
+          animate={{
+            opacity: [0, 1, 1, 0],
+            scale: [0, 1.4, 1, 0.4],
+            x: [-s.size / 2, -s.size / 2 + s.x],
+            y: [-s.size / 2, -s.size / 2 + s.y],
+          }}
+          transition={{ duration: 0.95, delay: s.delay, ease: [0.16, 1, 0.3, 1] }}
+        />
+      ))}
+    </div>
+  )
+}
 
 function Content() {
   const params = useSearchParams()
@@ -20,12 +97,8 @@ function Content() {
           style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.15) 0%, transparent 70%)', filter: 'blur(40px)' }} />
 
         <div className="relative glass rounded-3xl p-10" style={{ border: '1px solid rgba(139,60,247,0.25)' }}>
-          <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6"
-            style={{ background: 'rgba(139,60,247,0.15)', border: '1px solid rgba(139,60,247,0.3)' }}>
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8B3CF7" strokeWidth="2.5">
-              <path d="M20 6L9 17l-5-5"/>
-            </svg>
-          </div>
+          {/* Celebración: high-five chibi con chispas */}
+          <HighFiveCelebration />
 
           <h1 className="font-display text-3xl text-white mb-3">¡Pago confirmado!</h1>
           <p className="font-body text-white/50 mb-8 leading-relaxed">
