@@ -1849,13 +1849,9 @@ export default function PreviewPage() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <MagneticButton
-                    href={EVENT_IG}
-                    onClick={() => track({ type: 'click', target: 'open_event' })}
-                    className="btn-primary"
-                  >
+                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'open_event' })} className="btn-primary">
                     <span>Atento al lanzamiento</span>
-                  </MagneticButton>
+                  </a>
                   <button disabled className="btn-ghost opacity-40 cursor-not-allowed">
                     Comprar entrada · $40.000
                   </button>
