@@ -46,7 +46,6 @@ function HighFiveCelebration() {
         }}
       >
         <video
-          src="/high-five.mp4"
           autoPlay
           muted
           loop
@@ -54,8 +53,14 @@ function HighFiveCelebration() {
           preload="auto"
           aria-label="¡Choca esos cinco!"
           className="w-full h-full object-contain"
-          style={{ pointerEvents: 'none' }}
-        />
+          style={{ pointerEvents: 'none', background: 'transparent' }}
+        >
+          {/* WebM con VP9 + alpha real (Chrome, Firefox, Safari 16+). */}
+          <source src="/high-five.webm" type="video/webm" />
+          {/* Fallback MP4 con bg #070508 baked-in (matchea el bg de la página
+              → visualmente parece transparente en navegadores viejos). */}
+          <source src="/high-five.mp4" type="video/mp4" />
+        </video>
       </motion.div>
 
       {/* Chispas emanando del centro */}
