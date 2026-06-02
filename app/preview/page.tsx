@@ -1271,8 +1271,12 @@ export default function PreviewPage() {
           </div>
           {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.4) 40%, transparent 58%)' }} />
-          {/* Oscuridad mínima en la parte inferior para transición suave */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(7,5,8,0.6) 0%, transparent 20%)' }} />
+          {/* Fade-to-black abajo: la imagen se difumina suavemente hacia el
+              color del background de la siguiente sección (#070508) para que
+              no haya línea visible entre hero y la sección de estadísticas. */}
+          <div className="absolute inset-0 pointer-events-none" style={{
+            background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.95) 6%, rgba(7,5,8,0.78) 14%, rgba(7,5,8,0.5) 24%, rgba(7,5,8,0.22) 34%, transparent 44%)',
+          }} />
           {/* Sombra desde arriba para cubrir el área del título y subtítulo */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.92) 0%, rgba(7,5,8,0.82) 30%, rgba(7,5,8,0.5) 55%, rgba(7,5,8,0.1) 75%, transparent 90%)' }} />
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
