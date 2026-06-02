@@ -984,6 +984,57 @@ function Tilt3D({
   )
 }
 
+/* ── Chrome de ventana macOS ─────────────────────────────────────────────
+ * Wrap reutilizable: traffic lights (R/Y/G) + URL pill centrada con icono
+ * de candado. Da sensación de "screen showcase" estilo Apple/Linear/Framer. */
+function MacWindow({
+  url = 'pipesantos.com',
+  children,
+  className,
+}: {
+  url?: string
+  children: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={className}>
+      <div
+        className="relative flex items-center px-3.5 md:px-4 py-2.5 md:py-3"
+        style={{
+          background: 'linear-gradient(180deg, #2a2630 0%, #1f1c25 100%)',
+          borderBottom: '1px solid rgba(255,255,255,0.06)',
+        }}
+      >
+        {/* Traffic lights */}
+        <div className="flex items-center gap-1.5 md:gap-2">
+          <span className="block rounded-full" style={{ width: 12, height: 12, background: '#FF5F57', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
+          <span className="block rounded-full" style={{ width: 12, height: 12, background: '#FEBC2E', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
+          <span className="block rounded-full" style={{ width: 12, height: 12, background: '#28C840', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
+        </div>
+
+        {/* URL pill centrada */}
+        <div
+          className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-md"
+          style={{
+            background: 'rgba(255,255,255,0.06)',
+            border: '1px solid rgba(255,255,255,0.04)',
+            maxWidth: '60%',
+          }}
+        >
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.4" strokeLinecap="round">
+            <rect x="3" y="11" width="18" height="11" rx="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          <span className="font-mono text-[10px] md:text-[11px] tracking-wider truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
+            {url}
+          </span>
+        </div>
+      </div>
+      {children}
+    </div>
+  )
+}
+
 /* ── Wrapper con escala ligada al scroll ────────────────────────────────
  * El hijo crece a medida que entra al viewport, alcanza su tamaño máximo
  * cuando está centrado, y se achica al salir. Sutil (0.9 → 1 → 0.9). */
@@ -1538,50 +1589,18 @@ export default function PreviewPage() {
             {/* Halo morado sutil detrás de la ventana */}
             <div className="absolute -inset-1 rounded-2xl" style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.12) 0%, transparent 70%)', zIndex: -1 }} />
 
-            {/* ── Chrome de ventana macOS ─────────────────────────────── */}
-            <div
-              className="relative flex items-center px-3.5 md:px-4 py-2.5 md:py-3"
-              style={{
-                background: 'linear-gradient(180deg, #2a2630 0%, #1f1c25 100%)',
-                borderBottom: '1px solid rgba(255,255,255,0.06)',
-              }}
-            >
-              {/* Traffic lights */}
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <span className="block rounded-full" style={{ width: 12, height: 12, background: '#FF5F57', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
-                <span className="block rounded-full" style={{ width: 12, height: 12, background: '#FEBC2E', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
-                <span className="block rounded-full" style={{ width: 12, height: 12, background: '#28C840', boxShadow: 'inset 0 0 0 0.5px rgba(0,0,0,0.15)' }} />
-              </div>
-
-              {/* URL pill centrada */}
-              <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-3 py-1 rounded-md"
-                style={{
-                  background: 'rgba(255,255,255,0.06)',
-                  border: '1px solid rgba(255,255,255,0.04)',
-                  maxWidth: '60%',
-                }}
+            <MacWindow url="pipesantos.com/eventos">
+              <video
+                controls
+                playsInline
+                preload="metadata"
+                poster="/showreel-poster.jpg"
+                className="w-full block"
+                style={{ maxHeight: '600px', background: '#070508' }}
               >
-                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.55)" strokeWidth="2.4" strokeLinecap="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-                <span className="font-mono text-[10px] md:text-[11px] tracking-wider truncate" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                  pipesantos.com/eventos
-                </span>
-              </div>
-            </div>
-
-            {/* Video */}
-            <video
-              controls
-              playsInline
-              preload="metadata"
-              poster="/showreel-poster.jpg"
-              className="w-full block"
-              style={{ maxHeight: '600px', background: '#070508' }}
-            >
-              <source src="/showreel.mp4" type="video/mp4" />
-            </video>
+                <source src="/showreel.mp4" type="video/mp4" />
+              </video>
+            </MacWindow>
           </ScrollScale>
         </div>
       </section>
@@ -1779,20 +1798,36 @@ export default function PreviewPage() {
             </p>
           </motion.div>
           <motion.div className="grid md:grid-cols-2 gap-6" initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
-            <motion.iframe variants={staggerItem}
-              style={{ borderRadius: '12px' }}
-              src="https://open.spotify.com/embed/episode/1IgzCLGtd5GT5VAJKWuk38?utm_source=generator"
-              width="100%" height="352" frameBorder={0}
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            />
-            <motion.iframe variants={staggerItem}
-              style={{ borderRadius: '12px' }}
-              src="https://open.spotify.com/embed/episode/3xAd9gVStVB9YaPdaJ4oJh?utm_source=generator"
-              width="100%" height="352" frameBorder={0}
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            />
+            <motion.div
+              variants={staggerItem}
+              className="rounded-xl overflow-hidden"
+              style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 25px 60px rgba(0,0,0,0.5), 0 0 50px rgba(139,60,247,0.06)' }}
+            >
+              <MacWindow url="open.spotify.com/pipesantos">
+                <iframe
+                  src="https://open.spotify.com/embed/episode/1IgzCLGtd5GT5VAJKWuk38?utm_source=generator"
+                  width="100%" height="352" frameBorder={0}
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  className="block"
+                />
+              </MacWindow>
+            </motion.div>
+            <motion.div
+              variants={staggerItem}
+              className="rounded-xl overflow-hidden"
+              style={{ boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 25px 60px rgba(0,0,0,0.5), 0 0 50px rgba(139,60,247,0.06)' }}
+            >
+              <MacWindow url="open.spotify.com/pipesantos">
+                <iframe
+                  src="https://open.spotify.com/embed/episode/3xAd9gVStVB9YaPdaJ4oJh?utm_source=generator"
+                  width="100%" height="352" frameBorder={0}
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  className="block"
+                />
+              </MacWindow>
+            </motion.div>
           </motion.div>
           <div className="text-center mt-10">
             <a href="https://open.spotify.com/show/2MaZs9kPXMWv20RysXRcxG" target="_blank" rel="noopener noreferrer" className="btn-ghost inline-block">Ver todos los episodios en Spotify</a>
