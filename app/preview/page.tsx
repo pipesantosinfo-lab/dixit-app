@@ -802,6 +802,134 @@ const bookFeatures = [
 
 const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 🎟️', '¡Nos vemos en Barranquilla!', '¡Gracias por estar aquí! ✨']
 
+/* ── Botón magnético: el elemento "es atraído" hacia el cursor cuando éste
+ * se acerca. Solo desktop (pointer:fine). Spring suave para evitar tirones. */
+function MagneticButton({
+  children,
+  className,
+  href,
+  onClick,
+  strength = 0.35,
+  range = 100,
+}: {
+  children: React.ReactNode
+  className?: string
+  href?: string
+  onClick?: () => void
+  strength?: number   // qué tan fuerte se mueve el botón (0–0.5 razonable)
+  range?: number      // a qué distancia en px empieza a "atraer"
+}) {
+  const ref = useRef<HTMLAnchorElement | HTMLButtonElement>(null)
+  const x = useSpring(0, { stiffness: 150, damping: 15, mass: 0.3 })
+  const y = useSpring(0, { stiffness: 150, damping: 15, mass: 0.3 })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    // No aplicar en touch devices (no hay cursor)
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
+    const handleMove = (e: MouseEvent) => {
+      const el = ref.current
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const cx = rect.left + rect.width / 2
+      const cy = rect.top + rect.height / 2
+      const dx = e.clientX - cx
+      const dy = e.clientY - cy
+      const dist = Math.hypot(dx, dy)
+      if (dist < rect.width / 2 + range) {
+        x.set(dx * strength)
+        y.set(dy * strength)
+      } else {
+        x.set(0)
+        y.set(0)
+      }
+    }
+    window.addEventListener('mousemove', handleMove, { passive: true })
+    return () => window.removeEventListener('mousemove', handleMove)
+  }, [strength, range, x, y])
+
+  const inner = (
+    <motion.span style={{ x, y, display: 'inline-block', willChange: 'transform' }}>
+      {children}
+    </motion.span>
+  )
+
+  if (href) {
+    return (
+      <motion.a
+        ref={ref as React.Ref<HTMLAnchorElement>}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={onClick}
+        className={className}
+      >
+        {inner}
+      </motion.a>
+    )
+  }
+  return (
+    <motion.button
+      ref={ref as React.Ref<HTMLButtonElement>}
+      onClick={onClick}
+      className={className}
+    >
+      {inner}
+    </motion.button>
+  )
+}
+
+/* ── Tilt 3D ────────────────────────────────────────────────────────────
+ * Inclina el elemento 4-6° siguiendo el cursor, como Apple product cards.
+ * Solo se activa en hover y en pointer:fine. Spring suave para devolverse. */
+function Tilt3D({
+  children,
+  className,
+  style,
+  maxTilt = 6,
+}: {
+  children: React.ReactNode
+  className?: string
+  style?: React.CSSProperties
+  maxTilt?: number
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const rx = useSpring(0, { stiffness: 200, damping: 18, mass: 0.4 })
+  const ry = useSpring(0, { stiffness: 200, damping: 18, mass: 0.4 })
+
+  const handleMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const el = ref.current
+    if (!el) return
+    const rect = el.getBoundingClientRect()
+    const px = (e.clientX - rect.left) / rect.width  // 0–1
+    const py = (e.clientY - rect.top) / rect.height
+    // Centrar en 0: -0.5 a 0.5, multiplicar por maxTilt
+    ry.set((px - 0.5) * maxTilt * 2)
+    rx.set((0.5 - py) * maxTilt * 2)
+  }
+  const handleLeave = () => { rx.set(0); ry.set(0) }
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      style={{
+        ...style,
+        rotateX: rx,
+        rotateY: ry,
+        transformStyle: 'preserve-3d',
+        transformPerspective: 1000,
+        willChange: 'transform',
+      }}
+      onMouseMove={handleMove}
+      onMouseLeave={handleLeave}
+    >
+      {children}
+    </motion.div>
+  )
+}
+
 /* ── Wrapper con escala ligada al scroll ────────────────────────────────
  * El hijo crece a medida que entra al viewport, alcanza su tamaño máximo
  * cuando está centrado, y se achica al salir. Sutil (0.9 → 1 → 0.9). */
@@ -921,13 +1049,49 @@ export default function PreviewPage() {
   const socialInView = useInView(socialRef, { once: false, margin: '0px 0px -80px 0px' })
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
 
-  // Parallax aplicado vía ref (no motion.div) — evita conflicto de hidratación con <Image>
+  // Parallax aplicado vía ref (no motion.div) — evita conflicto de hidratación con <Image>.
+  // Combina scroll + mouse: el scroll baja la imagen 0→30%; el cursor la mueve ±10px (X/Y).
+  const heroScrollProgress = useRef(0)
+  const heroMouse = useRef({ x: 0, y: 0 })
+  const heroMouseSmooth = useRef({ x: 0, y: 0 })
+  const heroRafId = useRef<number | null>(null)
+
   useMotionValueEvent(scrollYProgress, 'change', (progress) => {
-    if (heroParallaxRef.current) {
-      const translateY = progress * 30 // 0% → 30% al scrollear el hero
-      heroParallaxRef.current.style.transform = `translateY(${translateY}%) scale(1.15)`
-    }
+    heroScrollProgress.current = progress
   })
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (!window.matchMedia('(pointer: fine)').matches) return  // skip touch
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const onMove = (e: MouseEvent) => {
+      // Normalizar a -1 / +1 respecto al centro de la ventana
+      heroMouse.current.x = (e.clientX / window.innerWidth - 0.5) * 2
+      heroMouse.current.y = (e.clientY / window.innerHeight - 0.5) * 2
+    }
+    window.addEventListener('mousemove', onMove, { passive: true })
+
+    const loop = () => {
+      // Lerp suave hacia el target
+      heroMouseSmooth.current.x += (heroMouse.current.x - heroMouseSmooth.current.x) * 0.06
+      heroMouseSmooth.current.y += (heroMouse.current.y - heroMouseSmooth.current.y) * 0.06
+      const el = heroParallaxRef.current
+      if (el) {
+        const ty = heroScrollProgress.current * 30  // scroll: 0→30%
+        const mx = heroMouseSmooth.current.x * 12   // mouse: ±12px horizontal
+        const my = heroMouseSmooth.current.y * 8    // mouse: ±8px vertical
+        el.style.transform = `translate(${mx}px, calc(${ty}% + ${my}px)) scale(1.15)`
+      }
+      heroRafId.current = requestAnimationFrame(loop)
+    }
+    heroRafId.current = requestAnimationFrame(loop)
+
+    return () => {
+      window.removeEventListener('mousemove', onMove)
+      if (heroRafId.current) cancelAnimationFrame(heroRafId.current)
+    }
+  }, [])
   const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
   const closeLightbox = useCallback(() => { setLightboxIndex(null); document.body.style.overflow = '' }, [])
   const prevPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i - 1 + galleryPhotos.length) % galleryPhotos.length), [])
@@ -1108,10 +1272,8 @@ export default function PreviewPage() {
           <div className="grid md:grid-cols-3 gap-6">
 
             {/* TikTok */}
-            <ScrollScale
-              className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all social-card-3d"
-              offset={['start 2', 'end -0.5']}
-            >
+            <ScrollScale offset={['start 2', 'end -0.5']}>
+              <Tilt3D className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all social-card-3d">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                   <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/>
@@ -1133,14 +1295,15 @@ export default function PreviewPage() {
                   <path d="M7 17L17 7M9 7h8v8"/>
                 </svg>
               </a>
+              </Tilt3D>
             </ScrollScale>
 
             {/* Instagram */}
-            <ScrollScale
-              className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all relative social-card-3d"
-              style={{ overflow: 'visible' }}
-              offset={['start 2', 'end -0.5']}
-            >
+            <ScrollScale offset={['start 2', 'end -0.5']}>
+              <Tilt3D
+                className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all relative social-card-3d"
+                style={{ overflow: 'visible' }}
+              >
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
@@ -1207,15 +1370,16 @@ export default function PreviewPage() {
                   <path d="M7 17L17 7M9 7h8v8"/>
                 </svg>
               </a>
+              </Tilt3D>
             </ScrollScale>
 
             {/* Facebook — intensidad reducida para que no se achique tanto al final */}
             <ScrollScale
-              className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all social-card-3d"
               scaleRange={[0.92, 1.02, 0.92]}
               opacityRange={[0.6, 1, 1, 0.6]}
               offset={['start 2', 'end -0.5']}
             >
+              <Tilt3D className="glass rounded-2xl p-6 md:p-8 flex flex-col items-center text-center group hover:border-white/20 transition-all social-card-3d">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-5" style={{ background: 'rgba(255,255,255,0.06)' }}>
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="white">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
@@ -1237,6 +1401,7 @@ export default function PreviewPage() {
                   <path d="M7 17L17 7M9 7h8v8"/>
                 </svg>
               </a>
+              </Tilt3D>
             </ScrollScale>
 
           </div>
@@ -1582,9 +1747,13 @@ export default function PreviewPage() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'open_event' })} className="btn-primary">
+                  <MagneticButton
+                    href={EVENT_IG}
+                    onClick={() => track({ type: 'click', target: 'open_event' })}
+                    className="btn-primary"
+                  >
                     <span>Atento al lanzamiento</span>
-                  </a>
+                  </MagneticButton>
                   <button disabled className="btn-ghost opacity-40 cursor-not-allowed">
                     Comprar entrada · $40.000
                   </button>

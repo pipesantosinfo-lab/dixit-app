@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, DM_Sans, DM_Mono } from 'next/font/google'
 import './globals.css'
+import SmoothScroll from './smooth-scroll'
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -53,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}>
       <body className="bg-void text-white antialiased font-body">
+        <SmoothScroll />
         {children}
       </body>
     </html>
