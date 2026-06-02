@@ -32,9 +32,9 @@ function HighFiveCelebration() {
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       />
 
-      {/* Ilustración GIF: entrada clean con scale + fade.
-          (Sin rotate-shake porque el GIF ya trae su propia animación interna
-          y dos motion conflictivos se ven feos). */}
+      {/* Animación MP4: 97KB (vs 930KB del GIF original = -89%).
+          autoPlay + muted + playsInline → autoplay funciona en iOS Safari.
+          Sin rotate/shake propio porque el video ya trae su movimiento. */}
       <motion.div
         className="relative w-full h-full"
         initial={{ scale: 0.6, opacity: 0 }}
@@ -45,12 +45,16 @@ function HighFiveCelebration() {
           ease: [0.16, 1, 0.3, 1],
         }}
       >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/high-five.gif"
-          alt="¡Choca esos cinco!"
+        <video
+          src="/high-five.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          aria-label="¡Choca esos cinco!"
           className="w-full h-full object-contain"
-          draggable={false}
+          style={{ pointerEvents: 'none' }}
         />
       </motion.div>
 
