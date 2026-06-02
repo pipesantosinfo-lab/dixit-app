@@ -111,7 +111,7 @@ function Content() {
             style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
             {[
               { icon: '📧', text: 'Revisa tu bandeja de entrada (y la carpeta de spam)' },
-              { icon: '📱', text: 'Si pusiste tu WhatsApp, también te llegará ahí' },
+              { icon: '🙌', text: 'Te esperamos este 22 de agosto con la mejor energía' },
               { icon: '🎫', text: 'El QR es tu entrada — guárdalo bien' },
             ].map(item => (
               <div key={item.text} className="flex gap-3 items-start">
