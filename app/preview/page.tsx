@@ -992,18 +992,27 @@ function Tilt3D({
  *   4. Scanlines CRT muy sutiles (overlay blend)
  *   5. Film grain (fractalNoise SVG + overlay blend)
  * + vignettes top/bottom para fundir con secciones vecinas.            */
-function ScreenAmbientBg() {
+function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
+  const isOrange = accent === 'orange'
+  const dotColor = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.18)'
+  const primaryAurora = isOrange
+    ? 'radial-gradient(circle, rgba(255,140,50,0.24) 0%, rgba(255,180,80,0.10) 40%, transparent 70%)'
+    : 'radial-gradient(circle, rgba(139,60,247,0.18) 0%, rgba(196,82,255,0.08) 40%, transparent 70%)'
+  const secondaryAurora = isOrange
+    ? 'radial-gradient(circle, rgba(139,60,247,0.14) 0%, rgba(196,82,255,0.07) 35%, transparent 65%)'
+    : 'radial-gradient(circle, rgba(255,140,50,0.12) 0%, rgba(196,82,0,0.06) 35%, transparent 65%)'
+
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
       {/* Dot grid sutil con vignette radial */}
       <div className="absolute inset-0" style={{
-        backgroundImage: 'radial-gradient(circle, rgba(139,60,247,0.18) 1px, transparent 1px)',
+        backgroundImage: `radial-gradient(circle, ${dotColor} 1px, transparent 1px)`,
         backgroundSize: '28px 28px',
         WebkitMaskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
         maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
       }} />
 
-      {/* Aurora morada gigante detrás del título */}
+      {/* Aurora principal gigante detrás del título — color depende del accent */}
       <motion.div
         className="absolute rounded-full"
         style={{
@@ -1011,7 +1020,7 @@ function ScreenAmbientBg() {
           transform: 'translateX(-50%)',
           width: 'min(90vmin, 900px)',
           height: 'min(90vmin, 900px)',
-          background: 'radial-gradient(circle, rgba(139,60,247,0.18) 0%, rgba(196,82,255,0.08) 40%, transparent 70%)',
+          background: primaryAurora,
           filter: 'blur(50px)',
           willChange: 'transform, opacity',
         }}
@@ -1019,14 +1028,14 @@ function ScreenAmbientBg() {
         transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Aurora naranja secundaria abajo-derecha */}
+      {/* Aurora secundaria abajo-derecha (color complementario) */}
       <motion.div
         className="absolute rounded-full"
         style={{
           bottom: '0%', right: '5%',
           width: 'min(50vmin, 500px)',
           height: 'min(50vmin, 500px)',
-          background: 'radial-gradient(circle, rgba(255,140,50,0.12) 0%, rgba(196,82,0,0.06) 35%, transparent 65%)',
+          background: secondaryAurora,
           filter: 'blur(60px)',
           willChange: 'transform, opacity',
         }}
@@ -1810,8 +1819,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── LIBRO ────────────────────────────────── */}
-      <section id="libro" data-track-section="libro" className="relative z-10 px-6 md:px-12 pt-4 pb-20">
-        <div className="max-w-5xl mx-auto">
+      <section id="libro" data-track-section="libro" className="relative z-10 px-6 md:px-12 pt-4 pb-20 overflow-hidden">
+        <ScreenAmbientBg accent="orange" />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="line-holo mb-14" />
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <motion.div className="order-2 md:order-1" initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
