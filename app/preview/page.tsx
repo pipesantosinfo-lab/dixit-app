@@ -1257,17 +1257,16 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
       {/* Aurora LEFT — columna de luz que abarca toda la altura de la sección.
           3 puntos de glow distribuidos vertically + blur global → continuidad
           de iluminación mientras el usuario scrollea por la sección.
-          animate gated por inView: cuando la sección no está visible, motion
-          deja de programar rAFs (las auroras se quedan estáticas, GPU libre). */}
+          animate gated por inView + blur responsive vía .screen-bg-aurora
+          (mobile: 28px, desktop: 45px). */}
       <motion.div
-        className="absolute"
+        className="absolute screen-bg-aurora"
         style={{
           top: 0,
           bottom: 0,
           left: '-15%',
           width: 'min(70vmin, 720px)',
           background: leftColumnBg,
-          filter: 'blur(45px)',
           willChange: 'transform, opacity',
         }}
         animate={inView ? { scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] } : undefined}
@@ -1277,14 +1276,13 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
       {/* Aurora RIGHT — columna simétrica, ritmo desincronizado, puntos de
           glow ligeramente offset para que no se vea espejado perfecto. */}
       <motion.div
-        className="absolute"
+        className="absolute screen-bg-aurora"
         style={{
           top: 0,
           bottom: 0,
           right: '-15%',
           width: 'min(70vmin, 720px)',
           background: rightColumnBg,
-          filter: 'blur(45px)',
           willChange: 'transform, opacity',
         }}
         animate={inView ? { scale: [1.05, 0.95, 1.05], opacity: [0.65, 0.95, 0.65] } : undefined}
@@ -1672,10 +1670,11 @@ export default function PreviewPage() {
             className="md:hidden fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
             style={{
               zIndex: 60,
-              background: 'rgba(7,5,8,0.97)',
-              backdropFilter: 'blur(24px)',
-              touchAction: 'none',          // sin pan/zoom
-              overscrollBehavior: 'contain', // sin scroll chaining al body
+              background: 'rgba(7,5,8,0.97)',  // 97% opaco → backdrop-filter casi imperceptible
+              backdropFilter: 'blur(10px)',     // bajado de 24px → 10px, ahorra mucho en Android
+              WebkitBackdropFilter: 'blur(10px)',
+              touchAction: 'none',
+              overscrollBehavior: 'contain',
             }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -64,25 +64,37 @@ html {
 }
 
 /* ── Glass card ────────────────────────────────────── */
+/* Mobile default: blur 8px (sufficient para verse "glass" en pantallas
+ * chicas con DPR 2-3x, mucho más barato en Android Chrome).
+ * Desktop ≥768px: blur 20px (full quality, hardware capaz). */
 .glass {
   background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .glass-iris {
   background: rgba(139, 60, 247, 0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(139, 60, 247, 0.2);
 }
 
 .glass-aurora {
   background: rgba(196, 82, 0, 0.06);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(196, 82, 0, 0.2);
+}
+
+@media (min-width: 768px) {
+  .glass,
+  .glass-iris,
+  .glass-aurora {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+  }
 }
 
 /* ── Glow effects ──────────────────────────────────── */
@@ -478,6 +490,19 @@ html {
   50% {
     opacity: 1;
     transform: scale(1.06);
+  }
+}
+
+/* ── ScreenAmbientBg auroras: blur responsive ──────────────────────
+ * Mobile: blur(28px) — todavía se ve "aurora" pero ~70% más barato
+ * que blur(45px) en Android Chrome (la GPU procesa O(sigma) por pixel).
+ * Desktop: blur(45px) — la GPU lo soporta sin sudar. */
+.screen-bg-aurora {
+  filter: blur(28px);
+}
+@media (min-width: 768px) {
+  .screen-bg-aurora {
+    filter: blur(45px);
   }
 }
 
