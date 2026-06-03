@@ -1391,6 +1391,25 @@ export default function PreviewPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const [showEventModal, setShowEventModal] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  // Lock body scroll mientras el menú móvil está abierto
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => { document.body.style.overflow = '' }
+  }, [mobileMenuOpen])
+
+  // ESC para cerrar el menú
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileMenuOpen(false) }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [mobileMenuOpen])
   const [eventSold, setEventSold] = useState(0)
   const countdown = useCountdown()
   useEffect(() => {
@@ -1589,7 +1608,119 @@ export default function PreviewPage() {
             <a key={label} href={href} className="font-mono text-xs tracking-widest text-white/40 hover:text-white uppercase transition-colors">{label}</a>
           ))}
         </div>
+
+        {/* Hamburger (solo mobile) — absolute right del nav, animado a X */}
+        <button
+          type="button"
+          onClick={() => setMobileMenuOpen((o) => !o)}
+          aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={mobileMenuOpen}
+          className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 flex flex-col items-center justify-center"
+          style={{ zIndex: 70 }}
+        >
+          <motion.span
+            className="block bg-white rounded-full"
+            style={{ width: 22, height: 2, transformOrigin: 'center' }}
+            animate={mobileMenuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: -5 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.span
+            className="block bg-white rounded-full"
+            style={{ width: 22, height: 2 }}
+            animate={mobileMenuOpen ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+          <motion.span
+            className="block bg-white rounded-full"
+            style={{ width: 22, height: 2, transformOrigin: 'center' }}
+            animate={mobileMenuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 5 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          />
+        </button>
       </nav>
+
+      {/* ── MENÚ MÓVIL OVERLAY ─────────────────────────────────── */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            className="md:hidden fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
+            style={{ zIndex: 60, background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(24px)' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Aurora morada arriba detrás del menú */}
+            <motion.div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                top: '-20%', left: '50%', transform: 'translateX(-50%)',
+                width: '120vmin', height: '120vmin',
+                background: 'radial-gradient(circle, rgba(139,60,247,0.32) 0%, rgba(196,82,255,0.14) 35%, transparent 65%)',
+                filter: 'blur(50px)',
+              }}
+              animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.6, 0.9, 0.6] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            {/* Aurora naranja abajo derecha */}
+            <motion.div
+              className="absolute rounded-full pointer-events-none"
+              style={{
+                bottom: '-10%', right: '-10%',
+                width: '70vmin', height: '70vmin',
+                background: 'radial-gradient(circle, rgba(255,140,50,0.20) 0%, rgba(196,82,0,0.10) 40%, transparent 70%)',
+                filter: 'blur(60px)',
+              }}
+              animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.8, 0.5] }}
+              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+            />
+
+            {/* Links — fade-up staggered */}
+            <nav className="relative z-10 flex flex-col items-center gap-6">
+              {([
+                ['#sobre', 'Sobre mí'],
+                ['#galeria', 'Galería'],
+                ['#libro', 'Libro'],
+                ['#podcast', 'Podcast'],
+                ['#testimonios', 'Testimonios'],
+                ['#evento', 'Evento'],
+                ['#contacto', 'Contacto'],
+              ] as const).map(([href, label], i) => (
+                <motion.a
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                  className="font-display text-3xl text-white relative group"
+                >
+                  <span>{label}</span>
+                  {/* Underline sutil que aparece al tap */}
+                  <span
+                    className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-[2px] w-0 group-hover:w-full group-focus:w-full transition-all duration-300 rounded-full"
+                    style={{ background: 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))', boxShadow: '0 0 12px rgba(139,60,247,0.7)' }}
+                  />
+                </motion.a>
+              ))}
+            </nav>
+
+            {/* Footer mini con el handle social */}
+            <motion.div
+              className="absolute bottom-10 left-0 right-0 flex justify-center"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.45, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <p className="font-mono text-[10px] tracking-[0.4em] uppercase text-white/30">
+                pipesantos.com
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── HERO ─────────────────────────────────── */}
       <section ref={heroRef} data-track-section="hero" className="relative min-h-screen flex flex-col justify-start overflow-hidden">
