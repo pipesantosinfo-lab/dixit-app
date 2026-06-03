@@ -1,61 +1,72 @@
 'use client'
-import { motion, animate } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 const SHOW_DURATION = 2400
-const EXIT_DURATION = 900  // más corto: el punch es explosivo
+const EXIT_DURATION = 1100
+
+/* Partículas pre-computadas (deterministas → no rehidratan distinto).
+ * 56 partículas distribuidas radialmente con jitter para que se sienta
+ * caótico-orgánico, no perfectamente uniforme. */
+const PARTICLE_COUNT = 56
+const PALETTE = [
+  'rgba(255,255,255,0.95)',   // blanco
+  'rgba(139,60,247,1)',        // morado brand
+  'rgba(196,82,255,1)',        // morado claro
+  'rgba(255,140,50,0.95)',     // naranja brand
+  'rgba(255,200,80,0.95)',     // oro
+  'rgba(148,204,212,0.9)',     // cyan (del high-five)
+]
+const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
+  // Ángulo base distribuido + jitter para asimetría
+  const baseAngle = (i / PARTICLE_COUNT) * Math.PI * 2
+  const jitter = (((i * 31) % 17) / 17 - 0.5) * 0.7
+  const angle = baseAngle + jitter
+  // Distancia variable: 240-560px del centro
+  const distance = 240 + ((i * 41) % 320)
+  // Tamaño variable: 3-11px (mix de "polvo" + "chispas" más grandes)
+  const size = 3 + ((i * 7) % 9)
+  return {
+    angle,
+    distance,
+    size,
+    color: PALETTE[i % PALETTE.length],
+    // Offset inicial pequeño cerca del centro (efecto "estaban dentro del logo")
+    initialX: ((i * 13) % 60) - 30,
+    initialY: ((i * 17) % 50) - 25,
+    // Delay escalonado 0-300ms para que no exploten todas al mismo tiempo
+    delay: ((i * 11) % 300) / 1000,
+  }
+})
 
 export default function IntroOverlay() {
   const [exiting, setExiting] = useState(false)
   const [gone, setGone] = useState(false)
-  const [punch, setPunch] = useState(0)  // 0 → 1 durante el exit
 
   useEffect(() => {
     const t1 = setTimeout(() => setExiting(true), SHOW_DURATION)
-    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION + 50)
+    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION + 200)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
-  useEffect(() => {
-    if (!exiting) return
-    const controls = animate(0, 1, {
-      duration: EXIT_DURATION / 1000,
-      ease: [0.7, 0, 0.3, 1],  // S-curve agresiva: arranca lento, explota, desacelera
-      onUpdate: setPunch,
-    })
-    return () => controls.stop()
-  }, [exiting])
-
   if (gone) return null
-
-  /* Curva no-lineal sobre el punch (pow 1.6) → el logo se queda casi quieto
-   * al inicio y después explota. Sensación clásica de "anticipación + impacto". */
-  const punchPow = Math.pow(punch, 1.6)
-
-  const logoScale = 1 + punchPow * 13       // 1 → 14
-  const motionBlur = punchPow * 22          // 0 → 22px
-  /* Bg + contenido se mantienen opacos hasta el ~70% y caen rápido al final. */
-  const bgOpacity = punch < 0.7 ? 1 : Math.max(0, 1 - (punch - 0.7) * 3.4)
-  /* White flash centrado en punch=0.82 — campana estrecha que enmascara el cambio. */
-  const flashOpacity = Math.max(0, 1 - Math.abs(punch - 0.82) * 6.5)
-  /* Streaks radiales emergen junto con el zoom — "speed lines" del manga. */
-  const streaksOpacity = punch > 0.25 ? Math.min(1, (punch - 0.25) * 2.5) * (1 - punch * 0.7) : 0
 
   return (
     <div
       className="fixed inset-0 z-[9999] overflow-hidden"
       style={{ pointerEvents: exiting ? 'none' : 'auto' }}
     >
-      {/* ── Bg negro + contenido (auroras / tagline / progress) ─────────── */}
+      {/* ── Bg + contenido (auroras / tagline / progress) ───────────────── */}
       <div
         className="absolute inset-0 flex flex-col items-center justify-center"
         style={{
           background: '#070508',
-          opacity: bgOpacity,
+          opacity: exiting ? 0 : 1,
+          transition: `opacity ${EXIT_DURATION * 0.7}ms ease-out ${EXIT_DURATION * 0.25}ms`,
         }}
       >
-        {/* Grain texture */}
+        {/* Grain */}
         <div
           className="absolute inset-0"
           aria-hidden
@@ -145,43 +156,21 @@ export default function IntroOverlay() {
         </div>
       </div>
 
-      {/* ── Speed lines radiales (capa fija que aparece durante el punch) ── */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        aria-hidden
-        style={{
-          background: `conic-gradient(from 0deg,
-            transparent 0deg, rgba(255,255,255,0.18) 2deg, transparent 7deg,
-            transparent 12deg, rgba(255,255,255,0.18) 14deg, transparent 19deg,
-            transparent 24deg, rgba(255,255,255,0.18) 26deg, transparent 31deg,
-            transparent 36deg, rgba(255,255,255,0.18) 38deg, transparent 43deg,
-            transparent 48deg, rgba(255,255,255,0.18) 50deg, transparent 55deg,
-            transparent 60deg, rgba(255,255,255,0.18) 62deg, transparent 67deg,
-            transparent 72deg, rgba(255,255,255,0.18) 74deg, transparent 79deg,
-            transparent 84deg, rgba(255,255,255,0.18) 86deg, transparent 91deg,
-            transparent 96deg, rgba(255,255,255,0.18) 98deg, transparent 103deg,
-            transparent 108deg, rgba(255,255,255,0.18) 110deg, transparent 115deg,
-            transparent 120deg, rgba(255,255,255,0.18) 122deg, transparent 127deg,
-            transparent 360deg)`,
-          WebkitMaskImage: 'radial-gradient(circle, transparent 25%, black 60%, transparent 100%)',
-          maskImage: 'radial-gradient(circle, transparent 25%, black 60%, transparent 100%)',
-          opacity: streaksOpacity,
-          mixBlendMode: 'screen',
-        }}
-      />
-
-      {/* ── Logo (fuera del bg para que el scale + blur no se limite) ───── */}
+      {/* ── Logo (fade rápido cuando empieza el exit) ───────────────────── */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <motion.div
           initial={{ opacity: 0, scale: 0.88, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            transform: `scale(${logoScale})`,
-            filter: `blur(${motionBlur}px)`,
-            opacity: 1 - Math.max(0, (punch - 0.78) * 4.5),  // fade quick at end
-            willChange: 'transform, filter, opacity',
-          }}
+          animate={
+            exiting
+              ? { opacity: 0, scale: 1.08, y: 0 }
+              : { opacity: 1, scale: 1, y: 0 }
+          }
+          transition={
+            exiting
+              ? { duration: 0.35, ease: 'easeOut' }
+              : { duration: 1, ease: [0.16, 1, 0.3, 1] }
+          }
+          style={{ willChange: 'transform, opacity' }}
         >
           <Image
             src="/logo-opening.png"
@@ -194,13 +183,52 @@ export default function IntroOverlay() {
         </motion.div>
       </div>
 
-      {/* ── White flash en el momento del impacto ───────────────────────── */}
+      {/* ── Partículas: 56 puntos que explotan radialmente ──────────────── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        {PARTICLES.map((p, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full"
+            style={{
+              width: p.size,
+              height: p.size,
+              background: p.color,
+              boxShadow: `0 0 ${p.size * 1.8}px ${p.color}`,
+              willChange: 'transform, opacity',
+            }}
+            initial={{ x: p.initialX, y: p.initialY, opacity: 0, scale: 0 }}
+            animate={
+              exiting
+                ? {
+                    x: [p.initialX, Math.cos(p.angle) * p.distance],
+                    y: [p.initialY, Math.sin(p.angle) * p.distance],
+                    opacity: [0, 1, 0.85, 0],
+                    scale: [0, 1.3, 0.9, 0.3],
+                  }
+                : { x: p.initialX, y: p.initialY, opacity: 0, scale: 0 }
+            }
+            transition={
+              exiting
+                ? {
+                    duration: 1.0,
+                    delay: p.delay,
+                    times: [0, 0.18, 0.55, 1],
+                    ease: [0.22, 1, 0.36, 1],  // expo-out: fast burst + smooth tail
+                  }
+                : { duration: 0 }
+            }
+          />
+        ))}
+      </div>
+
+      {/* ── Pequeño flash blanco-morado en el momento de la explosión ──── */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.5) 25%, rgba(196,82,255,0.3) 55%, transparent 80%)',
-          opacity: flashOpacity,
+          background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(196,82,255,0.25) 20%, transparent 50%)',
+          opacity: exiting ? 0.75 : 0,
+          transition: 'opacity 180ms ease-out 80ms',
           mixBlendMode: 'screen',
         }}
       />
