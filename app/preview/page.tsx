@@ -995,12 +995,16 @@ function Tilt3D({
 function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
   const isOrange = accent === 'orange'
   const dotColor = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.18)'
-  const primaryAurora = isOrange
-    ? 'radial-gradient(circle, rgba(255,140,50,0.24) 0%, rgba(255,180,80,0.10) 40%, transparent 70%)'
-    : 'radial-gradient(circle, rgba(139,60,247,0.18) 0%, rgba(196,82,255,0.08) 40%, transparent 70%)'
-  const secondaryAurora = isOrange
-    ? 'radial-gradient(circle, rgba(139,60,247,0.14) 0%, rgba(196,82,255,0.07) 35%, transparent 65%)'
-    : 'radial-gradient(circle, rgba(255,140,50,0.12) 0%, rgba(196,82,0,0.06) 35%, transparent 65%)'
+  // Aurora LEFT — color dominante del accent, más opacidad para que las
+  // texturas (dot grid, grain, scanlines) sean más visibles bajo su luz.
+  const leftAurora = isOrange
+    ? 'radial-gradient(circle, rgba(255,140,50,0.34) 0%, rgba(255,180,80,0.16) 35%, rgba(196,82,0,0.06) 55%, transparent 75%)'
+    : 'radial-gradient(circle, rgba(139,60,247,0.32) 0%, rgba(196,82,255,0.16) 35%, rgba(139,60,247,0.06) 55%, transparent 75%)'
+  // Aurora RIGHT — variación del color principal (más rosa/oro) para
+  // contraste sutil. Crea sensación de dos focos cruzándose.
+  const rightAurora = isOrange
+    ? 'radial-gradient(circle, rgba(255,200,80,0.30) 0%, rgba(255,140,50,0.14) 40%, rgba(196,82,0,0.05) 60%, transparent 78%)'
+    : 'radial-gradient(circle, rgba(196,82,255,0.28) 0%, rgba(139,60,247,0.14) 40%, rgba(196,82,255,0.05) 60%, transparent 78%)'
 
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
@@ -1012,35 +1016,36 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
         maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
       }} />
 
-      {/* Aurora principal gigante detrás del título — color depende del accent */}
+      {/* Aurora LEFT — foco lateral izquierdo intenso */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          top: '5%', left: '50%',
-          transform: 'translateX(-50%)',
-          width: 'min(90vmin, 900px)',
-          height: 'min(90vmin, 900px)',
-          background: primaryAurora,
-          filter: 'blur(50px)',
+          top: '8%',
+          left: '-18%',
+          width: 'min(80vmin, 820px)',
+          height: 'min(95vmin, 950px)',
+          background: leftAurora,
+          filter: 'blur(55px)',
           willChange: 'transform, opacity',
         }}
-        animate={{ scale: [0.95, 1.06, 0.95], opacity: [0.55, 0.85, 0.55] }}
-        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        animate={{ scale: [0.92, 1.08, 0.92], opacity: [0.65, 0.95, 0.65] }}
+        transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Aurora secundaria abajo-derecha (color complementario) */}
+      {/* Aurora RIGHT — foco lateral derecho, ritmo desincronizado */}
       <motion.div
         className="absolute rounded-full"
         style={{
-          bottom: '0%', right: '5%',
-          width: 'min(50vmin, 500px)',
-          height: 'min(50vmin, 500px)',
-          background: secondaryAurora,
-          filter: 'blur(60px)',
+          top: '12%',
+          right: '-18%',
+          width: 'min(80vmin, 820px)',
+          height: 'min(95vmin, 950px)',
+          background: rightAurora,
+          filter: 'blur(55px)',
           willChange: 'transform, opacity',
         }}
-        animate={{ scale: [1, 1.15, 1], opacity: [0.45, 0.7, 0.45] }}
-        transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+        animate={{ scale: [1.05, 0.94, 1.05], opacity: [0.6, 0.9, 0.6] }}
+        transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
       {/* Scanlines tipo CRT */}
