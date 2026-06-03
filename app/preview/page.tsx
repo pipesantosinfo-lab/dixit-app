@@ -1609,14 +1609,24 @@ export default function PreviewPage() {
           ))}
         </div>
 
-        {/* Hamburger (solo mobile) — absolute right del nav, animado a X */}
-        <button
+        {/* Hamburger (solo mobile) — absolute right del nav, animado a X.
+            Cuando el menú está abierto, gana un círculo con borde+glow morado
+            para comunicar 'tapeá para cerrar' sin necesidad de texto. */}
+        <motion.button
           type="button"
           onClick={() => setMobileMenuOpen((o) => !o)}
           aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={mobileMenuOpen}
-          className="md:hidden absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 flex flex-col items-center justify-center"
+          className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex flex-col items-center justify-center rounded-full"
           style={{ zIndex: 70 }}
+          animate={mobileMenuOpen ? {
+            backgroundColor: 'rgba(139,60,247,0.18)',
+            boxShadow: '0 0 0 1px rgba(139,60,247,0.6), 0 0 18px rgba(139,60,247,0.45)',
+          } : {
+            backgroundColor: 'rgba(0,0,0,0)',
+            boxShadow: '0 0 0 0 rgba(139,60,247,0)',
+          }}
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
           <motion.span
             className="block bg-white rounded-full"
@@ -1636,7 +1646,7 @@ export default function PreviewPage() {
             animate={mobileMenuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 5 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           />
-        </button>
+        </motion.button>
       </nav>
 
       {/* ── MENÚ MÓVIL OVERLAY ─────────────────────────────────── */}
@@ -1675,9 +1685,12 @@ export default function PreviewPage() {
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
             />
 
-            {/* Links — fade-up staggered */}
+            {/* Links — fade-up staggered. 'Inicio' es el primero y hace
+                scroll al top (Lenis interpola smooth) sin necesidad de id en
+                el hero. Los demás usan anchors nativos. */}
             <nav className="relative z-10 flex flex-col items-center gap-6">
               {([
+                ['inicio', 'Inicio'],
                 ['#sobre', 'Sobre mí'],
                 ['#galeria', 'Galería'],
                 ['#libro', 'Libro'],
@@ -1685,25 +1698,34 @@ export default function PreviewPage() {
                 ['#testimonios', 'Testimonios'],
                 ['#evento', 'Evento'],
                 ['#contacto', 'Contacto'],
-              ] as const).map(([href, label], i) => (
-                <motion.a
-                  key={href}
-                  href={href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -8 }}
-                  transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                  className="font-display text-3xl text-white relative group"
-                >
-                  <span>{label}</span>
-                  {/* Underline sutil que aparece al tap */}
-                  <span
-                    className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-[2px] w-0 group-hover:w-full group-focus:w-full transition-all duration-300 rounded-full"
-                    style={{ background: 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))', boxShadow: '0 0 12px rgba(139,60,247,0.7)' }}
-                  />
-                </motion.a>
-              ))}
+              ] as const).map(([href, label], i) => {
+                const isInicio = href === 'inicio'
+                return (
+                  <motion.a
+                    key={href}
+                    href={isInicio ? '#' : href}
+                    onClick={(e) => {
+                      if (isInicio) {
+                        e.preventDefault()
+                        window.scrollTo({ top: 0, behavior: 'smooth' })
+                      }
+                      setMobileMenuOpen(false)
+                    }}
+                    initial={{ opacity: 0, y: 18 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                    className="font-display text-3xl text-white relative group"
+                  >
+                    <span>{label}</span>
+                    {/* Underline sutil que aparece al tap */}
+                    <span
+                      className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-[2px] w-0 group-hover:w-full group-focus:w-full transition-all duration-300 rounded-full"
+                      style={{ background: 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))', boxShadow: '0 0 12px rgba(139,60,247,0.7)' }}
+                    />
+                  </motion.a>
+                )
+              })}
             </nav>
 
             {/* Footer mini con el handle social */}
