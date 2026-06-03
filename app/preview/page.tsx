@@ -482,6 +482,14 @@ const VP_REPLAY = { once: true, amount: 0.2 }
 const VP = { once: true, amount: 0.15 }
 
 const galleryPhotos = [
+  // Fotos nuevas (eventos más recientes) — primero para protagonismo
+  '/gallery/_MG_8609.jpg',
+  '/gallery/DSC04719.jpg',
+  '/gallery/_MG_8653.jpg',
+  '/gallery/DSC04778.jpg',
+  '/gallery/_MG_8655.jpg',
+  '/gallery/_MG_0108_CR2.jpg',
+  // Fotos del archivo histórico
   '/gallery/Archivo_096-3.jpg',
   '/gallery/DSC01734.jpg',
   '/gallery/IMG_6477.JPG',
@@ -997,6 +1005,20 @@ function Tilt3D({
  * CSS scroll-snap nativo → inercia + alineación al soltar. Cero JS para
  * el comportamiento; el JS solo detecta el índice actual para la pagination
  * indicator. Tap en una foto → abre el lightbox. */
+/* Posiciones del stack según el offset desde la card actual.
+ * 0 = al frente (en escala completa, sin rotación)
+ * 1 = peek detrás-derecha (rotada ligeramente clockwise)
+ * 2 = peek detrás-izquierda (rotada counter-clockwise, más chica)
+ * 3+ = oculta atrás (apilada para "appear" cuando llegue el turno) */
+function stackPosition(offset: number) {
+  if (offset === 0) return { x: '0%', y: '0%', scale: 1, rotate: 0, opacity: 1, zIndex: 30 }
+  if (offset === 1) return { x: '14%', y: '-4%', scale: 0.93, rotate: 4, opacity: 1, zIndex: 25 }
+  if (offset === 2) return { x: '-10%', y: '-7%', scale: 0.86, rotate: -3, opacity: 0.95, zIndex: 20 }
+  if (offset === 3) return { x: '6%', y: '-10%', scale: 0.78, rotate: 2, opacity: 0.6, zIndex: 15 }
+  // Más atrás: ocultas pero presentes para drag-back
+  return { x: '0%', y: '-12%', scale: 0.72, rotate: 0, opacity: 0, zIndex: 10 }
+}
+
 function GalleryMobileCarousel({
   photos,
   onPhotoClick,
@@ -1004,67 +1026,16 @@ function GalleryMobileCarousel({
   photos: string[]
   onPhotoClick: (index: number) => void
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  const cardRefs = useRef<(HTMLButtonElement | null)[]>([])
-  const [current, setCurrent] = useState(0)
+  const [currentIndex, setCurrentIndex] = useState(0)
+  // Track si hubo drag para distinguir tap vs swipe
+  const dragOccurred = useRef(false)
 
-  /* Cada frame del scroll: para cada foto computamos su distancia al
-   * centro visible del carrusel y mapeamos a scale + opacity + rotateY.
-   * Actualizamos directamente vía ref.style (sin React re-render por card)
-   * → cero overhead, smooth con la inercia nativa del browser. */
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    let rafId = 0
+  const goNext = useCallback(() => {
+    setCurrentIndex((i) => (i + 1) % photos.length)
+  }, [photos.length])
 
-    const update = () => {
-      const containerRect = el.getBoundingClientRect()
-      const containerCenter = containerRect.left + containerRect.width / 2
-      let closestIdx = 0
-      let closestDist = Infinity
-
-      cardRefs.current.forEach((card, i) => {
-        if (!card) return
-        const rect = card.getBoundingClientRect()
-        const cardCenter = rect.left + rect.width / 2
-        const signedDist = cardCenter - containerCenter
-        const absDist = Math.abs(signedDist)
-        const maxDistance = rect.width + 12  // 1 card de distancia = "fuera"
-        const normalized = Math.min(1, absDist / maxDistance)
-        const focus = 1 - normalized   // 1 = centrada, 0 = a distancia de 1 card
-
-        const scale = 0.88 + focus * 0.12         // 0.88 → 1.0
-        const opacity = 0.55 + focus * 0.45        // 0.55 → 1.0
-        const rotateY = -Math.sign(signedDist) * normalized * 6  // ±0 → ±6deg
-
-        card.style.transform = `scale(${scale.toFixed(3)}) rotateY(${rotateY.toFixed(2)}deg)`
-        card.style.opacity = opacity.toFixed(3)
-
-        if (absDist < closestDist) {
-          closestDist = absDist
-          closestIdx = i
-        }
-      })
-
-      setCurrent(closestIdx)
-    }
-
-    const onScroll = () => {
-      cancelAnimationFrame(rafId)
-      rafId = requestAnimationFrame(update)
-    }
-
-    el.addEventListener('scroll', onScroll, { passive: true })
-    // Update inicial para setear el estado de la primera foto centrada
-    rafId = requestAnimationFrame(update)
-    // Y otro update después de que el DOM se asiente (fonts/images cargando)
-    const settleTimer = setTimeout(update, 250)
-
-    return () => {
-      el.removeEventListener('scroll', onScroll)
-      cancelAnimationFrame(rafId)
-      clearTimeout(settleTimer)
-    }
+  const goPrev = useCallback(() => {
+    setCurrentIndex((i) => (i - 1 + photos.length) % photos.length)
   }, [photos.length])
 
   return (
@@ -1075,74 +1046,126 @@ function GalleryMobileCarousel({
       viewport={{ once: true, amount: 0.1 }}
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
     >
-      {/* Track horizontal con perspective para que rotateY se vea 3D real */}
+      {/* Stage del stack — perspective + overflow visible para que las cards
+          de atrás puedan asomarse fuera del contenedor visualmente. */}
       <div
-        ref={ref}
-        className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-6"
+        className="relative mx-auto"
         style={{
-          scrollPaddingInline: '9vw',
-          paddingInline: '9vw',
-          scrollBehavior: 'smooth',
-          perspective: '1200px',
+          width: 'min(82vw, 380px)',
+          aspectRatio: '3 / 4',
+          perspective: '1400px',
         }}
       >
-        {photos.map((src, i) => (
-          <button
-            key={src}
-            ref={(el) => { cardRefs.current[i] = el }}
-            type="button"
-            onClick={() => { track({ type: 'click', target: 'view_gallery' }); onPhotoClick(i) }}
-            className="snap-center shrink-0 relative overflow-hidden rounded-2xl block"
-            style={{
-              width: '82vw',
-              aspectRatio: '3 / 4',
-              boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
-              transformOrigin: 'center center',
-              willChange: 'transform, opacity',
-              /* Valores iniciales antes del primer rAF — la primera foto centrada,
-               * las demás ligeramente reducidas para no flash al cargar. */
-              transform: i === 0 ? 'scale(1) rotateY(0deg)' : 'scale(0.88) rotateY(0deg)',
-              opacity: i === 0 ? 1 : 0.55,
-            }}
-          >
-            <img
-              src={src}
-              alt=""
-              className="w-full h-full object-cover"
-              loading={i < 3 ? 'eager' : 'lazy'}
-              draggable={false}
-            />
-            {/* Indicador de "expandir" en la esquina */}
-            <div className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center pointer-events-none"
-              style={{ background: 'rgba(7,5,8,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)' }}
+        {photos.map((src, i) => {
+          // Offset cíclico para que el stack se vea continuo (las cards
+          // "viejas" se reciclan al fondo del stack visualmente)
+          const rawOffset = i - currentIndex
+          const offset = ((rawOffset % photos.length) + photos.length) % photos.length
+          const pos = stackPosition(offset)
+          const isFront = offset === 0
+
+          return (
+            <motion.div
+              key={src}
+              className="absolute inset-0"
+              animate={pos}
+              transition={{ type: 'spring', stiffness: 260, damping: 32, mass: 0.8 }}
+              style={{ transformOrigin: 'center center', willChange: 'transform, opacity' }}
+              drag={isFront ? 'x' : false}
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.45}
+              onDragStart={() => { dragOccurred.current = false }}
+              onDrag={(_, info) => {
+                if (Math.abs(info.offset.x) > 6) dragOccurred.current = true
+              }}
+              onDragEnd={(_, info) => {
+                const swipeThreshold = 80
+                const velocityThreshold = 500
+                if (info.offset.x < -swipeThreshold || info.velocity.x < -velocityThreshold) {
+                  goNext()
+                } else if (info.offset.x > swipeThreshold || info.velocity.x > velocityThreshold) {
+                  goPrev()
+                }
+              }}
+              onClick={() => {
+                if (isFront && !dragOccurred.current) {
+                  track({ type: 'click', target: 'view_gallery' })
+                  onPhotoClick(currentIndex)
+                }
+              }}
             >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-              </svg>
-            </div>
-          </button>
-        ))}
+              {/* Polaroid: borde crema con padding desigual (más abajo,
+                  donde tradicionalmente iría la escritura a mano) */}
+              <div
+                className="w-full h-full p-3 pb-12 rounded-md"
+                style={{
+                  background: '#f4ede0',
+                  boxShadow: isFront
+                    ? '0 24px 60px rgba(0,0,0,0.55), 0 4px 12px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,0,0,0.08)'
+                    : '0 18px 40px rgba(0,0,0,0.45), 0 0 0 1px rgba(0,0,0,0.08)',
+                  /* Sutil grain de papel envejecido */
+                  backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.1' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.6  0 0 0 0 0.5  0 0 0 0 0.4  0 0 0 0.12 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"), linear-gradient(180deg, #f7f1e4 0%, #ede4d2 100%)`,
+                  backgroundBlendMode: 'multiply',
+                  cursor: isFront ? 'grab' : 'default',
+                }}
+              >
+                <div className="relative w-full h-full overflow-hidden rounded-sm">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={src}
+                    alt=""
+                    className="w-full h-full object-cover block"
+                    loading={offset < 3 ? 'eager' : 'lazy'}
+                    draggable={false}
+                  />
+                  {/* Indicador de "expandir" solo en la front card */}
+                  {isFront && (
+                    <div className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center pointer-events-none"
+                      style={{ background: 'rgba(7,5,8,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)' }}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </motion.div>
+          )
+        })}
+      </div>
+
+      {/* Hint sutil "← Deslizá →" debajo de la pila */}
+      <div className="text-center mt-5 mb-1">
+        <p className="font-mono text-[10px] tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
+          ← Deslizá las fotos →
+        </p>
       </div>
 
       {/* Pagination: contador + dots */}
-      <div className="flex items-center justify-center gap-3 mt-6">
+      <div className="flex items-center justify-center gap-3 mt-3">
         <span className="font-mono text-xs tracking-widest text-white/50">
-          {String(current + 1).padStart(2, '0')}
+          {String(currentIndex + 1).padStart(2, '0')}
           <span className="text-white/20"> / </span>
           {String(photos.length).padStart(2, '0')}
         </span>
         <div className="flex items-center gap-1.5">
           {photos.map((_, i) => (
-            <div
+            <button
               key={i}
+              type="button"
+              onClick={() => setCurrentIndex(i)}
               className="h-[3px] rounded-full"
+              aria-label={`Ir a foto ${i + 1}`}
               style={{
-                width: current === i ? 22 : 6,
-                background: current === i
+                width: currentIndex === i ? 22 : 6,
+                background: currentIndex === i
                   ? 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))'
                   : 'rgba(255,255,255,0.2)',
-                boxShadow: current === i ? '0 0 8px rgba(139,60,247,0.6)' : 'none',
+                boxShadow: currentIndex === i ? '0 0 8px rgba(139,60,247,0.6)' : 'none',
                 transition: 'width 0.3s ease-out, background 0.3s ease-out, box-shadow 0.3s ease-out',
+                border: 0,
+                padding: 0,
               }}
             />
           ))}
