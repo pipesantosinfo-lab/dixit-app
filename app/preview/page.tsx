@@ -1609,43 +1609,21 @@ export default function PreviewPage() {
           ))}
         </div>
 
-        {/* Hamburger (solo mobile) — absolute right del nav, animado a X.
-            Cuando el menú está abierto, gana un círculo con borde+glow morado
-            para comunicar 'tapeá para cerrar' sin necesidad de texto. */}
+        {/* Hamburger (solo mobile) — visible cuando el menú está CERRADO.
+            Cuando se abre se oculta y el botón X del overlay toma protagonismo. */}
         <motion.button
           type="button"
-          onClick={() => setMobileMenuOpen((o) => !o)}
-          aria-label={mobileMenuOpen ? 'Cerrar menú' : 'Abrir menú'}
+          onClick={() => setMobileMenuOpen(true)}
+          aria-label="Abrir menú"
           aria-expanded={mobileMenuOpen}
-          className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex flex-col items-center justify-center rounded-full"
+          className="md:hidden absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 flex flex-col items-center justify-center gap-[5px] rounded-full"
           style={{ zIndex: 70 }}
-          animate={mobileMenuOpen ? {
-            backgroundColor: 'rgba(139,60,247,0.18)',
-            boxShadow: '0 0 0 1px rgba(139,60,247,0.6), 0 0 18px rgba(139,60,247,0.45)',
-          } : {
-            backgroundColor: 'rgba(0,0,0,0)',
-            boxShadow: '0 0 0 0 rgba(139,60,247,0)',
-          }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          animate={{ opacity: mobileMenuOpen ? 0 : 1, pointerEvents: mobileMenuOpen ? 'none' : 'auto' }}
+          transition={{ duration: 0.2 }}
         >
-          <motion.span
-            className="block bg-white rounded-full"
-            style={{ width: 22, height: 2, transformOrigin: 'center' }}
-            animate={mobileMenuOpen ? { rotate: 45, y: 4 } : { rotate: 0, y: -5 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          />
-          <motion.span
-            className="block bg-white rounded-full"
-            style={{ width: 22, height: 2 }}
-            animate={mobileMenuOpen ? { opacity: 0, x: -8 } : { opacity: 1, x: 0 }}
-            transition={{ duration: 0.2 }}
-          />
-          <motion.span
-            className="block bg-white rounded-full"
-            style={{ width: 22, height: 2, transformOrigin: 'center' }}
-            animate={mobileMenuOpen ? { rotate: -45, y: -4 } : { rotate: 0, y: 5 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          />
+          <span className="block bg-white rounded-full" style={{ width: 22, height: 2 }} />
+          <span className="block bg-white rounded-full" style={{ width: 22, height: 2 }} />
+          <span className="block bg-white rounded-full" style={{ width: 22, height: 2 }} />
         </motion.button>
       </nav>
 
@@ -1684,6 +1662,61 @@ export default function PreviewPage() {
               animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.8, 0.5] }}
               transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
             />
+
+            {/* Botón X dedicado para cerrar — top-right inside overlay,
+                con icono SVG claro + label "CERRAR" debajo para que cualquier
+                usuario entienda. Glass + glow morado para que destaque. */}
+            <motion.button
+              type="button"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Cerrar menú"
+              className="absolute top-4 right-4 z-20 flex flex-col items-center"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.35, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div
+                className="w-12 h-12 rounded-full flex items-center justify-center"
+                style={{
+                  background: 'rgba(139,60,247,0.18)',
+                  backdropFilter: 'blur(14px)',
+                  border: '1px solid rgba(196,82,255,0.55)',
+                  boxShadow: '0 0 24px rgba(139,60,247,0.55), inset 0 0 12px rgba(196,82,255,0.18)',
+                }}
+              >
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                </svg>
+              </div>
+              <span className="font-mono text-[9px] tracking-[0.32em] uppercase mt-1.5"
+                style={{ color: 'rgba(255,255,255,0.7)' }}
+              >
+                Cerrar
+              </span>
+            </motion.button>
+
+            {/* Logo del header arriba del Inicio — entra primero con fade+scale.
+                Sirve como anchor visual de marca y como confirmación de que
+                estás en el menú principal. */}
+            <motion.div
+              className="relative z-10 mb-8"
+              initial={{ opacity: 0, y: -10, scale: 0.92 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <Image
+                src="/logo-header-v2.png"
+                alt="Pipe Santos"
+                width={300}
+                height={130}
+                className="h-14 w-auto opacity-95"
+                style={{ filter: 'drop-shadow(0 0 18px rgba(139,60,247,0.35))' }}
+                priority
+              />
+            </motion.div>
 
             {/* Links — fade-up staggered. 'Inicio' es el primero y hace
                 scroll al top (Lenis interpola smooth) sin necesidad de id en
