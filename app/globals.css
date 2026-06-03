@@ -410,6 +410,17 @@ html {
   }
 }
 
+/* ── Carrusel mobile de la galería ──────────────────────────────────
+ * Scrollbar invisible (Chrome/Safari/Firefox), permite el snap-scroll
+ * sin la barra fea que tapa el contenido. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 /* ── ScreenAmbientBg: textura responsiva ────────────────────────────
  * En mobile las texturas (dot grid, scanlines, grain) se ven menos por
  * varios motivos: pantallas más chicas + alta densidad de píxeles +

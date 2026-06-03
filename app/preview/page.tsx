@@ -992,6 +992,113 @@ function Tilt3D({
  *   4. Scanlines CRT muy sutiles (overlay blend)
  *   5. Film grain (fractalNoise SVG + overlay blend)
  * + vignettes top/bottom para fundir con secciones vecinas.            */
+/* ── Carrusel horizontal para la galería en mobile ─────────────────────
+ * Cada foto ocupa 82vw, con peek del 9vw a cada lado para sugerir swipe.
+ * CSS scroll-snap nativo → inercia + alineación al soltar. Cero JS para
+ * el comportamiento; el JS solo detecta el índice actual para la pagination
+ * indicator. Tap en una foto → abre el lightbox. */
+function GalleryMobileCarousel({
+  photos,
+  onPhotoClick,
+}: {
+  photos: string[]
+  onPhotoClick: (index: number) => void
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    let rafId = 0
+    const update = () => {
+      const cardWidth = el.clientWidth * 0.82 + 12  // 82vw + gap-3 (12px)
+      const idx = Math.round(el.scrollLeft / cardWidth)
+      setCurrent(Math.max(0, Math.min(photos.length - 1, idx)))
+    }
+    const onScroll = () => {
+      cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(update)
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      cancelAnimationFrame(rafId)
+    }
+  }, [photos.length])
+
+  return (
+    <div className="md:hidden">
+      {/* Track horizontal */}
+      <div
+        ref={ref}
+        className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-6"
+        style={{ scrollPaddingInline: '9vw', paddingInline: '9vw', scrollBehavior: 'smooth' }}
+      >
+        {photos.map((src, i) => (
+          <motion.button
+            key={src}
+            type="button"
+            onClick={() => { track({ type: 'click', target: 'view_gallery' }); onPhotoClick(i) }}
+            className="snap-center shrink-0 relative overflow-hidden rounded-2xl block"
+            style={{
+              width: '82vw',
+              aspectRatio: '3 / 4',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
+            }}
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.5, delay: Math.min(i, 3) * 0.06, ease: [0.16, 1, 0.3, 1] }}
+            whileTap={{ scale: 0.98 }}
+          >
+            <img
+              src={src}
+              alt=""
+              className="w-full h-full object-cover"
+              loading={i < 3 ? 'eager' : 'lazy'}
+              draggable={false}
+            />
+            {/* Indicador de "expandir" en la esquina */}
+            <div className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center pointer-events-none"
+              style={{ background: 'rgba(7,5,8,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)' }}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+              </svg>
+            </div>
+          </motion.button>
+        ))}
+      </div>
+
+      {/* Pagination: contador + dots */}
+      <div className="flex items-center justify-center gap-3 mt-6">
+        <span className="font-mono text-xs tracking-widest text-white/50">
+          {String(current + 1).padStart(2, '0')}
+          <span className="text-white/20"> / </span>
+          {String(photos.length).padStart(2, '0')}
+        </span>
+        <div className="flex items-center gap-1.5">
+          {photos.map((_, i) => (
+            <div
+              key={i}
+              className="h-[3px] rounded-full"
+              style={{
+                width: current === i ? 22 : 6,
+                background: current === i
+                  ? 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))'
+                  : 'rgba(255,255,255,0.2)',
+                boxShadow: current === i ? '0 0 8px rgba(139,60,247,0.6)' : 'none',
+                transition: 'width 0.3s ease-out, background 0.3s ease-out, box-shadow 0.3s ease-out',
+              }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
   const isOrange = accent === 'orange'
 
@@ -1804,8 +1911,11 @@ export default function PreviewPage() {
             </p>
           </div>
 
-          {/* Masonry grid */}
-          <div className="columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+          {/* Mobile: carrusel horizontal con snap-scroll y pagination */}
+          <GalleryMobileCarousel photos={galleryPhotos} onPhotoClick={openLightbox} />
+
+          {/* Desktop (md+): masonry grid con hover overlays */}
+          <div className="hidden md:block columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
             {galleryPhotos.map((src, i) => (
               <motion.div
                 key={src}
