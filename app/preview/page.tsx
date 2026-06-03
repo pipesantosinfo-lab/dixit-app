@@ -1701,7 +1701,7 @@ export default function PreviewPage() {
                 Sirve como anchor visual de marca y como confirmación de que
                 estás en el menú principal. */}
             <motion.div
-              className="relative z-10 mb-8"
+              className="relative z-10 mb-4"
               initial={{ opacity: 0, y: -10, scale: 0.92 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10 }}
@@ -1715,6 +1715,43 @@ export default function PreviewPage() {
                 className="h-14 w-auto opacity-95"
                 style={{ filter: 'drop-shadow(0 0 18px rgba(139,60,247,0.35))' }}
                 priority
+              />
+            </motion.div>
+
+            {/* Separador 'MENÚ' — diferencia el logo (marca) de la navegación
+                que viene abajo. Líneas degradadas + label mono → clara
+                jerarquía visual. */}
+            <motion.div
+              className="relative z-10 flex items-center gap-3 mb-7"
+              initial={{ opacity: 0, scaleX: 0.6 }}
+              animate={{ opacity: 1, scaleX: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <span
+                className="block h-[1px] w-14"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(139,60,247,0.7))' }}
+              />
+              <span
+                className="block w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: 'rgba(139,60,247,1)',
+                  boxShadow: '0 0 10px rgba(139,60,247,0.8), 0 0 20px rgba(196,82,255,0.5)',
+                }}
+              />
+              <span className="font-mono text-[10px] tracking-[0.45em] uppercase" style={{ color: 'rgba(255,255,255,0.55)' }}>
+                Menú
+              </span>
+              <span
+                className="block w-1.5 h-1.5 rounded-full"
+                style={{
+                  background: 'rgba(139,60,247,1)',
+                  boxShadow: '0 0 10px rgba(139,60,247,0.8), 0 0 20px rgba(196,82,255,0.5)',
+                }}
+              />
+              <span
+                className="block h-[1px] w-14"
+                style={{ background: 'linear-gradient(270deg, transparent, rgba(139,60,247,0.7))' }}
               />
             </motion.div>
 
@@ -2269,8 +2306,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── PODCAST ──────────────────────────────── */}
-      <section id="podcast" data-track-section="podcast" className="relative z-10 px-6 md:px-12 py-20">
-        <div className="max-w-5xl mx-auto">
+      <section id="podcast" data-track-section="podcast" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+        <ScreenAmbientBg />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <motion.div className="text-center mb-16" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Podcast</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
@@ -2322,8 +2360,9 @@ export default function PreviewPage() {
       <BrandsSection />
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
-      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20">
-        <div className="max-w-5xl mx-auto">
+      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+        <ScreenAmbientBg />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="line-holo mb-16" />
           <div className="text-center mb-16">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Testimonios</p>
@@ -2371,8 +2410,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-x-hidden">
-        <div className="max-w-5xl mx-auto">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
+        <ScreenAmbientBg />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <div className="line-holo mb-14" />
 
           {/* Hero: poster + título + countdown + CTA */}
@@ -2547,8 +2587,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── CONTACTO ─────────────────────────────── */}
-      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20">
-        <motion.div className="max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+        <ScreenAmbientBg />
+        <motion.div className="relative z-10 max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
             Quiero <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>leerte</span>
