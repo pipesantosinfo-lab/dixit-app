@@ -1,15 +1,18 @@
 'use client'
-import { motion } from 'framer-motion'
+import { motion, animate } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 /* Tiempos (ms) */
-const SHOW_DURATION = 2400   // tiempo total visible antes de empezar a salir
-const EXIT_DURATION = 1100   // duración del curtain split
+const SHOW_DURATION = 2400
+const EXIT_DURATION = 1200
 
 export default function IntroOverlay() {
   const [exiting, setExiting] = useState(false)
   const [gone, setGone] = useState(false)
+  /* sweep va de -8 → 112: el beam recorre toda la pantalla diagonalmente.
+   * Arranca un poco fuera del top-left y termina un poco fuera del bottom-right. */
+  const [sweep, setSweep] = useState(-8)
 
   useEffect(() => {
     const t1 = setTimeout(() => setExiting(true), SHOW_DURATION)
@@ -17,59 +20,48 @@ export default function IntroOverlay() {
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
+  useEffect(() => {
+    if (!exiting) return
+    const controls = animate(-8, 112, {
+      duration: EXIT_DURATION / 1000,
+      ease: [0.65, 0, 0.35, 1],
+      onUpdate: setSweep,
+    })
+    return () => controls.stop()
+  }, [exiting])
+
   if (gone) return null
 
-  // Easing teatral: expo-out → arranca rápido y desacelera dramáticamente
-  // (como una cortina pesada que sale por inercia y se acomoda)
-  const curtainEase = 'cubic-bezier(0.16, 1, 0.3, 1)'
+  /* Mask 135deg → la zona transparente avanza del top-left al bottom-right.
+   * El "edge" entre transparente y negro queda como una banda diagonal nítida. */
+  const overlayMask = `linear-gradient(135deg, transparent ${sweep}%, black ${sweep + 4}%)`
+
+  /* El beam: stripe gradient morado→rosa→naranja a lo largo de la línea de
+   * sweep, con mix-blend-mode: screen para que ilumine lo que pasa debajo. */
+  const beamBg = `linear-gradient(135deg,
+    transparent ${sweep - 2}%,
+    rgba(139,60,247,0.85) ${sweep + 0.3}%,
+    rgba(196,82,255,1) ${sweep + 1.5}%,
+    rgba(255,140,50,0.9) ${sweep + 3}%,
+    rgba(255,200,80,0.4) ${sweep + 5}%,
+    transparent ${sweep + 8}%
+  )`
 
   return (
     <div
       className="fixed inset-0 z-[9999] overflow-hidden"
       style={{ pointerEvents: exiting ? 'none' : 'auto' }}
     >
-      {/* ── Cortina superior — sube ────────────────────────────────────── */}
+      {/* ── Overlay principal con mask diagonal ─────────────────────────── */}
       <div
-        className="absolute inset-x-0 top-0 h-1/2 overflow-hidden"
+        className="absolute inset-0 flex flex-col items-center justify-center"
         style={{
           background: '#070508',
-          transform: exiting ? 'translateY(-100%)' : 'translateY(0)',
-          transition: `transform ${EXIT_DURATION}ms ${curtainEase}`,
-          willChange: 'transform',
-        }}
-      />
-
-      {/* ── Cortina inferior — baja ────────────────────────────────────── */}
-      <div
-        className="absolute inset-x-0 bottom-0 h-1/2 overflow-hidden"
-        style={{
-          background: '#070508',
-          transform: exiting ? 'translateY(100%)' : 'translateY(0)',
-          transition: `transform ${EXIT_DURATION}ms ${curtainEase}`,
-          willChange: 'transform',
-        }}
-      />
-
-      {/* ── Rim light morada en el momento del desgarro ────────────────── */}
-      <div
-        className="absolute inset-x-0 top-1/2 h-[2px] pointer-events-none"
-        style={{
-          background: 'linear-gradient(90deg, transparent 5%, rgba(139,60,247,0.95) 30%, rgba(196,82,255,1) 50%, rgba(139,60,247,0.95) 70%, transparent 95%)',
-          boxShadow: '0 0 40px 4px rgba(139,60,247,0.8), 0 0 100px 8px rgba(139,60,247,0.4)',
-          transform: `translateY(-50%) scaleX(${exiting ? 1 : 0})`,
-          opacity: exiting ? 1 : 0,
-          transition: `transform 300ms ease-out 80ms, opacity 200ms ease-out 80ms`,
-        }}
-      />
-
-      {/* ── Capa de contenido (auroras + logo + tagline + progress) ─────
-          Fade-out rápido al inicio del exit para que las cortinas tengan
-          protagonismo visual durante el desgarro. */}
-      <div
-        className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
-        style={{
-          opacity: exiting ? 0 : 1,
-          transition: `opacity ${EXIT_DURATION * 0.4}ms ease-out`,
+          WebkitMaskImage: overlayMask,
+          maskImage: overlayMask,
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
+          willChange: 'mask-image',
         }}
       >
         {/* Capa 1: textura grain */}
@@ -178,6 +170,28 @@ export default function IntroOverlay() {
           />
         </div>
       </div>
+
+      {/* ── Beam: stripe luminosa que barre diagonal ─────────────────────── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: beamBg,
+          mixBlendMode: 'screen',
+          filter: 'blur(2px)',
+          opacity: exiting ? 1 : 0,
+          willChange: 'background, opacity',
+        }}
+      />
+      {/* Glow extra alrededor del beam (más blur, mix-blend-mode plus-lighter) */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: beamBg,
+          filter: 'blur(20px)',
+          opacity: exiting ? 0.65 : 0,
+          willChange: 'background, opacity',
+        }}
+      />
     </div>
   )
 }
