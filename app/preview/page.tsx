@@ -995,10 +995,20 @@ function Tilt3D({
 /* ── Divider con cluster de barritas tipo equalizer ─────────────────────
  * Reemplaza la línea fina morada por un cluster central animado (6 barras
  * con altura y delay distintos → vibe audio waveform). Subraya el ADN
- * podcaster/storyteller del proyecto. Pure CSS animation, cero runtime. */
+ * podcaster/storyteller del proyecto. Pure CSS animation, GPU.
+ *
+ * useInView pausa las animaciones cuando el divider está fuera del
+ * viewport → con 8 instancias en la página, esto cae de 48 animaciones
+ * activas simultáneas a sólo ~6 (las del divider en pantalla). */
 function SectionDivider({ className }: { className?: string }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const inView = useInView(ref, { margin: '120px 0px' })
   return (
-    <div className={`section-divider ${className ?? ''}`} aria-hidden>
+    <div
+      ref={ref}
+      className={`section-divider ${inView ? 'section-divider--active' : ''} ${className ?? ''}`}
+      aria-hidden
+    >
       <span className="section-divider__line section-divider__line--left" />
       <div className="section-divider__eq">
         <span className="section-divider__bar" />
@@ -1198,6 +1208,11 @@ function GalleryMobileCarousel({
 
 function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
   const isOrange = accent === 'orange'
+  // Auroras solo animan cuando el bg está en (o cerca de) viewport.
+  // Antes corrían infinito en las 4 secciones que usan este componente,
+  // saturando el frame budget durante la navegación con Lenis.
+  const containerRef = useRef<HTMLDivElement>(null)
+  const inView = useInView(containerRef, { margin: '200px 0px' })
 
   // Colores del dot grid: dos valores (mobile más intenso, desktop suave)
   // se inyectan como CSS vars y la clase .screen-bg-dotgrid hace el swap
@@ -1227,7 +1242,7 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
   `
 
   return (
-    <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
+    <div ref={containerRef} className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
       {/* Dot grid con vignette radial — intensidad responsive vía CSS class */}
       <div
         className="absolute inset-0 screen-bg-dotgrid"
@@ -1241,7 +1256,9 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
 
       {/* Aurora LEFT — columna de luz que abarca toda la altura de la sección.
           3 puntos de glow distribuidos vertically + blur global → continuidad
-          de iluminación mientras el usuario scrollea por la sección. */}
+          de iluminación mientras el usuario scrollea por la sección.
+          animate gated por inView: cuando la sección no está visible, motion
+          deja de programar rAFs (las auroras se quedan estáticas, GPU libre). */}
       <motion.div
         className="absolute"
         style={{
@@ -1253,7 +1270,7 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
           filter: 'blur(45px)',
           willChange: 'transform, opacity',
         }}
-        animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
+        animate={inView ? { scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] } : undefined}
         transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
       />
 
@@ -1270,7 +1287,7 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
           filter: 'blur(45px)',
           willChange: 'transform, opacity',
         }}
-        animate={{ scale: [1.05, 0.95, 1.05], opacity: [0.65, 0.95, 0.65] }}
+        animate={inView ? { scale: [1.05, 0.95, 1.05], opacity: [0.65, 0.95, 0.65] } : undefined}
         transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
@@ -2358,9 +2375,8 @@ export default function PreviewPage() {
       <BrandsSection />
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
-      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
-        <ScreenAmbientBg />
-        <div className="relative z-10 max-w-5xl mx-auto">
+      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20">
+        <div className="max-w-5xl mx-auto">
           <SectionDivider className="mb-16" />
           <div className="text-center mb-16">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Testimonios</p>
@@ -2408,9 +2424,8 @@ export default function PreviewPage() {
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
-        <ScreenAmbientBg />
-        <div className="relative z-10 max-w-5xl mx-auto">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-x-hidden">
+        <div className="max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
           {/* Hero: poster + título + countdown + CTA */}
@@ -2585,9 +2600,8 @@ export default function PreviewPage() {
       </section>
 
       {/* ── CONTACTO ─────────────────────────────── */}
-      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
-        <ScreenAmbientBg />
-        <motion.div className="relative z-10 max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20">
+        <motion.div className="max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
             Quiero <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>leerte</span>

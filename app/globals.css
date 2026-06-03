@@ -160,6 +160,13 @@ html {
   box-shadow: 0 0 6px rgba(139, 60, 247, 0.65);
   transform-origin: bottom center;
   animation: eq-pulse 1.4s ease-in-out infinite;
+  /* Pausada por default → solo corre cuando .section-divider--active
+   * la activa (cuando IntersectionObserver detecta el divider visible).
+   * Con 8 dividers en la página, esto evita 42+ animaciones inútiles. */
+  animation-play-state: paused;
+}
+.section-divider--active .section-divider__bar {
+  animation-play-state: running;
 }
 .section-divider__bar:nth-child(1) { height: 7px;  animation-duration: 1.4s; animation-delay: 0.00s; }
 .section-divider__bar:nth-child(2) { height: 13px; animation-duration: 1.7s; animation-delay: 0.20s; }
