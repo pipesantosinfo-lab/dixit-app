@@ -1,72 +1,70 @@
 'use client'
-import { motion } from 'framer-motion'
+import { motion, animate } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
+/* Tiempos (ms) */
 const SHOW_DURATION = 2400
-const EXIT_DURATION = 1100
-
-/* Partículas pre-computadas (deterministas → no rehidratan distinto).
- * 56 partículas distribuidas radialmente con jitter para que se sienta
- * caótico-orgánico, no perfectamente uniforme. */
-const PARTICLE_COUNT = 56
-const PALETTE = [
-  'rgba(255,255,255,0.95)',   // blanco
-  'rgba(139,60,247,1)',        // morado brand
-  'rgba(196,82,255,1)',        // morado claro
-  'rgba(255,140,50,0.95)',     // naranja brand
-  'rgba(255,200,80,0.95)',     // oro
-  'rgba(148,204,212,0.9)',     // cyan (del high-five)
-]
-const PARTICLES = Array.from({ length: PARTICLE_COUNT }, (_, i) => {
-  // Ángulo base distribuido + jitter para asimetría
-  const baseAngle = (i / PARTICLE_COUNT) * Math.PI * 2
-  const jitter = (((i * 31) % 17) / 17 - 0.5) * 0.7
-  const angle = baseAngle + jitter
-  // Distancia variable: 240-560px del centro
-  const distance = 240 + ((i * 41) % 320)
-  // Tamaño variable: 3-11px (mix de "polvo" + "chispas" más grandes)
-  const size = 3 + ((i * 7) % 9)
-  return {
-    angle,
-    distance,
-    size,
-    color: PALETTE[i % PALETTE.length],
-    // Offset inicial pequeño cerca del centro (efecto "estaban dentro del logo")
-    initialX: ((i * 13) % 60) - 30,
-    initialY: ((i * 17) % 50) - 25,
-    // Delay escalonado 0-300ms para que no exploten todas al mismo tiempo
-    delay: ((i * 11) % 300) / 1000,
-  }
-})
+const EXIT_DURATION = 1200
 
 export default function IntroOverlay() {
   const [exiting, setExiting] = useState(false)
   const [gone, setGone] = useState(false)
+  /* sweep va de -8 → 112: el beam recorre toda la pantalla diagonalmente.
+   * Arranca un poco fuera del top-left y termina un poco fuera del bottom-right. */
+  const [sweep, setSweep] = useState(-8)
 
   useEffect(() => {
     const t1 = setTimeout(() => setExiting(true), SHOW_DURATION)
-    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION + 200)
+    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION + 50)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
+  useEffect(() => {
+    if (!exiting) return
+    const controls = animate(-8, 112, {
+      duration: EXIT_DURATION / 1000,
+      ease: [0.65, 0, 0.35, 1],
+      onUpdate: setSweep,
+    })
+    return () => controls.stop()
+  }, [exiting])
+
   if (gone) return null
+
+  /* Mask 135deg → la zona transparente avanza del top-left al bottom-right.
+   * El "edge" entre transparente y negro queda como una banda diagonal nítida. */
+  const overlayMask = `linear-gradient(135deg, transparent ${sweep}%, black ${sweep + 4}%)`
+
+  /* El beam: stripe gradient morado→rosa→naranja a lo largo de la línea de
+   * sweep, con mix-blend-mode: screen para que ilumine lo que pasa debajo. */
+  const beamBg = `linear-gradient(135deg,
+    transparent ${sweep - 2}%,
+    rgba(139,60,247,0.85) ${sweep + 0.3}%,
+    rgba(196,82,255,1) ${sweep + 1.5}%,
+    rgba(255,140,50,0.9) ${sweep + 3}%,
+    rgba(255,200,80,0.4) ${sweep + 5}%,
+    transparent ${sweep + 8}%
+  )`
 
   return (
     <div
       className="fixed inset-0 z-[9999] overflow-hidden"
       style={{ pointerEvents: exiting ? 'none' : 'auto' }}
     >
-      {/* ── Bg + contenido (auroras / tagline / progress) ───────────────── */}
+      {/* ── Overlay principal con mask diagonal ─────────────────────────── */}
       <div
         className="absolute inset-0 flex flex-col items-center justify-center"
         style={{
           background: '#070508',
-          opacity: exiting ? 0 : 1,
-          transition: `opacity ${EXIT_DURATION * 0.7}ms ease-out ${EXIT_DURATION * 0.25}ms`,
+          WebkitMaskImage: overlayMask,
+          maskImage: overlayMask,
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
+          willChange: 'mask-image',
         }}
       >
-        {/* Grain */}
+        {/* Capa 1: textura grain */}
         <div
           className="absolute inset-0"
           aria-hidden
@@ -78,7 +76,7 @@ export default function IntroOverlay() {
           }}
         />
 
-        {/* Aurora morada */}
+        {/* Capa 2: aurora morada que respira */}
         <motion.div
           className="absolute rounded-full"
           aria-hidden
@@ -93,7 +91,7 @@ export default function IntroOverlay() {
           transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Aurora naranja secundaria */}
+        {/* Capa 3: aurora naranja secundaria */}
         <motion.div
           className="absolute rounded-full"
           aria-hidden
@@ -117,9 +115,26 @@ export default function IntroOverlay() {
           style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(7,5,8,0.65) 90%)' }}
         />
 
+        {/* Logo */}
+        <motion.div
+          className="relative z-10"
+          initial={{ opacity: 0, scale: 0.88, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <Image
+            src="/logo-opening.png"
+            alt="Pipe Santos"
+            width={420}
+            height={280}
+            className="w-[72vw] max-w-sm md:max-w-md h-auto"
+            priority
+          />
+        </motion.div>
+
         {/* Tagline */}
         <motion.div
-          className="relative z-10 mt-32 md:mt-40"
+          className="relative z-10 mt-6 md:mt-8"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.85 }}
@@ -156,80 +171,25 @@ export default function IntroOverlay() {
         </div>
       </div>
 
-      {/* ── Logo (fade rápido cuando empieza el exit) ───────────────────── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.88, y: 10 }}
-          animate={
-            exiting
-              ? { opacity: 0, scale: 1.08, y: 0 }
-              : { opacity: 1, scale: 1, y: 0 }
-          }
-          transition={
-            exiting
-              ? { duration: 0.35, ease: 'easeOut' }
-              : { duration: 1, ease: [0.16, 1, 0.3, 1] }
-          }
-          style={{ willChange: 'transform, opacity' }}
-        >
-          <Image
-            src="/logo-opening.png"
-            alt="Pipe Santos"
-            width={420}
-            height={280}
-            className="w-[72vw] max-w-sm md:max-w-md h-auto"
-            priority
-          />
-        </motion.div>
-      </div>
-
-      {/* ── Partículas: 56 puntos que explotan radialmente ──────────────── */}
-      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        {PARTICLES.map((p, i) => (
-          <motion.div
-            key={i}
-            className="absolute rounded-full"
-            style={{
-              width: p.size,
-              height: p.size,
-              background: p.color,
-              boxShadow: `0 0 ${p.size * 1.8}px ${p.color}`,
-              willChange: 'transform, opacity',
-            }}
-            initial={{ x: p.initialX, y: p.initialY, opacity: 0, scale: 0 }}
-            animate={
-              exiting
-                ? {
-                    x: [p.initialX, Math.cos(p.angle) * p.distance],
-                    y: [p.initialY, Math.sin(p.angle) * p.distance],
-                    opacity: [0, 1, 0.85, 0],
-                    scale: [0, 1.3, 0.9, 0.3],
-                  }
-                : { x: p.initialX, y: p.initialY, opacity: 0, scale: 0 }
-            }
-            transition={
-              exiting
-                ? {
-                    duration: 1.0,
-                    delay: p.delay,
-                    times: [0, 0.18, 0.55, 1],
-                    ease: [0.22, 1, 0.36, 1],  // expo-out: fast burst + smooth tail
-                  }
-                : { duration: 0 }
-            }
-          />
-        ))}
-      </div>
-
-      {/* ── Pequeño flash blanco-morado en el momento de la explosión ──── */}
+      {/* ── Beam: stripe luminosa que barre diagonal ─────────────────────── */}
       <div
         className="absolute inset-0 pointer-events-none"
-        aria-hidden
         style={{
-          background: 'radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(196,82,255,0.25) 20%, transparent 50%)',
-          opacity: exiting ? 0.75 : 0,
-          transition: 'opacity 180ms ease-out 80ms',
+          background: beamBg,
           mixBlendMode: 'screen',
+          filter: 'blur(2px)',
+          opacity: exiting ? 1 : 0,
+          willChange: 'background, opacity',
+        }}
+      />
+      {/* Glow extra alrededor del beam (más blur, mix-blend-mode plus-lighter) */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: beamBg,
+          filter: 'blur(20px)',
+          opacity: exiting ? 0.65 : 0,
+          willChange: 'background, opacity',
         }}
       />
     </div>
