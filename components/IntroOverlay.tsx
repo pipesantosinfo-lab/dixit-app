@@ -1,37 +1,52 @@
 'use client'
-import { motion } from 'framer-motion'
+import { motion, animate } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
 /* Tiempos (ms) */
 const SHOW_DURATION = 2400   // tiempo total visible antes de empezar a salir
-const EXIT_DURATION = 900    // duración del exit
+const EXIT_DURATION = 1100   // duración del iris reveal
 
 export default function IntroOverlay() {
   const [exiting, setExiting] = useState(false)
   const [gone, setGone] = useState(false)
+  const [iris, setIris] = useState(0)  // 0% = overlay sólido, 150% = hero totalmente visible
 
   useEffect(() => {
     const t1 = setTimeout(() => setExiting(true), SHOW_DURATION)
-    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION)
+    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION + 50)
     return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
 
+  useEffect(() => {
+    if (!exiting) return
+    const controls = animate(0, 150, {
+      duration: EXIT_DURATION / 1000,
+      ease: [0.65, 0, 0.35, 1],  // expo-ish — empieza lento, abre rápido al final
+      onUpdate: (v) => setIris(v),
+    })
+    return () => controls.stop()
+  }, [exiting])
+
   if (gone) return null
 
-  // Container OUTER es un <div> plano con transición CSS pura.
-  // El motion.div + filter en animate rompía 'position: fixed' (creaba
-  // containing block raro). CSS transition sobre opacity + transform es
-  // 100% confiable cross-browser.
+  /* Iris Reveal con CSS mask radial-gradient.
+   * El overlay tiene un agujero circular en el centro que crece hasta cubrir
+   * toda la pantalla. El hero detrás se va revelando desde el centro hacia
+   * afuera (efecto diafragma de cámara abriéndose). */
+  const maskValue = `radial-gradient(circle at center, transparent ${iris}%, black ${iris + 0.5}%)`
+
   return (
     <div
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
       style={{
         background: '#070508',
-        opacity: exiting ? 0 : 1,
-        transform: exiting ? 'scale(1.18)' : 'scale(1)',
-        transition: `opacity ${EXIT_DURATION}ms cubic-bezier(0.76, 0, 0.24, 1), transform ${EXIT_DURATION}ms cubic-bezier(0.76, 0, 0.24, 1)`,
+        WebkitMaskImage: maskValue,
+        maskImage: maskValue,
+        WebkitMaskRepeat: 'no-repeat',
+        maskRepeat: 'no-repeat',
         pointerEvents: exiting ? 'none' : 'auto',
+        willChange: 'mask-image',
       }}
     >
       {/* ── Capa 1: textura grain ───────────────────────────────────── */}
