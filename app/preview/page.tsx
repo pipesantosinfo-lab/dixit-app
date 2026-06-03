@@ -1632,36 +1632,23 @@ export default function PreviewPage() {
         {mobileMenuOpen && (
           <motion.div
             className="md:hidden fixed inset-0 flex flex-col items-center justify-center overflow-hidden"
-            style={{ zIndex: 60, background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(24px)' }}
+            style={{
+              zIndex: 60,
+              background: 'rgba(7,5,8,0.97)',
+              backdropFilter: 'blur(24px)',
+              touchAction: 'none',          // sin pan/zoom
+              overscrollBehavior: 'contain', // sin scroll chaining al body
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           >
-            {/* Aurora morada arriba detrás del menú */}
-            <motion.div
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                top: '-20%', left: '50%', transform: 'translateX(-50%)',
-                width: '120vmin', height: '120vmin',
-                background: 'radial-gradient(circle, rgba(139,60,247,0.32) 0%, rgba(196,82,255,0.14) 35%, transparent 65%)',
-                filter: 'blur(50px)',
-              }}
-              animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.6, 0.9, 0.6] }}
-              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-            />
-            {/* Aurora naranja abajo derecha */}
-            <motion.div
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                bottom: '-10%', right: '-10%',
-                width: '70vmin', height: '70vmin',
-                background: 'radial-gradient(circle, rgba(255,140,50,0.20) 0%, rgba(196,82,0,0.10) 40%, transparent 70%)',
-                filter: 'blur(60px)',
-              }}
-              animate={{ scale: [1, 1.12, 1], opacity: [0.5, 0.8, 0.5] }}
-              transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
-            />
+            {/* Misma interferencia que en la sección del libro (LEFT + RIGHT
+                auroras laterales full-height + dot grid + scanlines CRT +
+                grain + vignettes). Variante 'purple' para mantener identidad
+                de marca en lugar del naranja del libro. */}
+            <ScreenAmbientBg />
 
             {/* Botón X dedicado para cerrar — top-right inside overlay,
                 con icono SVG claro + label "CERRAR" debajo para que cualquier
@@ -1755,12 +1742,11 @@ export default function PreviewPage() {
               />
             </motion.div>
 
-            {/* Links — fade-up staggered. 'Inicio' es el primero y hace
-                scroll al top (Lenis interpola smooth) sin necesidad de id en
-                el hero. Los demás usan anchors nativos. */}
+            {/* Links — fade-up staggered. 'Inicio' removido porque el botón X
+                arriba ya cumple la función de cerrar el menú (que es
+                equivalente a "volver al hero" si el usuario abrió desde ahí). */}
             <nav className="relative z-10 flex flex-col items-center gap-6">
               {([
-                ['inicio', 'Inicio'],
                 ['#sobre', 'Sobre mí'],
                 ['#galeria', 'Galería'],
                 ['#libro', 'Libro'],
@@ -1768,34 +1754,25 @@ export default function PreviewPage() {
                 ['#testimonios', 'Testimonios'],
                 ['#evento', 'Evento'],
                 ['#contacto', 'Contacto'],
-              ] as const).map(([href, label], i) => {
-                const isInicio = href === 'inicio'
-                return (
-                  <motion.a
-                    key={href}
-                    href={isInicio ? '#' : href}
-                    onClick={(e) => {
-                      if (isInicio) {
-                        e.preventDefault()
-                        window.scrollTo({ top: 0, behavior: 'smooth' })
-                      }
-                      setMobileMenuOpen(false)
-                    }}
-                    initial={{ opacity: 0, y: 18 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
-                    className="font-display text-3xl text-white relative group"
-                  >
-                    <span>{label}</span>
-                    {/* Underline sutil que aparece al tap */}
-                    <span
-                      className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-[2px] w-0 group-hover:w-full group-focus:w-full transition-all duration-300 rounded-full"
-                      style={{ background: 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))', boxShadow: '0 0 12px rgba(139,60,247,0.7)' }}
-                    />
-                  </motion.a>
-                )
-              })}
+              ] as const).map(([href, label], i) => (
+                <motion.a
+                  key={href}
+                  href={href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  initial={{ opacity: 0, y: 18 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.45, delay: 0.1 + i * 0.06, ease: [0.16, 1, 0.3, 1] }}
+                  className="font-display text-3xl text-white relative group"
+                >
+                  <span>{label}</span>
+                  {/* Underline sutil que aparece al tap */}
+                  <span
+                    className="absolute left-1/2 -translate-x-1/2 -bottom-1 h-[2px] w-0 group-hover:w-full group-focus:w-full transition-all duration-300 rounded-full"
+                    style={{ background: 'linear-gradient(90deg, rgba(139,60,247,1), rgba(196,82,255,1))', boxShadow: '0 0 12px rgba(139,60,247,0.7)' }}
+                  />
+                </motion.a>
+              ))}
             </nav>
 
             {/* Footer mini con el handle social */}
