@@ -995,16 +995,27 @@ function Tilt3D({
 function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
   const isOrange = accent === 'orange'
   const dotColor = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.18)'
-  // Aurora LEFT — color dominante del accent, más opacidad para que las
-  // texturas (dot grid, grain, scanlines) sean más visibles bajo su luz.
-  const leftAurora = isOrange
-    ? 'radial-gradient(circle, rgba(255,140,50,0.34) 0%, rgba(255,180,80,0.16) 35%, rgba(196,82,0,0.06) 55%, transparent 75%)'
-    : 'radial-gradient(circle, rgba(139,60,247,0.32) 0%, rgba(196,82,255,0.16) 35%, rgba(139,60,247,0.06) 55%, transparent 75%)'
-  // Aurora RIGHT — variación del color principal (más rosa/oro) para
-  // contraste sutil. Crea sensación de dos focos cruzándose.
-  const rightAurora = isOrange
-    ? 'radial-gradient(circle, rgba(255,200,80,0.30) 0%, rgba(255,140,50,0.14) 40%, rgba(196,82,0,0.05) 60%, transparent 78%)'
-    : 'radial-gradient(circle, rgba(196,82,255,0.28) 0%, rgba(139,60,247,0.14) 40%, rgba(196,82,255,0.05) 60%, transparent 78%)'
+
+  // Colores base del accent para construir gradient stops
+  const leftPrimary = isOrange ? 'rgba(255,140,50,0.34)' : 'rgba(139,60,247,0.32)'
+  const leftSecondary = isOrange ? 'rgba(255,180,80,0.18)' : 'rgba(196,82,255,0.18)'
+  const rightPrimary = isOrange ? 'rgba(255,200,80,0.30)' : 'rgba(196,82,255,0.28)'
+  const rightSecondary = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.16)'
+
+  // Columnas de luz: 3 radial-gradients distribuidos verticalmente (15%, 50%,
+  // 85%) dentro de un elemento que abarca la altura completa de la sección.
+  // Esto hace que SIEMPRE haya luz visible mientras hagas scroll, incluso en
+  // mobile donde las secciones son muy altas (gallery, libro con masonry).
+  const leftColumnBg = `
+    radial-gradient(ellipse 70% 30% at 50% 15%, ${leftPrimary} 0%, transparent 70%),
+    radial-gradient(ellipse 75% 32% at 50% 50%, ${leftSecondary} 0%, transparent 70%),
+    radial-gradient(ellipse 70% 30% at 50% 85%, ${leftPrimary} 0%, transparent 70%)
+  `
+  const rightColumnBg = `
+    radial-gradient(ellipse 70% 30% at 50% 20%, ${rightPrimary} 0%, transparent 70%),
+    radial-gradient(ellipse 75% 32% at 50% 55%, ${rightSecondary} 0%, transparent 70%),
+    radial-gradient(ellipse 70% 30% at 50% 88%, ${rightPrimary} 0%, transparent 70%)
+  `
 
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
@@ -1016,35 +1027,38 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
         maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
       }} />
 
-      {/* Aurora LEFT — foco lateral izquierdo intenso */}
+      {/* Aurora LEFT — columna de luz que abarca toda la altura de la sección.
+          3 puntos de glow distribuidos vertically + blur global → continuidad
+          de iluminación mientras el usuario scrollea por la sección. */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute"
         style={{
-          top: '8%',
-          left: '-18%',
-          width: 'min(80vmin, 820px)',
-          height: 'min(95vmin, 950px)',
-          background: leftAurora,
-          filter: 'blur(55px)',
+          top: 0,
+          bottom: 0,
+          left: '-15%',
+          width: 'min(70vmin, 720px)',
+          background: leftColumnBg,
+          filter: 'blur(45px)',
           willChange: 'transform, opacity',
         }}
-        animate={{ scale: [0.92, 1.08, 0.92], opacity: [0.65, 0.95, 0.65] }}
+        animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
         transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
       />
 
-      {/* Aurora RIGHT — foco lateral derecho, ritmo desincronizado */}
+      {/* Aurora RIGHT — columna simétrica, ritmo desincronizado, puntos de
+          glow ligeramente offset para que no se vea espejado perfecto. */}
       <motion.div
-        className="absolute rounded-full"
+        className="absolute"
         style={{
-          top: '12%',
-          right: '-18%',
-          width: 'min(80vmin, 820px)',
-          height: 'min(95vmin, 950px)',
-          background: rightAurora,
-          filter: 'blur(55px)',
+          top: 0,
+          bottom: 0,
+          right: '-15%',
+          width: 'min(70vmin, 720px)',
+          background: rightColumnBg,
+          filter: 'blur(45px)',
           willChange: 'transform, opacity',
         }}
-        animate={{ scale: [1.05, 0.94, 1.05], opacity: [0.6, 0.9, 0.6] }}
+        animate={{ scale: [1.05, 0.95, 1.05], opacity: [0.65, 0.95, 0.65] }}
         transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
