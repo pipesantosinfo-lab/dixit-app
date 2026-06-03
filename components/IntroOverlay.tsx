@@ -3,16 +3,13 @@ import { motion, animate } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
-/* Tiempos (ms) */
 const SHOW_DURATION = 2400
-const EXIT_DURATION = 1200
+const EXIT_DURATION = 900  // más corto: el punch es explosivo
 
 export default function IntroOverlay() {
   const [exiting, setExiting] = useState(false)
   const [gone, setGone] = useState(false)
-  /* sweep va de -8 → 112: el beam recorre toda la pantalla diagonalmente.
-   * Arranca un poco fuera del top-left y termina un poco fuera del bottom-right. */
-  const [sweep, setSweep] = useState(-8)
+  const [punch, setPunch] = useState(0)  // 0 → 1 durante el exit
 
   useEffect(() => {
     const t1 = setTimeout(() => setExiting(true), SHOW_DURATION)
@@ -22,49 +19,43 @@ export default function IntroOverlay() {
 
   useEffect(() => {
     if (!exiting) return
-    const controls = animate(-8, 112, {
+    const controls = animate(0, 1, {
       duration: EXIT_DURATION / 1000,
-      ease: [0.65, 0, 0.35, 1],
-      onUpdate: setSweep,
+      ease: [0.7, 0, 0.3, 1],  // S-curve agresiva: arranca lento, explota, desacelera
+      onUpdate: setPunch,
     })
     return () => controls.stop()
   }, [exiting])
 
   if (gone) return null
 
-  /* Mask 135deg → la zona transparente avanza del top-left al bottom-right.
-   * El "edge" entre transparente y negro queda como una banda diagonal nítida. */
-  const overlayMask = `linear-gradient(135deg, transparent ${sweep}%, black ${sweep + 4}%)`
+  /* Curva no-lineal sobre el punch (pow 1.6) → el logo se queda casi quieto
+   * al inicio y después explota. Sensación clásica de "anticipación + impacto". */
+  const punchPow = Math.pow(punch, 1.6)
 
-  /* El beam: stripe gradient morado→rosa→naranja a lo largo de la línea de
-   * sweep, con mix-blend-mode: screen para que ilumine lo que pasa debajo. */
-  const beamBg = `linear-gradient(135deg,
-    transparent ${sweep - 2}%,
-    rgba(139,60,247,0.85) ${sweep + 0.3}%,
-    rgba(196,82,255,1) ${sweep + 1.5}%,
-    rgba(255,140,50,0.9) ${sweep + 3}%,
-    rgba(255,200,80,0.4) ${sweep + 5}%,
-    transparent ${sweep + 8}%
-  )`
+  const logoScale = 1 + punchPow * 13       // 1 → 14
+  const motionBlur = punchPow * 22          // 0 → 22px
+  /* Bg + contenido se mantienen opacos hasta el ~70% y caen rápido al final. */
+  const bgOpacity = punch < 0.7 ? 1 : Math.max(0, 1 - (punch - 0.7) * 3.4)
+  /* White flash centrado en punch=0.82 — campana estrecha que enmascara el cambio. */
+  const flashOpacity = Math.max(0, 1 - Math.abs(punch - 0.82) * 6.5)
+  /* Streaks radiales emergen junto con el zoom — "speed lines" del manga. */
+  const streaksOpacity = punch > 0.25 ? Math.min(1, (punch - 0.25) * 2.5) * (1 - punch * 0.7) : 0
 
   return (
     <div
       className="fixed inset-0 z-[9999] overflow-hidden"
       style={{ pointerEvents: exiting ? 'none' : 'auto' }}
     >
-      {/* ── Overlay principal con mask diagonal ─────────────────────────── */}
+      {/* ── Bg negro + contenido (auroras / tagline / progress) ─────────── */}
       <div
         className="absolute inset-0 flex flex-col items-center justify-center"
         style={{
           background: '#070508',
-          WebkitMaskImage: overlayMask,
-          maskImage: overlayMask,
-          WebkitMaskRepeat: 'no-repeat',
-          maskRepeat: 'no-repeat',
-          willChange: 'mask-image',
+          opacity: bgOpacity,
         }}
       >
-        {/* Capa 1: textura grain */}
+        {/* Grain texture */}
         <div
           className="absolute inset-0"
           aria-hidden
@@ -76,7 +67,7 @@ export default function IntroOverlay() {
           }}
         />
 
-        {/* Capa 2: aurora morada que respira */}
+        {/* Aurora morada */}
         <motion.div
           className="absolute rounded-full"
           aria-hidden
@@ -91,7 +82,7 @@ export default function IntroOverlay() {
           transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* Capa 3: aurora naranja secundaria */}
+        {/* Aurora naranja secundaria */}
         <motion.div
           className="absolute rounded-full"
           aria-hidden
@@ -115,26 +106,9 @@ export default function IntroOverlay() {
           style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(7,5,8,0.65) 90%)' }}
         />
 
-        {/* Logo */}
-        <motion.div
-          className="relative z-10"
-          initial={{ opacity: 0, scale: 0.88, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <Image
-            src="/logo-opening.png"
-            alt="Pipe Santos"
-            width={420}
-            height={280}
-            className="w-[72vw] max-w-sm md:max-w-md h-auto"
-            priority
-          />
-        </motion.div>
-
         {/* Tagline */}
         <motion.div
-          className="relative z-10 mt-6 md:mt-8"
+          className="relative z-10 mt-32 md:mt-40"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.85 }}
@@ -171,25 +145,63 @@ export default function IntroOverlay() {
         </div>
       </div>
 
-      {/* ── Beam: stripe luminosa que barre diagonal ─────────────────────── */}
+      {/* ── Speed lines radiales (capa fija que aparece durante el punch) ── */}
       <div
         className="absolute inset-0 pointer-events-none"
+        aria-hidden
         style={{
-          background: beamBg,
+          background: `conic-gradient(from 0deg,
+            transparent 0deg, rgba(255,255,255,0.18) 2deg, transparent 7deg,
+            transparent 12deg, rgba(255,255,255,0.18) 14deg, transparent 19deg,
+            transparent 24deg, rgba(255,255,255,0.18) 26deg, transparent 31deg,
+            transparent 36deg, rgba(255,255,255,0.18) 38deg, transparent 43deg,
+            transparent 48deg, rgba(255,255,255,0.18) 50deg, transparent 55deg,
+            transparent 60deg, rgba(255,255,255,0.18) 62deg, transparent 67deg,
+            transparent 72deg, rgba(255,255,255,0.18) 74deg, transparent 79deg,
+            transparent 84deg, rgba(255,255,255,0.18) 86deg, transparent 91deg,
+            transparent 96deg, rgba(255,255,255,0.18) 98deg, transparent 103deg,
+            transparent 108deg, rgba(255,255,255,0.18) 110deg, transparent 115deg,
+            transparent 120deg, rgba(255,255,255,0.18) 122deg, transparent 127deg,
+            transparent 360deg)`,
+          WebkitMaskImage: 'radial-gradient(circle, transparent 25%, black 60%, transparent 100%)',
+          maskImage: 'radial-gradient(circle, transparent 25%, black 60%, transparent 100%)',
+          opacity: streaksOpacity,
           mixBlendMode: 'screen',
-          filter: 'blur(2px)',
-          opacity: exiting ? 1 : 0,
-          willChange: 'background, opacity',
         }}
       />
-      {/* Glow extra alrededor del beam (más blur, mix-blend-mode plus-lighter) */}
+
+      {/* ── Logo (fuera del bg para que el scale + blur no se limite) ───── */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.88, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          style={{
+            transform: `scale(${logoScale})`,
+            filter: `blur(${motionBlur}px)`,
+            opacity: 1 - Math.max(0, (punch - 0.78) * 4.5),  // fade quick at end
+            willChange: 'transform, filter, opacity',
+          }}
+        >
+          <Image
+            src="/logo-opening.png"
+            alt="Pipe Santos"
+            width={420}
+            height={280}
+            className="w-[72vw] max-w-sm md:max-w-md h-auto"
+            priority
+          />
+        </motion.div>
+      </div>
+
+      {/* ── White flash en el momento del impacto ───────────────────────── */}
       <div
         className="absolute inset-0 pointer-events-none"
+        aria-hidden
         style={{
-          background: beamBg,
-          filter: 'blur(20px)',
-          opacity: exiting ? 0.65 : 0,
-          willChange: 'background, opacity',
+          background: 'radial-gradient(circle, rgba(255,255,255,0.92) 0%, rgba(255,255,255,0.5) 25%, rgba(196,82,255,0.3) 55%, transparent 80%)',
+          opacity: flashOpacity,
+          mixBlendMode: 'screen',
         }}
       />
     </div>
