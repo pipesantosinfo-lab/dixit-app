@@ -141,7 +141,10 @@ export default function IntroOverlay() {
         >
           <p
             className="font-mono text-[10px] md:text-xs tracking-[0.45em] uppercase text-center"
-            style={{ color: 'rgba(255,255,255,0.6)' }}
+            style={{
+              color: 'rgba(255,255,255,0.85)',
+              textShadow: '0 0 12px rgba(196,82,255,0.6), 0 0 30px rgba(139,60,247,0.3)',
+            }}
           >
             Historias · Storytelling · Conexión
           </p>
