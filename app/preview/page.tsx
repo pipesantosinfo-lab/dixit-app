@@ -1005,39 +1005,91 @@ function GalleryMobileCarousel({
   onPhotoClick: (index: number) => void
 }) {
   const ref = useRef<HTMLDivElement>(null)
+  const cardRefs = useRef<(HTMLButtonElement | null)[]>([])
   const [current, setCurrent] = useState(0)
 
+  /* Cada frame del scroll: para cada foto computamos su distancia al
+   * centro visible del carrusel y mapeamos a scale + opacity + rotateY.
+   * Actualizamos directamente vía ref.style (sin React re-render por card)
+   * → cero overhead, smooth con la inercia nativa del browser. */
   useEffect(() => {
     const el = ref.current
     if (!el) return
     let rafId = 0
+
     const update = () => {
-      const cardWidth = el.clientWidth * 0.82 + 12  // 82vw + gap-3 (12px)
-      const idx = Math.round(el.scrollLeft / cardWidth)
-      setCurrent(Math.max(0, Math.min(photos.length - 1, idx)))
+      const containerRect = el.getBoundingClientRect()
+      const containerCenter = containerRect.left + containerRect.width / 2
+      let closestIdx = 0
+      let closestDist = Infinity
+
+      cardRefs.current.forEach((card, i) => {
+        if (!card) return
+        const rect = card.getBoundingClientRect()
+        const cardCenter = rect.left + rect.width / 2
+        const signedDist = cardCenter - containerCenter
+        const absDist = Math.abs(signedDist)
+        const maxDistance = rect.width + 12  // 1 card de distancia = "fuera"
+        const normalized = Math.min(1, absDist / maxDistance)
+        const focus = 1 - normalized   // 1 = centrada, 0 = a distancia de 1 card
+
+        const scale = 0.88 + focus * 0.12         // 0.88 → 1.0
+        const opacity = 0.55 + focus * 0.45        // 0.55 → 1.0
+        const rotateY = -Math.sign(signedDist) * normalized * 6  // ±0 → ±6deg
+
+        card.style.transform = `scale(${scale.toFixed(3)}) rotateY(${rotateY.toFixed(2)}deg)`
+        card.style.opacity = opacity.toFixed(3)
+
+        if (absDist < closestDist) {
+          closestDist = absDist
+          closestIdx = i
+        }
+      })
+
+      setCurrent(closestIdx)
     }
+
     const onScroll = () => {
       cancelAnimationFrame(rafId)
       rafId = requestAnimationFrame(update)
     }
+
     el.addEventListener('scroll', onScroll, { passive: true })
+    // Update inicial para setear el estado de la primera foto centrada
+    rafId = requestAnimationFrame(update)
+    // Y otro update después de que el DOM se asiente (fonts/images cargando)
+    const settleTimer = setTimeout(update, 250)
+
     return () => {
       el.removeEventListener('scroll', onScroll)
       cancelAnimationFrame(rafId)
+      clearTimeout(settleTimer)
     }
   }, [photos.length])
 
   return (
-    <div className="md:hidden">
-      {/* Track horizontal */}
+    <motion.div
+      className="md:hidden"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.1 }}
+      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+    >
+      {/* Track horizontal con perspective para que rotateY se vea 3D real */}
       <div
         ref={ref}
         className="flex gap-3 overflow-x-auto snap-x snap-mandatory no-scrollbar -mx-6"
-        style={{ scrollPaddingInline: '9vw', paddingInline: '9vw', scrollBehavior: 'smooth' }}
+        style={{
+          scrollPaddingInline: '9vw',
+          paddingInline: '9vw',
+          scrollBehavior: 'smooth',
+          perspective: '1200px',
+        }}
       >
         {photos.map((src, i) => (
-          <motion.button
+          <button
             key={src}
+            ref={(el) => { cardRefs.current[i] = el }}
             type="button"
             onClick={() => { track({ type: 'click', target: 'view_gallery' }); onPhotoClick(i) }}
             className="snap-center shrink-0 relative overflow-hidden rounded-2xl block"
@@ -1045,12 +1097,13 @@ function GalleryMobileCarousel({
               width: '82vw',
               aspectRatio: '3 / 4',
               boxShadow: '0 8px 32px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06)',
+              transformOrigin: 'center center',
+              willChange: 'transform, opacity',
+              /* Valores iniciales antes del primer rAF — la primera foto centrada,
+               * las demás ligeramente reducidas para no flash al cargar. */
+              transform: i === 0 ? 'scale(1) rotateY(0deg)' : 'scale(0.88) rotateY(0deg)',
+              opacity: i === 0 ? 1 : 0.55,
             }}
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.5, delay: Math.min(i, 3) * 0.06, ease: [0.16, 1, 0.3, 1] }}
-            whileTap={{ scale: 0.98 }}
           >
             <img
               src={src}
@@ -1067,7 +1120,7 @@ function GalleryMobileCarousel({
                 <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
               </svg>
             </div>
-          </motion.button>
+          </button>
         ))}
       </div>
 
@@ -1095,7 +1148,7 @@ function GalleryMobileCarousel({
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
