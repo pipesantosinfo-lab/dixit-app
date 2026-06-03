@@ -994,7 +994,12 @@ function Tilt3D({
  * + vignettes top/bottom para fundir con secciones vecinas.            */
 function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
   const isOrange = accent === 'orange'
-  const dotColor = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.18)'
+
+  // Colores del dot grid: dos valores (mobile más intenso, desktop suave)
+  // se inyectan como CSS vars y la clase .screen-bg-dotgrid hace el swap
+  // según media query.
+  const dotColorMobile = isOrange ? 'rgba(255,140,50,0.26)' : 'rgba(139,60,247,0.28)'
+  const dotColorDesktop = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.18)'
 
   // Colores base del accent para construir gradient stops
   const leftPrimary = isOrange ? 'rgba(255,140,50,0.34)' : 'rgba(139,60,247,0.32)'
@@ -1019,13 +1024,16 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
 
   return (
     <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
-      {/* Dot grid sutil con vignette radial */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: `radial-gradient(circle, ${dotColor} 1px, transparent 1px)`,
-        backgroundSize: '28px 28px',
-        WebkitMaskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
-        maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
-      }} />
+      {/* Dot grid con vignette radial — intensidad responsive vía CSS class */}
+      <div
+        className="absolute inset-0 screen-bg-dotgrid"
+        style={{
+          ['--dot-color' as string]: dotColorMobile,
+          ['--dot-color-desktop' as string]: dotColorDesktop,
+          WebkitMaskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
+          maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
+        } as React.CSSProperties}
+      />
 
       {/* Aurora LEFT — columna de luz que abarca toda la altura de la sección.
           3 puntos de glow distribuidos vertically + blur global → continuidad
@@ -1062,17 +1070,13 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }
         transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
-      {/* Scanlines tipo CRT */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,255,255,0.022) 2px, rgba(255,255,255,0.022) 3px)',
-        mixBlendMode: 'overlay',
-      }} />
+      {/* Scanlines tipo CRT — intensidad responsive vía CSS class */}
+      <div className="absolute inset-0 screen-bg-scanlines" style={{ mixBlendMode: 'overlay' }} />
 
-      {/* Film grain SVG */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.14 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+      {/* Film grain SVG — opacity responsive vía CSS class */}
+      <div className="absolute inset-0 screen-bg-grain" style={{
+        backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.18 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
         backgroundSize: '200px 200px',
-        opacity: 0.5,
         mixBlendMode: 'overlay',
       }} />
 

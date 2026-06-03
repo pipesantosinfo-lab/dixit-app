@@ -410,6 +410,35 @@ html {
   }
 }
 
+/* ── ScreenAmbientBg: textura responsiva ────────────────────────────
+ * En mobile las texturas (dot grid, scanlines, grain) se ven menos por
+ * varios motivos: pantallas más chicas + alta densidad de píxeles +
+ * paneles OLED con contraste agresivo que comprime los tonos sutiles.
+ * Acá intensificamos en mobile y volvemos a los valores originales en
+ * desktop (>= 768px) con media queries. */
+.screen-bg-dotgrid {
+  background-image: radial-gradient(circle, var(--dot-color, rgba(139,60,247,0.28)) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.screen-bg-scanlines {
+  background-image: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,255,255,0.055) 2px, rgba(255,255,255,0.055) 3px);
+}
+.screen-bg-grain {
+  opacity: 0.78;
+}
+@media (min-width: 768px) {
+  .screen-bg-dotgrid {
+    background-image: radial-gradient(circle, var(--dot-color-desktop, rgba(139,60,247,0.18)) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .screen-bg-scanlines {
+    background-image: repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,255,255,0.022) 2px, rgba(255,255,255,0.022) 3px);
+  }
+  .screen-bg-grain {
+    opacity: 0.5;
+  }
+}
+
 /* ── Orbes de la sección social: blur responsive ─────────────────────
  * En desktop blur(38px) se ve bien y la GPU lo aguanta.
  * En mobile bajamos a blur(22px): Gaussian blur cuesta O(sigma) por pixel
