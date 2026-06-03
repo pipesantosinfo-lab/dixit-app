@@ -392,7 +392,7 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white transition-colors text-3xl leading-none mt-1">×</button>
         </div>
-        <div className="line-holo mb-6" />
+        <SectionDivider className="mb-6" />
         <div className="flex items-center justify-between mb-5 rounded-xl px-4 py-3"
           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <span className="font-body text-white/60 text-sm">Cantidad de entradas</span>
@@ -989,6 +989,27 @@ function Tilt3D({
     >
       {children}
     </motion.div>
+  )
+}
+
+/* ── Divider con cluster de barritas tipo equalizer ─────────────────────
+ * Reemplaza la línea fina morada por un cluster central animado (6 barras
+ * con altura y delay distintos → vibe audio waveform). Subraya el ADN
+ * podcaster/storyteller del proyecto. Pure CSS animation, cero runtime. */
+function SectionDivider({ className }: { className?: string }) {
+  return (
+    <div className={`section-divider ${className ?? ''}`} aria-hidden>
+      <span className="section-divider__line section-divider__line--left" />
+      <div className="section-divider__eq">
+        <span className="section-divider__bar" />
+        <span className="section-divider__bar" />
+        <span className="section-divider__bar" />
+        <span className="section-divider__bar" />
+        <span className="section-divider__bar" />
+        <span className="section-divider__bar" />
+      </div>
+      <span className="section-divider__line section-divider__line--right" />
+    </div>
   )
 }
 
@@ -1604,7 +1625,7 @@ export default function PreviewPage() {
         style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
         <Image src="/logo-header-v2.png" alt="Pipe Santos" width={300} height={130} className="h-11 md:h-16 w-auto opacity-90" priority />
         <div className="hidden md:flex gap-8">
-          {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
+          {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Mi libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
             <a key={label} href={href} className="font-mono text-xs tracking-widest text-white/40 hover:text-white uppercase transition-colors">{label}</a>
           ))}
         </div>
@@ -1749,7 +1770,7 @@ export default function PreviewPage() {
               {([
                 ['#sobre', 'Sobre mí'],
                 ['#galeria', 'Galería'],
-                ['#libro', 'Libro'],
+                ['#libro', 'Mi libro'],
                 ['#podcast', 'Podcast'],
                 ['#testimonios', 'Testimonios'],
                 ['#evento', 'Evento'],
@@ -2137,7 +2158,7 @@ export default function PreviewPage() {
       {/* ── STATS ────────────────────────────────── */}
       <section className="relative z-10 px-6 md:px-12 pt-20 pb-10">
         <div className="max-w-5xl mx-auto">
-          <div className="line-holo mb-14" />
+          <SectionDivider className="mb-14" />
           <div className="relative">
             {/* ── Móvil/tablet: 3 tarjetas a ancho completo, Boris superpuesto ── */}
             <div className="lg:hidden max-w-3xl mx-auto grid grid-cols-1 gap-4">
@@ -2176,7 +2197,7 @@ export default function PreviewPage() {
       <section id="galeria" data-track-section="galeria" className="relative z-10 px-6 md:px-12 pt-4 pb-10 overflow-hidden">
         <ScreenAmbientBg />
         <div className="relative z-10 max-w-6xl mx-auto">
-          <div className="line-holo mb-14" />
+          <SectionDivider className="mb-14" />
           <div className="text-center mb-14">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Eventos</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-3">
@@ -2231,7 +2252,7 @@ export default function PreviewPage() {
       <section id="libro" data-track-section="libro" className="relative z-10 px-6 md:px-12 pt-4 pb-20 overflow-hidden">
         <ScreenAmbientBg accent="orange" />
         <div className="relative z-10 max-w-5xl mx-auto">
-          <div className="line-holo mb-14" />
+          <SectionDivider className="mb-14" />
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <motion.div className="order-2 md:order-1" initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
               <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Mi libro</p>
@@ -2278,7 +2299,7 @@ export default function PreviewPage() {
               </div>
             </ScrollScale>
           </div>
-          <div className="line-holo mt-16" />
+          <SectionDivider className="mt-16" />
         </div>
       </section>
 
@@ -2340,7 +2361,7 @@ export default function PreviewPage() {
       <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
         <ScreenAmbientBg />
         <div className="relative z-10 max-w-5xl mx-auto">
-          <div className="line-holo mb-16" />
+          <SectionDivider className="mb-16" />
           <div className="text-center mb-16">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Testimonios</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
@@ -2390,7 +2411,7 @@ export default function PreviewPage() {
       <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
         <ScreenAmbientBg />
         <div className="relative z-10 max-w-5xl mx-auto">
-          <div className="line-holo mb-14" />
+          <SectionDivider className="mb-14" />
 
           {/* Hero: poster + título + countdown + CTA */}
           <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center mb-16">
@@ -2559,7 +2580,7 @@ export default function PreviewPage() {
             </div>
           </motion.div>
 
-          <div className="line-holo mt-14" />
+          <SectionDivider className="mt-14" />
         </div>
       </section>
 
