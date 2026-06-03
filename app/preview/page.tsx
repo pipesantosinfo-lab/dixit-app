@@ -1566,8 +1566,76 @@ export default function PreviewPage() {
       </section>
 
       {/* ── SHOWREEL ─────────────────────────────── */}
-      <section className="relative z-10 px-6 md:px-12 py-20">
-        <div className="max-w-5xl mx-auto">
+      <section className="relative z-10 px-6 md:px-12 py-20 overflow-hidden showreel-section">
+        {/* ── Fondo: dot-grid + aurora pulse + scanlines + grain ─────────
+            4 capas no-animadas (excepto la aurora orbe que respira) +
+            scanlines tipo CRT que refuerzan el lenguaje 'estás mirando una
+            pantalla' del MacWindow. */}
+        <div className="absolute inset-0 pointer-events-none" aria-hidden style={{ zIndex: 0 }}>
+          {/* Dot grid sutil con vignette radial */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'radial-gradient(circle, rgba(139,60,247,0.18) 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+            WebkitMaskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
+            maskImage: 'radial-gradient(ellipse at center, black 25%, transparent 78%)',
+          }} />
+
+          {/* Aurora morada gigante detrás del título */}
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              top: '5%', left: '50%',
+              transform: 'translateX(-50%)',
+              width: 'min(90vmin, 900px)',
+              height: 'min(90vmin, 900px)',
+              background: 'radial-gradient(circle, rgba(139,60,247,0.18) 0%, rgba(196,82,255,0.08) 40%, transparent 70%)',
+              filter: 'blur(50px)',
+              willChange: 'transform, opacity',
+            }}
+            animate={{ scale: [0.95, 1.06, 0.95], opacity: [0.55, 0.85, 0.55] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          />
+
+          {/* Aurora naranja secundaria abajo */}
+          <motion.div
+            className="absolute rounded-full"
+            style={{
+              bottom: '0%', right: '5%',
+              width: 'min(50vmin, 500px)',
+              height: 'min(50vmin, 500px)',
+              background: 'radial-gradient(circle, rgba(255,140,50,0.12) 0%, rgba(196,82,0,0.06) 35%, transparent 65%)',
+              filter: 'blur(60px)',
+              willChange: 'transform, opacity',
+            }}
+            animate={{ scale: [1, 1.15, 1], opacity: [0.45, 0.7, 0.45] }}
+            transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut', delay: 1.2 }}
+          />
+
+          {/* Scanlines tipo CRT (líneas horizontales muy sutiles cada 3px) */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: 'repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,255,255,0.022) 2px, rgba(255,255,255,0.022) 3px)',
+            mixBlendMode: 'overlay',
+          }} />
+
+          {/* Film grain SVG */}
+          <div className="absolute inset-0" style={{
+            backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.14 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+            backgroundSize: '200px 200px',
+            opacity: 0.5,
+            mixBlendMode: 'overlay',
+          }} />
+
+          {/* Vignette inferior — funde con la siguiente sección */}
+          <div className="absolute inset-x-0 bottom-0 h-32" style={{
+            background: 'linear-gradient(to top, #070508 0%, rgba(7,5,8,0.5) 40%, transparent 100%)',
+          }} />
+          {/* Vignette superior — funde con la sección anterior */}
+          <div className="absolute inset-x-0 top-0 h-24" style={{
+            background: 'linear-gradient(to bottom, #070508 0%, rgba(7,5,8,0.4) 50%, transparent 100%)',
+          }} />
+        </div>
+
+        <div className="relative z-10 max-w-5xl mx-auto">
           <motion.div className="text-center mb-12" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Showreel</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-3">
