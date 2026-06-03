@@ -132,12 +132,14 @@ export default function IntroOverlay() {
           />
         </motion.div>
 
-        {/* Tagline */}
+        {/* Tagline — aparece antes para que esté presente más tiempo
+            (antes tenía delay 0.85s + duration 0.8s = visible hasta 1.65s,
+            casi pegado al exit. Ahora aparece a los 0.35s.) */}
         <motion.div
           className="relative z-10 mt-6 md:mt-8"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.85 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
         >
           <p
             className="font-mono text-[10px] md:text-xs tracking-[0.45em] uppercase text-center"
