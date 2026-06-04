@@ -1100,6 +1100,11 @@ function GalleryMobileCarousel({
           const pos = stackPosition(offset)
           const isFront = offset === 0
 
+          const openLightboxAtCurrent = () => {
+            track({ type: 'click', target: 'view_gallery' })
+            onPhotoClick(currentIndex)
+          }
+
           return (
             <motion.div
               key={src}
@@ -1112,7 +1117,10 @@ function GalleryMobileCarousel({
               dragElastic={0.45}
               onDragStart={() => { dragOccurred.current = false }}
               onDrag={(_, info) => {
-                if (Math.abs(info.offset.x) > 6) dragOccurred.current = true
+                // Threshold subido a 12px → en touch screens el dedo se
+                // mueve algunos pixels al "tapear" por su área de contacto.
+                // 6px era muy estricto y mataba todos los taps.
+                if (Math.abs(info.offset.x) > 12) dragOccurred.current = true
               }}
               onDragEnd={(_, info) => {
                 const swipeThreshold = 80
@@ -1123,10 +1131,12 @@ function GalleryMobileCarousel({
                   goPrev()
                 }
               }}
-              onClick={() => {
+              // onTap es de Framer (no React onClick): respeta drag vs tap
+              // nativamente sin necesidad del flag dragOccurred. Fires solo
+              // si NO hubo drag significativo.
+              onTap={() => {
                 if (isFront && !dragOccurred.current) {
-                  track({ type: 'click', target: 'view_gallery' })
-                  onPhotoClick(currentIndex)
+                  openLightboxAtCurrent()
                 }
               }}
             >
@@ -1151,20 +1161,41 @@ function GalleryMobileCarousel({
                     src={src}
                     alt=""
                     className="w-full h-full object-cover block"
-                    loading={offset === 0 ? 'eager' : 'lazy'}
+                    // Eager para las 4 cards visibles. Como ahora solo
+                    // renderizamos 4, no hay riesgo de saturar la red.
+                    // El bug del 'sino interrogación' venía de loading=lazy
+                    // en cards que entraban dinámicamente al swipear y la
+                    // imagen no se cargaba a tiempo.
+                    loading="eager"
                     decoding="async"
-                    fetchPriority={offset === 0 ? 'high' : 'low'}
+                    fetchPriority={isFront ? 'high' : 'auto'}
                     draggable={false}
                   />
-                  {/* Indicador de "expandir" solo en la front card */}
+                  {/* Botón EXPANDIR — real button independiente del drag.
+                      stopPropagation evita que el motion.div intercepte el
+                      tap como gesture de drag. */}
                   {isFront && (
-                    <div className="absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center pointer-events-none"
-                      style={{ background: 'rgba(7,5,8,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.12)' }}
+                    <button
+                      type="button"
+                      aria-label="Ver foto en grande"
+                      onPointerDown={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        openLightboxAtCurrent()
+                      }}
+                      className="absolute top-3 right-3 w-10 h-10 rounded-full flex items-center justify-center"
+                      style={{
+                        background: 'rgba(7,5,8,0.65)',
+                        backdropFilter: 'blur(6px)',
+                        WebkitBackdropFilter: 'blur(6px)',
+                        border: '1px solid rgba(255,255,255,0.18)',
+                        cursor: 'pointer',
+                      }}
                     >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
                       </svg>
-                    </div>
+                    </button>
                   )}
                 </div>
               </div>
