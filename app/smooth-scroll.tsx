@@ -3,22 +3,31 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 
 /**
- * Smooth scroll global con Lenis.
- * Convierte el scroll nativo (instantáneo, "duro") en uno inerciado.
- * - Activo en desktop + mobile
- * - Respeta prefers-reduced-motion (se apaga solo)
- * - Compatible con Framer Motion useScroll porque actualiza window.scrollY real
+ * Smooth scroll con Lenis — SOLO en desktop.
+ *
+ * En mobile (touch devices):
+ * - Ya teníamos syncTouch: false → Lenis no interceptaba el touch
+ * - PERO seguía corriendo su rAF loop infinito + listeners de scroll
+ * - Ese overhead constante no aportaba nada en mobile y trababa
+ *   navegación entre secciones
+ *
+ * Solución: detectar pointer:coarse (touch primario) y NO inicializar
+ * Lenis ahí. Mobile usa scroll nativo (es muy fluido en Android/iOS
+ * modernos). Desktop sigue teniendo la inercia premium.
  */
 export default function SmoothScroll() {
   useEffect(() => {
+    if (typeof window === 'undefined') return
+    // Mobile / touch device → scroll nativo (sin Lenis)
+    if (window.matchMedia('(pointer: coarse)').matches) return
     // Respeta usuarios con preferencia de menos movimiento
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({
-      duration: 1.1,                 // segundos para alcanzar el target
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // exp-out — natural
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
-      syncTouch: false,              // en mobile dejamos scroll nativo (más fluido para touch)
+      syncTouch: false,
       wheelMultiplier: 1,
       touchMultiplier: 1.5,
     })
