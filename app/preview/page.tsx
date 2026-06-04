@@ -1845,15 +1845,22 @@ export default function PreviewPage() {
             className="absolute inset-0"
             style={{ transform: 'scale(1.15)', willChange: 'transform' }}
           >
-            <Image
-              src="/hero.jpg"
-              alt=""
-              fill
-              priority
-              unoptimized
-              sizes="100vw"
-              style={{ objectFit: 'cover', objectPosition: 'center top' }}
-            />
+            {/* <picture> con media query para servir 90KB en mobile y
+                309KB en desktop. Antes: un único hero.jpg de 2.1MB que
+                bloqueaba todo el initial load en mobile (incluido el
+                logo de la intro). Ahora: mobile carga 23x menos peso. */}
+            <picture>
+              <source media="(min-width: 768px)" srcSet="/hero-desktop.jpg" />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/hero-mobile.jpg"
+                alt=""
+                className="absolute inset-0 w-full h-full"
+                style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                fetchPriority="high"
+                decoding="async"
+              />
+            </picture>
           </div>
           {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
           <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.4) 40%, transparent 58%)' }} />
