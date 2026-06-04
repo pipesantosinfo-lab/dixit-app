@@ -336,8 +336,8 @@ function getUrgencyMessage(sold: number) {
 
   if (sold === 0) {
     return {
-      full: `AFORO LIMITADO · ${EVENT_MAX} CUPOS · BARRANQUILLA`,
-      short: `AFORO LIMITADO · ${EVENT_MAX} CUPOS`,
+      full: `CUPOS LIMITADOS · ${EVENT_MAX} ENTRADAS · BARRANQUILLA`,
+      short: `CUPOS LIMITADOS · ${EVENT_MAX} ENTRADAS`,
       level: 'normal' as const,
     }
   }
@@ -363,8 +363,8 @@ function getUrgencyMessage(sold: number) {
     }
   }
   return {
-    full: `AFORO LIMITADO · QUEDAN ${available} CUPOS · BARRANQUILLA`,
-    short: `AFORO LIMITADO · ${available} CUPOS`,
+    full: `CUPOS LIMITADOS · QUEDAN ${available} ENTRADAS · BARRANQUILLA`,
+    short: `CUPOS LIMITADOS · ${available} ENTRADAS`,
     level: 'normal' as const,
   }
 }
