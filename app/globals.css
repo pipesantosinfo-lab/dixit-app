@@ -169,10 +169,14 @@ html {
   gap: 8px;
   font-family: var(--font-mono);
   font-size: 10px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255,255,255,0.7);
   font-weight: 400;
+  white-space: nowrap;        /* nunca wrappear → siempre un renglón */
+}
+.hero-cta__meta > span:not(.hero-cta__pulse-dot) {
+  white-space: nowrap;
 }
 .hero-cta__pulse-dot {
   display: inline-block;
@@ -270,12 +274,18 @@ html {
 .hero-cta:hover .hero-cta__arrow {
   transform: translateX(4px);
 }
-/* Mobile: aún más compacto + más margen para no quedar pegado al título */
+/* Mobile: aún más compacto + más margen para no quedar pegado al título.
+ * El meta usa font-size más chico y letter-spacing reducido para que
+ * "CUPOS LIMITADOS · 300 ENTRADAS · BARRANQUILLA" entre en un solo
+ * renglón en viewports de 360-375px (Android medio). */
 @media (max-width: 767px) {
   .hero-cta { padding: 10px 14px; margin-top: 28px; gap: 9px; }
   .hero-cta__btn { padding: 9px 16px; font-size: 12px; gap: 8px; border-radius: 8px; }
-  .hero-cta__meta { font-size: 8.5px; gap: 5px; }
-  .hero-cta__days { font-size: 10px; }
+  .hero-cta__meta {
+    font-size: 7.5px;
+    letter-spacing: 0.10em;
+    gap: 5px;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .hero-cta__pulse-dot { animation: none; }
