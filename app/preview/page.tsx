@@ -813,6 +813,60 @@ const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 
  * Aparece al fondo del hero con una pista visual ("Descubre más" + chevron
  * con bounce sutil). Se desvanece cuando el usuario hace scroll > 80px,
  * y desaparece del DOM tras la transición para no consumir recursos. */
+/* Sticky CTA bar para mobile — aparece cuando el usuario pasa el hero
+ * pero NO ha llegado todavía a la sección de evento. Punto de acceso
+ * permanente al botón de compra durante la navegación. */
+function StickyMobileCTA({ days }: { days: number }) {
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const onScroll = () => {
+      const heroH = window.innerHeight
+      const eventoEl = document.getElementById('evento')
+      const eventoRect = eventoEl?.getBoundingClientRect()
+      // Visible cuando: pasaste 60% del hero AND no estás dentro de #evento
+      const passedHero = window.scrollY > heroH * 0.6
+      const insideEvento = eventoRect ? eventoRect.top < window.innerHeight * 0.5 && eventoRect.bottom > 0 : false
+      setVisible(passedHero && !insideEvento)
+    }
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.a
+          href="#evento"
+          onClick={() => track({ type: 'click', target: 'sticky_buy_cta' })}
+          className="sticky-cta md:hidden"
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 100, opacity: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          aria-label="Ir a comprar entrada"
+        >
+          <div className="sticky-cta__info">
+            <p className="sticky-cta__title">Compra tu entrada — 22 ago</p>
+            <p className="sticky-cta__meta">
+              <span className="sticky-cta__meta-dot" />
+              {days} DÍAS · $40.000 · BARRANQUILLA
+            </p>
+          </div>
+          <span className="sticky-cta__btn">
+            Comprar
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12h14M13 5l7 7-7 7"/>
+            </svg>
+          </span>
+        </motion.a>
+      )}
+    </AnimatePresence>
+  )
+}
+
 function ScrollHint() {
   // Siempre montado; controlamos visibilidad solo con opacity para evitar
   // saltos de AnimatePresence (que en el dev server a veces no monta a tiempo).
@@ -1943,10 +1997,36 @@ export default function PreviewPage() {
                 ? <ScrambleText text="Conectando" delay={2800} />
                 : <span style={{ position: 'relative', zIndex: 1, color: 'white' }}>{HERO_WORDS[heroWordIdx]}</span>}
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-8 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
+            <motion.p variants={fadeUp} className="text-[2.3rem] md:text-6xl mb-6 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
               A partir de historias
             </motion.p>
-            {/* Botón Barranquilla 2026 oculto temporalmente */}
+
+            {/* ── Hero CTA: invita a comprar entrada con countdown ── */}
+            <motion.a
+              variants={fadeUp}
+              href="#evento"
+              onClick={() => track({ type: 'click', target: 'hero_buy_cta' })}
+              className="hero-cta group"
+              aria-label="Comprar entrada para el evento del 22 de agosto"
+            >
+              {/* Top: countdown + fecha */}
+              <span className="hero-cta__meta">
+                <span className="hero-cta__pulse-dot" />
+                <span className="hero-cta__days">{countdown.days}</span>
+                <span className="hero-cta__days-label">días</span>
+                <span className="hero-cta__sep">·</span>
+                <span>22 AGO 2026</span>
+                <span className="hero-cta__sep">·</span>
+                <span>BARRANQUILLA</span>
+              </span>
+              {/* Botón */}
+              <span className="hero-cta__btn">
+                <span>Comprar entrada · $40.000</span>
+                <svg className="hero-cta__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M13 5l7 7-7 7"/>
+                </svg>
+              </span>
+            </motion.a>
           </motion.div>
         </div>
 
@@ -2746,6 +2826,9 @@ export default function PreviewPage() {
           <p className="font-mono text-xs text-white/15">© 2026 Pipe Santos. Todos los derechos reservados.</p>
         </div>
       </footer>
+
+      {/* Sticky CTA mobile — acceso permanente al botón de compra */}
+      <StickyMobileCTA days={countdown.days} />
 
     </main>
   )
