@@ -54,6 +54,35 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es" className={`${playfair.variable} ${dmSans.variable} ${dmMono.variable}`}>
+      <head>
+        {/* Preconnect a orígenes externos: ahorra ~100-300ms en la primera
+            request a cada uno (DNS + TCP + TLS handshake hechos en paralelo
+            con el HTML, en vez de en serie cuando se necesite). */}
+        <link rel="preconnect" href="https://integrations.api.bold.co" />
+        <link rel="preconnect" href="https://checkout.bold.co" />
+        <link rel="preconnect" href="https://open.spotify.com" />
+
+        {/* Preload del hero — empieza a descargarse en paralelo con el HTML,
+            así está listo cuando el componente lo necesita. Mobile-first:
+            preload solo la versión mobile (webp). En desktop, el browser
+            usa el source desktop sin penalty. */}
+        <link
+          rel="preload"
+          as="image"
+          href="/hero-mobile.webp"
+          type="image/webp"
+          fetchPriority="high"
+          media="(max-width: 767px)"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/hero-desktop.webp"
+          type="image/webp"
+          fetchPriority="high"
+          media="(min-width: 768px)"
+        />
+      </head>
       <body className="bg-void text-white antialiased font-body">
         <SmoothScroll />
         {children}
