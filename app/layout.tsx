@@ -23,31 +23,43 @@ const dmMono = DM_Mono({
   weight: ['300', '400'],
 })
 
+/* ── SEO + OG metadata ──────────────────────────────────────────────
+ * Cuando compartís el link de pipesantos.com en WhatsApp/Instagram/
+ * Telegram/etc, se renderiza una preview con:
+ *   - Título grande
+ *   - Descripción
+ *   - Imagen 1200x630 (og-image-v2.jpg)
+ * Usamos filename v2 para forzar el refresh del cache de WhatsApp/FB
+ * (que cachean OG previews por 7+ días).                          */
+const OG_TITLE = 'Pipe Santos — La vida es cule viaje'
+const OG_DESCRIPTION = '22 ago 2026 · Barranquilla. Una experiencia única de storytelling con el conferencista del Caribe que conecta historias con audiencias.'
+
 export const metadata: Metadata = {
   metadataBase: new URL('https://www.pipesantos.com'),
-  title: 'Pipe Santos — Escritor, conferencista e influencer',
-  description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
+  title: OG_TITLE,
+  description: OG_DESCRIPTION,
   openGraph: {
-    title: 'Pipe Santos — Escritor, conferencista e influencer',
-    description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
     url: 'https://www.pipesantos.com',
     siteName: 'Pipe Santos',
     type: 'website',
     locale: 'es_CO',
     images: [
       {
-        url: '/og-image.png',
+        url: '/og-image-v2.jpg',
         width: 1200,
         height: 630,
-        alt: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano',
+        alt: 'Pipe Santos — La vida es cule viaje · 22 ago 2026 · Barranquilla',
+        type: 'image/jpeg',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Pipe Santos — Escritor, conferencista e influencer',
-    description: 'Pipe Santos — Escritor, conferencista e influencer del Caribe colombiano.',
-    images: ['/og-image.png'],
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: ['/og-image-v2.jpg'],
   },
 }
 
