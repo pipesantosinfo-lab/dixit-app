@@ -1092,6 +1092,11 @@ function GalleryMobileCarousel({
           // "viejas" se reciclan al fondo del stack visualmente)
           const rawOffset = i - currentIndex
           const offset = ((rawOffset % photos.length) + photos.length) % photos.length
+          // CRÍTICO PARA PERFORMANCE: solo renderizar las 4 cards visibles
+          // (current + 3 peeking detrás). Antes se renderizaban las 25
+          // simultáneamente → 25 motion.divs + 25 img tags + 25 springs.
+          // Ahora solo 4 → 84% menos trabajo de GPU/CPU/red.
+          if (offset > 3) return null
           const pos = stackPosition(offset)
           const isFront = offset === 0
 
@@ -1146,7 +1151,9 @@ function GalleryMobileCarousel({
                     src={src}
                     alt=""
                     className="w-full h-full object-cover block"
-                    loading={offset < 3 ? 'eager' : 'lazy'}
+                    loading={offset === 0 ? 'eager' : 'lazy'}
+                    decoding="async"
+                    fetchPriority={offset === 0 ? 'high' : 'low'}
                     draggable={false}
                   />
                   {/* Indicador de "expandir" solo en la front card */}
