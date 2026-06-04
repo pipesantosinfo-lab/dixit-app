@@ -1876,12 +1876,18 @@ export default function PreviewPage() {
             className="absolute inset-0"
             style={{ transform: 'scale(1.15)', willChange: 'transform' }}
           >
-            {/* <picture> con media query para servir 90KB en mobile y
-                309KB en desktop. Antes: un único hero.jpg de 2.1MB que
-                bloqueaba todo el initial load en mobile (incluido el
-                logo de la intro). Ahora: mobile carga 23x menos peso. */}
+            {/* HD responsive con WebP + JPG fallback.
+                - Mobile 1400px (crisp en DPR 3x hasta viewport ~470px):
+                  WebP 184KB | JPG 234KB
+                - Desktop 2200px (cubre pantallas grandes con holgura):
+                  WebP 385KB | JPG 521KB
+                Browser elige el PRIMER source que soporta. Orden:
+                desktop-webp → desktop-jpg → mobile-webp → mobile-jpg.
+                vs original de 2.1MB: 89-90% más liviano y HD garantizado. */}
             <picture>
-              <source media="(min-width: 768px)" srcSet="/hero-desktop.jpg" />
+              <source media="(min-width: 768px)" srcSet="/hero-desktop.webp" type="image/webp" />
+              <source media="(min-width: 768px)" srcSet="/hero-desktop.jpg" type="image/jpeg" />
+              <source srcSet="/hero-mobile.webp" type="image/webp" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/hero-mobile.jpg"
