@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Playfair_Display, DM_Sans, DM_Mono } from 'next/font/google'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import './globals.css'
 import SmoothScroll from './smooth-scroll'
 
@@ -56,6 +57,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="bg-void text-white antialiased font-body">
         <SmoothScroll />
         {children}
+        {/* Speed Insights: mide Core Web Vitals (LCP, INP, CLS) de usuarios
+            reales en sus dispositivos/redes reales. Cero peso en bundle
+            inicial (lazy). Dashboard en vercel.com → tu proyecto → Speed Insights. */}
+        <SpeedInsights />
       </body>
     </html>
   )
