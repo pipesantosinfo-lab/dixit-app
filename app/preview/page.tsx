@@ -317,6 +317,58 @@ const EVENT_MAX   = 300
 const EVENT_PRICE = 40000
 const EVENT_IG    = 'https://www.instagram.com/pipesantos93/'
 
+/* ── Mensaje de urgencia dinámico ──────────────────────────────
+ * Reemplaza el countdown 'X días' (que sonaba lejano y promovía
+ * procrastinación) por scarcity messaging basado en cuántas
+ * entradas se vendieron vs aforo total.
+ *
+ * Escalada:
+ *   sold=0             → "AFORO LIMITADO · 300 CUPOS"          (pre-venta)
+ *   sold<50%           → "AFORO LIMITADO · QUEDAN X CUPOS"     (normal)
+ *   sold≥50%           → "VAN +X ENTRADAS · QUEDAN POCAS"      (warning)
+ *   sold≥80%           → "ÚLTIMAS X ENTRADAS"                  (critical)
+ *   sold≥100%          → "AGOTADAS · LISTA DE ESPERA"          (final)
+ *
+ * Devuelve full (con ciudad) y short (para sticky bar).        */
+function getUrgencyMessage(sold: number) {
+  const available = EVENT_MAX - sold
+  const ratio = sold / EVENT_MAX
+
+  if (sold === 0) {
+    return {
+      full: `AFORO LIMITADO · ${EVENT_MAX} CUPOS · BARRANQUILLA`,
+      short: `AFORO LIMITADO · ${EVENT_MAX} CUPOS`,
+      level: 'normal' as const,
+    }
+  }
+  if (ratio >= 1) {
+    return {
+      full: 'AGOTADAS · LISTA DE ESPERA · BARRANQUILLA',
+      short: 'AGOTADAS · LISTA DE ESPERA',
+      level: 'critical' as const,
+    }
+  }
+  if (ratio >= 0.8) {
+    return {
+      full: `ÚLTIMAS ${available} ENTRADAS · NO TE QUEDES AFUERA`,
+      short: `ÚLTIMAS ${available} ENTRADAS`,
+      level: 'critical' as const,
+    }
+  }
+  if (ratio >= 0.5) {
+    return {
+      full: `VAN +${sold} ENTRADAS · QUEDAN POCAS · BARRANQUILLA`,
+      short: `VAN +${sold} · QUEDAN POCAS`,
+      level: 'high' as const,
+    }
+  }
+  return {
+    full: `AFORO LIMITADO · QUEDAN ${available} CUPOS · BARRANQUILLA`,
+    short: `AFORO LIMITADO · ${available} CUPOS`,
+    level: 'normal' as const,
+  }
+}
+
 function useCountdown() {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
   useEffect(() => {
@@ -816,7 +868,7 @@ const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 
 /* Sticky CTA bar para mobile — aparece cuando el usuario pasa el hero
  * pero NO ha llegado todavía a la sección de evento. Punto de acceso
  * permanente al botón de compra durante la navegación. */
-function StickyMobileCTA({ days }: { days: number }) {
+function StickyMobileCTA({ urgencyShort, level }: { urgencyShort: string; level: 'normal' | 'high' | 'critical' }) {
   const [visible, setVisible] = useState(false)
 
   useEffect(() => {
@@ -841,7 +893,7 @@ function StickyMobileCTA({ days }: { days: number }) {
         <motion.a
           href="#evento"
           onClick={() => track({ type: 'click', target: 'sticky_buy_cta' })}
-          className="sticky-cta md:hidden"
+          className={`sticky-cta sticky-cta--${level} md:hidden`}
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: 100, opacity: 0 }}
@@ -852,7 +904,7 @@ function StickyMobileCTA({ days }: { days: number }) {
             <p className="sticky-cta__title">Compra tu entrada — 22 ago</p>
             <p className="sticky-cta__meta">
               <span className="sticky-cta__meta-dot" />
-              {days} DÍAS · $40.000 · BARRANQUILLA
+              {urgencyShort} · $40.000
             </p>
           </div>
           <span className="sticky-cta__btn">
@@ -1540,6 +1592,9 @@ export default function PreviewPage() {
   }, [mobileMenuOpen])
   const [eventSold, setEventSold] = useState(0)
   const countdown = useCountdown()
+  // urgencyMessage: dinámico según ticket-count. Se recalcula cada vez
+  // que eventSold cambia (initial fetch + cron de cleanup).
+  const urgency = getUrgencyMessage(eventSold)
   useEffect(() => {
     fetch('/api/ticket-count').then(r => r.json()).then(d => setEventSold(d.count || 0)).catch(() => {})
   }, [])
@@ -2001,23 +2056,18 @@ export default function PreviewPage() {
               A partir de historias
             </motion.p>
 
-            {/* ── Hero CTA: invita a comprar entrada con countdown ── */}
+            {/* ── Hero CTA: scarcity messaging dinámico + botón comprar ── */}
             <motion.a
               variants={fadeUp}
               href="#evento"
               onClick={() => track({ type: 'click', target: 'hero_buy_cta' })}
-              className="hero-cta group"
+              className={`hero-cta group hero-cta--${urgency.level}`}
               aria-label="Comprar entrada para el evento del 22 de agosto"
             >
-              {/* Top: countdown + fecha */}
+              {/* Top: mensaje de urgencia (cambia con el nivel de venta) */}
               <span className="hero-cta__meta">
                 <span className="hero-cta__pulse-dot" />
-                <span className="hero-cta__days">{countdown.days}</span>
-                <span className="hero-cta__days-label">días</span>
-                <span className="hero-cta__sep">·</span>
-                <span>22 AGO 2026</span>
-                <span className="hero-cta__sep">·</span>
-                <span>BARRANQUILLA</span>
+                <span>{urgency.full}</span>
               </span>
               {/* Botón */}
               <span className="hero-cta__btn">
@@ -2828,7 +2878,7 @@ export default function PreviewPage() {
       </footer>
 
       {/* Sticky CTA mobile — acceso permanente al botón de compra */}
-      <StickyMobileCTA days={countdown.days} />
+      <StickyMobileCTA urgencyShort={urgency.short} level={urgency.level} />
 
     </main>
   )
