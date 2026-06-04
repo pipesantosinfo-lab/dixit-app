@@ -1876,21 +1876,40 @@ export default function PreviewPage() {
             className="absolute inset-0"
             style={{ transform: 'scale(1.15)', willChange: 'transform' }}
           >
-            {/* HD responsive con WebP + JPG fallback.
-                - Mobile 1400px (crisp en DPR 3x hasta viewport ~470px):
-                  WebP 184KB | JPG 234KB
-                - Desktop 2200px (cubre pantallas grandes con holgura):
-                  WebP 385KB | JPG 521KB
-                Browser elige el PRIMER source que soporta. Orden:
-                desktop-webp → desktop-jpg → mobile-webp → mobile-jpg.
-                vs original de 2.1MB: 89-90% más liviano y HD garantizado. */}
+            {/* Adaptive HD con srcset por DPR + WebP + JPG fallback.
+                Cada device descarga EXACTAMENTE la resolución que necesita:
+
+                Mobile (portrait crop, <768px):
+                - DPR 2 (iPhone 8, Android mid):  hero-mobile-2x.webp (439KB)
+                - DPR 3+ (iPhone Pro, Galaxy S):  hero-mobile-3x.webp (805KB)
+
+                Desktop (landscape, ≥768px):
+                - DPR 1 (display estándar):        hero-desktop-1x.webp (342KB)
+                - DPR 2 (Mac Retina):              hero-desktop-2x.webp (600KB)
+
+                Browser usa <picture>/<source>/srcset para elegir.
+                Ningún device descarga más de lo que necesita. */}
             <picture>
-              <source media="(min-width: 768px)" srcSet="/hero-desktop.webp" type="image/webp" />
-              <source media="(min-width: 768px)" srcSet="/hero-desktop.jpg" type="image/jpeg" />
-              <source srcSet="/hero-mobile.webp" type="image/webp" />
+              {/* Desktop ≥768px */}
+              <source
+                media="(min-width: 768px)"
+                type="image/webp"
+                srcSet="/hero-desktop-1x.webp 1x, /hero-desktop-2x.webp 2x"
+              />
+              <source
+                media="(min-width: 768px)"
+                type="image/jpeg"
+                srcSet="/hero-desktop-1x.jpg 1x, /hero-desktop-2x.jpg 2x"
+              />
+              {/* Mobile <768px */}
+              <source
+                type="image/webp"
+                srcSet="/hero-mobile-2x.webp 2x, /hero-mobile-3x.webp 3x"
+              />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/hero-mobile.jpg"
+                src="/hero-mobile-2x.jpg"
+                srcSet="/hero-mobile-2x.jpg 2x, /hero-mobile-3x.jpg 3x"
                 alt=""
                 className="absolute inset-0 w-full h-full"
                 style={{ objectFit: 'cover', objectPosition: 'center top' }}

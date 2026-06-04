@@ -62,25 +62,24 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://checkout.bold.co" />
         <link rel="preconnect" href="https://open.spotify.com" />
 
-        {/* Preload del hero — empieza a descargarse en paralelo con el HTML,
-            así está listo cuando el componente lo necesita. Mobile-first:
-            preload solo la versión mobile (webp). En desktop, el browser
-            usa el source desktop sin penalty. */}
+        {/* Preload del hero con imagesrcset → el browser preload exactamente
+            la variante que va a usar (basado en viewport + DPR), sin
+            descargar tamaños de más. */}
         <link
           rel="preload"
           as="image"
-          href="/hero-mobile.webp"
           type="image/webp"
           fetchPriority="high"
           media="(max-width: 767px)"
+          imageSrcSet="/hero-mobile-2x.webp 2x, /hero-mobile-3x.webp 3x"
         />
         <link
           rel="preload"
           as="image"
-          href="/hero-desktop.webp"
           type="image/webp"
           fetchPriority="high"
           media="(min-width: 768px)"
+          imageSrcSet="/hero-desktop-1x.webp 1x, /hero-desktop-2x.webp 2x"
         />
       </head>
       <body className="bg-void text-white antialiased font-body">
