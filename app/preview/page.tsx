@@ -2689,7 +2689,7 @@ export default function PreviewPage() {
               {/* Foto superior */}
               <div className="relative h-56 md:h-72">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/pipe-crowd.jpg" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
+                <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
                 <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
                 <div className="absolute bottom-4 left-5">
                   <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
