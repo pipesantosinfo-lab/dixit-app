@@ -2642,7 +2642,7 @@ export default function PreviewPage() {
 
       {/* ── EVENTO ───────────────────────────────── */}
       <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
-        <ScreenAmbientBg />
+        <ScreenAmbientBg accent="white" />
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
