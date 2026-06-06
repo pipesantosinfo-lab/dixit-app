@@ -2592,7 +2592,7 @@ export default function PreviewPage() {
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
       <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
-        <ScreenAmbientBg accent="white" />
+        <ScreenAmbientBg accent="orange" />
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-16" />
           <div className="text-center mb-16">
@@ -2642,7 +2642,7 @@ export default function PreviewPage() {
 
       {/* ── EVENTO ───────────────────────────────── */}
       <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
-        <ScreenAmbientBg accent="white" />
+        <ScreenAmbientBg accent="orange" />
         {/* Personaje Barranquilla — absolute relativo a la sección (full-width),
             NO al inner max-w-5xl para que quede al ras del borde derecho */}
         <div className="md:hidden absolute right-0 top-24 z-20" style={{ transform: 'translateX(5%)' }}>
@@ -2820,7 +2820,7 @@ export default function PreviewPage() {
 
       {/* ── CONTACTO ─────────────────────────────── */}
       <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
-        <ScreenAmbientBg accent="white" />
+        <ScreenAmbientBg accent="orange" />
         <motion.div className="relative z-10 max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
