@@ -2598,7 +2598,7 @@ export default function PreviewPage() {
           <div className="text-center mb-16">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Testimonios</p>
             <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
-              Clientes que <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>confiaron</span> en nosotros
+              Clientes que <span className="italic" style={{ color: 'rgba(139,60,247,0.9)', position: 'relative', display: 'inline-block', padding: '0 5px', lineHeight: '1.1' }}><span aria-hidden style={{ position: 'absolute', left: 0, right: 0, top: '4px', bottom: '-4px', background: 'rgba(255,255,255,0.65)', borderRadius: '3px', zIndex: -1 }} />confiaron</span> en nosotros
             </h2>
             <p className="font-body text-white/40 max-w-lg mx-auto">
               Descubre cómo he ayudado a muchos de mis clientes a través de la comunicación.
