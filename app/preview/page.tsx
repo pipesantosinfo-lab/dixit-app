@@ -2623,8 +2623,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-x-hidden">
-        <div className="max-w-5xl mx-auto">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
+        <ScreenAmbientBg accent="orange" />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
           {/* Hero: poster + título + countdown + CTA */}
