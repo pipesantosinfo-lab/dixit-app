@@ -1588,6 +1588,7 @@ export default function PreviewPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const [showEventModal, setShowEventModal] = useState(false)
+  const [showFlyer, setShowFlyer] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Lock body scroll mientras el menú móvil está abierto
@@ -1787,6 +1788,29 @@ export default function PreviewPage() {
       <Particles />
 
       {showEventModal && <EventoModal onClose={() => setShowEventModal(false)} sold={eventSold} />}
+      {showFlyer && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4"
+          style={{ background: 'rgba(7,5,8,0.92)', backdropFilter: 'blur(12px)' }}
+          onClick={() => setShowFlyer(false)}
+        >
+          <div className="relative max-h-[90vh] max-w-sm w-full" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={() => setShowFlyer(false)}
+              className="absolute -top-10 right-0 font-mono text-white/50 hover:text-white text-sm tracking-widest"
+            >
+              ✕ cerrar
+            </button>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/evento-flyer-v2.jpg"
+              alt="La vida es cule viaje — Barranquilla 2026"
+              className="w-full h-auto rounded-2xl"
+              style={{ boxShadow: '0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(196,82,0,0.2)' }}
+            />
+          </div>
+        </div>
+      )}
       {showReaderGallery && <ReaderGalleryModal onClose={() => setShowReaderGallery(false)} />}
 
       {lightboxIndex !== null && (
@@ -2643,6 +2667,10 @@ export default function PreviewPage() {
       {/* ── EVENTO ───────────────────────────────── */}
       <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
         <ScreenAmbientBg accent="orange" />
+        {/* Scrim oscuro detrás de la columna de texto — da contraste cinematográfico */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse 70% 60% at 15% 45%, rgba(7,5,8,0.72) 0%, transparent 70%)',
+        }} />
         {/* Personaje Barranquilla — absolute relativo a la sección (full-width),
             NO al inner max-w-5xl para que quede al ras del borde derecho */}
         <div className="md:hidden absolute right-0 top-24 z-20" style={{ transform: 'translateX(5%)' }}>
@@ -2651,65 +2679,82 @@ export default function PreviewPage() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
-          {/* Hero: poster + título + countdown + CTA */}
-          <div className="grid md:grid-cols-2 gap-8 md:gap-16 items-center mb-16">
-            <motion.div initial="hidden" whileInView="visible" viewport={VP} variants={slideLeft}>
-              <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Próximo evento</p>
-              <h2 className="font-display text-5xl md:text-7xl font-light text-white leading-none">La vida es</h2>
-              <p className="text-5xl md:text-7xl leading-none -mt-3 md:-mt-5"
-                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(196,82,0,0.9)' }}>
-                cule viaje
-              </p>
-              <div className="flex flex-col gap-2 mt-7 mb-8">
-                {[{ icon: '📅', text: '22 ago · 2026' }, { icon: '🕑', text: '2:00 – 6:00 PM' }, { icon: '📍', text: 'Barranquilla' }].map(item => (
-                  <div key={item.text} className="flex items-center gap-2">
-                    <span className="text-base">{item.icon}</span>
-                    <span className="font-body text-base text-white/60">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-              {/* Countdown */}
-              <div className="flex gap-3 md:gap-4 mb-8">
-                <CountdownBox value={countdown.days}    label="días" />
-                <div className="font-display text-2xl text-white/20 self-center pb-5">:</div>
-                <CountdownBox value={countdown.hours}   label="hrs"  />
-                <div className="font-display text-2xl text-white/20 self-center pb-5">:</div>
-                <CountdownBox value={countdown.minutes} label="min"  />
-                <div className="font-display text-2xl text-white/20 self-center pb-5">:</div>
-                <CountdownBox value={countdown.seconds} label="seg"  />
-              </div>
-              {/* CTAs */}
-              {EVENT_MAX - eventSold <= 0 ? (
-                <div className="glass rounded-xl px-4 py-2 inline-block">
-                  <p className="font-mono text-xs text-white/50 tracking-widest uppercase">Agotadas</p>
+          {/* Hero: card estilo Spotify Events */}
+          <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+            <div className="w-full max-w-sm md:max-w-md rounded-3xl overflow-hidden" style={{
+              background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
+              boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.07)',
+            }}>
+
+              {/* Foto superior */}
+              <div className="relative h-56 md:h-72">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/pipe-crowd.jpg" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
+                <div className="absolute bottom-4 left-5">
+                  <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
                 </div>
-              ) : (
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'open_event' })} className="btn-primary" style={{ background: 'linear-gradient(135deg, #C45200, #E07820, #FF9A3C)', boxShadow: '0 4px 24px rgba(196,82,0,0.45)' }}>
-                    <span>Atento al lanzamiento</span>
-                  </a>
-                  <button disabled className="btn-ghost opacity-40 cursor-not-allowed">
-                    Comprar entrada · $40.000
+              </div>
+
+              {/* Panel info */}
+              <div className="px-5 pt-4 pb-5">
+
+                {/* Header */}
+                <div className="flex justify-between items-center mb-1">
+                  <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
+                  <button onClick={() => setShowFlyer(true)} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform duration-100 cursor-pointer" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 16px rgba(196,82,0,0.5)', border: 'none' }}>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
                   </button>
                 </div>
-              )}
-            </motion.div>
+                <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
 
-            {/* Poster */}
-            <motion.div className="flex justify-center md:justify-end" initial="hidden" whileInView="visible" viewport={VP} variants={slideRight}>
-              <div className="relative">
-                <div className="absolute -inset-4 rounded-3xl pointer-events-none"
-                  style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.2) 0%, transparent 70%)' }} />
-                <Image
-                  src="/evento-flyer-v2.jpg"
-                  alt="La vida es cule viaje — Barranquilla 2026"
-                  width={900} height={1600}
-                  className="relative rounded-2xl w-full max-w-xs md:max-w-sm"
-                  style={{ objectFit: 'contain', filter: 'drop-shadow(0 8px 40px rgba(139,60,247,0.3))' }}
-                />
+                {/* Fila evento */}
+                <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <div className="text-center min-w-[42px] flex-shrink-0">
+                    <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
+                    <p className="font-display text-4xl font-bold text-white leading-none">22</p>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
+                    <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
+                    <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
+                  </div>
+                </div>
+
+                {/* Countdown */}
+                <div className="flex items-center justify-center gap-1 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                  {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
+                    <div key={item.l} className="flex items-center gap-1">
+                      {i > 0 && <span className="font-display text-white/20 text-lg mb-3">:</span>}
+                      <div className="text-center">
+                        <p className="font-display text-xl font-light text-white leading-none">{String(item.v).padStart(2,'0')}</p>
+                        <p className="font-mono text-[9px] text-white/30 uppercase tracking-widest mt-0.5">{item.l}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTAs */}
+                {EVENT_MAX - eventSold <= 0 ? (
+                  <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
+                ) : (
+                  <div className="flex flex-col gap-2 mt-4">
+                    <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
+                      onClick={() => track({ type: 'click', target: 'open_event' })}
+                      className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
+                      style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
+                      Atento al lanzamiento
+                    </a>
+                    <button disabled
+                      className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
+                      Comprar entrada · $40.000
+                    </button>
+                  </div>
+                )}
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
 
           {/* ¿De qué se trata? */}
           <motion.div className="grid md:grid-cols-2 gap-12 items-center mb-16"
