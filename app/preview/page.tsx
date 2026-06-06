@@ -2679,17 +2679,18 @@ export default function PreviewPage() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
-          {/* Hero: tiquete doble — card info + flyer */}
+          {/* Hero: tiquete doble — card info + flyer  */}
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <div className="w-full max-w-sm md:max-w-md relative" style={{
+            <div className="w-full max-w-sm md:max-w-3xl relative rounded-3xl overflow-hidden" style={{
               boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)',
-              borderRadius: '24px',
+              outline: '1px solid rgba(255,255,255,0.07)',
             }}>
+              {/* flex-col en mobile, flex-row en desktop */}
+              <div className="flex flex-col md:flex-row md:items-stretch">
 
-              {/* ── Stub superior ── */}
-              <div className="rounded-t-3xl overflow-hidden" style={{
+              {/* ── Stub izquierdo / superior ── */}
+              <div className="md:flex-1" style={{
                 background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
-                outline: '1px solid rgba(255,255,255,0.07)',
               }}>
                 {/* Foto */}
                 <div className="relative h-56 md:h-72">
@@ -2752,29 +2753,54 @@ export default function PreviewPage() {
                 </div>
               </div>
 
-              {/* ── Línea de corte / perforación ── */}
-              <div className="relative flex items-center" style={{ background: '#100d18', height: '28px', outline: '1px solid rgba(255,255,255,0.07)' }}>
-                {/* Muesca izquierda */}
-                <div className="absolute w-7 h-7 rounded-full z-10" style={{ background: '#070508', left: '-13px', top: '50%', transform: 'translateY(-50%)' }} />
-                {/* Línea punteada */}
-                <div className="absolute inset-x-4" style={{ borderTop: '1.5px dashed rgba(255,255,255,0.18)', top: '50%' }} />
-                {/* Label central */}
-                <p className="absolute inset-x-0 text-center font-mono text-[9px] tracking-[0.35em] uppercase" style={{ color: 'rgba(255,255,255,0.25)', top: '50%', transform: 'translateY(-50%)', background: '#100d18', width: 'fit-content', margin: '0 auto', padding: '0 8px' }}>
-                  flyer oficial
-                </p>
-                {/* Muesca derecha */}
-                <div className="absolute w-7 h-7 rounded-full z-10" style={{ background: '#070508', right: '-13px', top: '50%', transform: 'translateY(-50%)' }} />
+              {/* ── Separador horizontal (mobile) / vertical (desktop) ── */}
+              {/* Vertical desktop */}
+              <div className="hidden md:block self-stretch" style={{ width: '1.5px', background: 'linear-gradient(180deg, transparent 0%, rgba(196,82,0,0.6) 20%, rgba(255,154,60,0.8) 50%, rgba(196,82,0,0.6) 80%, transparent 100%)' }} />
+              {/* Horizontal mobile */}
+              <div className="md:hidden relative" style={{ background: '#0d0a14' }}>
+                {/* Acento naranja superior */}
+                <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.7) 30%, rgba(255,154,60,0.9) 50%, rgba(196,82,0,0.7) 70%, transparent 100%)' }} />
+                {/* Cuerpo del separador */}
+                <div className="relative flex items-center justify-center" style={{ height: '52px' }}>
+                  {/* Perforaciones izquierda */}
+                  {[28, 48, 68, 88, 108].map(x => (
+                    <div key={x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', left: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
+                  ))}
+                  {/* Pill central */}
+                  <div className="relative z-10 flex items-center gap-2 px-4 py-2 rounded-full" style={{
+                    background: 'linear-gradient(135deg, rgba(196,82,0,0.18) 0%, rgba(224,120,32,0.12) 100%)',
+                    border: '1px solid rgba(196,82,0,0.45)',
+                    boxShadow: '0 0 20px rgba(196,82,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
+                  }}>
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/>
+                    </svg>
+                    <span className="font-mono text-[9px] tracking-[0.3em] uppercase font-semibold" style={{ color: 'rgba(255,154,60,0.95)' }}>Flyer oficial</span>
+                  </div>
+                  {/* Perforaciones derecha */}
+                  {[28, 48, 68, 88, 108].map(x => (
+                    <div key={x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', right: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
+                  ))}
+                </div>
+                {/* Acento naranja inferior */}
+                <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.5) 30%, rgba(255,154,60,0.7) 50%, rgba(196,82,0,0.5) 70%, transparent 100%)' }} />
               </div>
 
-              {/* ── Stub inferior: flyer ── */}
-              <button onClick={() => setShowFlyer(true)} className="block w-full rounded-b-3xl overflow-hidden cursor-pointer relative" style={{ border: 'none', background: 'none', outline: '1px solid rgba(255,255,255,0.07)', display: 'block' }}>
+              {/* ── Stub derecho / inferior: flyer ── */}
+              <button onClick={() => setShowFlyer(true)}
+                className="block md:flex-1 cursor-pointer relative overflow-hidden"
+                style={{ border: 'none', background: 'none', display: 'block', minHeight: '200px' }}>
+                {/* Fade superior (mobile) */}
+                <div className="absolute top-0 inset-x-0 h-10 pointer-events-none z-10 md:hidden" style={{ background: 'linear-gradient(to bottom, rgba(13,10,20,0.6), transparent)' }} />
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
-                <div className="absolute inset-0 flex items-end justify-end p-3" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 35%)' }}>
-                  <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.45)' }}>toca para ampliar ↗</span>
+                <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje"
+                  className="w-full h-auto md:h-full md:object-cover md:object-center block" />
+                <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
+                  <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
                 </div>
               </button>
 
+              </div>{/* cierre flex container */}
             </div>
           </motion.div>
 
