@@ -1350,25 +1350,42 @@ function GalleryMobileCarousel({
   )
 }
 
-function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' }) {
-  const isOrange = accent === 'orange'
+function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' | 'white' }) {
   // Auroras solo animan cuando el bg está en (o cerca de) viewport.
   // Antes corrían infinito en las 4 secciones que usan este componente,
   // saturando el frame budget durante la navegación con Lenis.
   const containerRef = useRef<HTMLDivElement>(null)
   const inView = useInView(containerRef, { margin: '200px 0px' })
 
-  // Colores del dot grid: dos valores (mobile más intenso, desktop suave)
-  // se inyectan como CSS vars y la clase .screen-bg-dotgrid hace el swap
-  // según media query.
-  const dotColorMobile = isOrange ? 'rgba(255,140,50,0.26)' : 'rgba(139,60,247,0.28)'
-  const dotColorDesktop = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.18)'
+  // Paletas por accent. White usa opacidades más bajas porque el blanco
+  // puro satura rápido contra el fondo #070508 (overwhites el grain/scanlines).
+  const palette = {
+    purple: {
+      dotMobile: 'rgba(139,60,247,0.28)', dotDesktop: 'rgba(139,60,247,0.18)',
+      leftP: 'rgba(139,60,247,0.32)',     leftS: 'rgba(196,82,255,0.18)',
+      rightP: 'rgba(196,82,255,0.28)',    rightS: 'rgba(139,60,247,0.16)',
+    },
+    orange: {
+      dotMobile: 'rgba(255,140,50,0.26)', dotDesktop: 'rgba(255,140,50,0.16)',
+      leftP: 'rgba(255,140,50,0.34)',     leftS: 'rgba(255,180,80,0.18)',
+      rightP: 'rgba(255,200,80,0.30)',    rightS: 'rgba(255,140,50,0.16)',
+    },
+    // "Luz de luna" — frío azul-cian, lo suficientemente cromático para que
+    // el aurora se lea contra el #070508 (un blanco puro al mismo nivel se
+    // pierde en el grain). Opacidades ~mismo nivel que purple/orange.
+    white: {
+      dotMobile: 'rgba(200,220,255,0.22)', dotDesktop: 'rgba(200,220,255,0.14)',
+      leftP: 'rgba(160,200,255,0.30)',     leftS: 'rgba(210,225,255,0.16)',
+      rightP: 'rgba(190,215,255,0.26)',    rightS: 'rgba(150,190,240,0.14)',
+    },
+  }[accent]
 
-  // Colores base del accent para construir gradient stops
-  const leftPrimary = isOrange ? 'rgba(255,140,50,0.34)' : 'rgba(139,60,247,0.32)'
-  const leftSecondary = isOrange ? 'rgba(255,180,80,0.18)' : 'rgba(196,82,255,0.18)'
-  const rightPrimary = isOrange ? 'rgba(255,200,80,0.30)' : 'rgba(196,82,255,0.28)'
-  const rightSecondary = isOrange ? 'rgba(255,140,50,0.16)' : 'rgba(139,60,247,0.16)'
+  const dotColorMobile = palette.dotMobile
+  const dotColorDesktop = palette.dotDesktop
+  const leftPrimary = palette.leftP
+  const leftSecondary = palette.leftS
+  const rightPrimary = palette.rightP
+  const rightSecondary = palette.rightS
 
   // Columnas de luz: 3 radial-gradients distribuidos verticalmente (15%, 50%,
   // 85%) dentro de un elemento que abarca la altura completa de la sección.
@@ -2574,8 +2591,9 @@ export default function PreviewPage() {
       <BrandsSection />
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
-      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20">
-        <div className="max-w-5xl mx-auto">
+      <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+        <ScreenAmbientBg accent="white" />
+        <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-16" />
           <div className="text-center mb-16">
             <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Testimonios</p>
@@ -2624,7 +2642,7 @@ export default function PreviewPage() {
 
       {/* ── EVENTO ───────────────────────────────── */}
       <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
-        <ScreenAmbientBg accent="orange" />
+        <ScreenAmbientBg />
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
@@ -2800,8 +2818,9 @@ export default function PreviewPage() {
       </section>
 
       {/* ── CONTACTO ─────────────────────────────── */}
-      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20">
-        <motion.div className="max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+      <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
+        <ScreenAmbientBg accent="white" />
+        <motion.div className="relative z-10 max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
             Quiero <span className="italic" style={{ color: 'rgba(139,60,247,0.8)' }}>leerte</span>
