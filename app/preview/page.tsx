@@ -1431,7 +1431,7 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' |
           willChange: 'transform, opacity',
         }}
         animate={inView ? { scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] } : undefined}
-        transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut' }}
       />
 
       {/* Aurora RIGHT — columna simétrica, ritmo desincronizado, puntos de
@@ -1447,7 +1447,7 @@ function ScreenAmbientBg({ accent = 'purple' }: { accent?: 'purple' | 'orange' |
           willChange: 'transform, opacity',
         }}
         animate={inView ? { scale: [1.05, 0.95, 1.05], opacity: [0.65, 0.95, 0.65] } : undefined}
-        transition={{ duration: 6.4, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+        transition={{ duration: 11, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
       />
 
       {/* Scanlines tipo CRT — intensidad responsive vía CSS class */}
@@ -2657,7 +2657,7 @@ export default function PreviewPage() {
               <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-6">◆ Próximo evento</p>
               <h2 className="font-display text-5xl md:text-7xl font-light text-white leading-none">La vida es</h2>
               <p className="text-5xl md:text-7xl leading-none -mt-3 md:-mt-5"
-                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.95)' }}>
+                style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(196,82,0,0.9)' }}>
                 cule viaje
               </p>
               <div className="flex flex-col gap-2 mt-7 mb-8">
@@ -2685,7 +2685,7 @@ export default function PreviewPage() {
                 </div>
               ) : (
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'open_event' })} className="btn-primary">
+                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer" onClick={() => track({ type: 'click', target: 'open_event' })} className="btn-primary" style={{ background: 'linear-gradient(135deg, #C45200, #E07820, #FF9A3C)', boxShadow: '0 4px 24px rgba(196,82,0,0.45)' }}>
                     <span>Atento al lanzamiento</span>
                   </a>
                   <button disabled className="btn-ghost opacity-40 cursor-not-allowed">
@@ -2774,7 +2774,8 @@ export default function PreviewPage() {
               ) : (
                 <div className="flex flex-col gap-3">
                   <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                    className="btn-primary w-full py-5 text-center block">
+                    className="btn-primary w-full py-5 text-center block"
+                    style={{ background: 'linear-gradient(135deg, #C45200, #E07820, #FF9A3C)', boxShadow: '0 4px 24px rgba(196,82,0,0.45)' }}>
                     <span>Atento al lanzamiento</span>
                   </a>
                   <button disabled className="btn-primary w-full py-5 opacity-30 cursor-not-allowed">

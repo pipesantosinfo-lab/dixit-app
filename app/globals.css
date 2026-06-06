@@ -724,11 +724,10 @@ html {
 }
 
 /* ── ScreenAmbientBg auroras: blur responsive ──────────────────────
- * Mobile: blur(28px) — todavía se ve "aurora" pero ~70% más barato
- * que blur(45px) en Android Chrome (la GPU procesa O(sigma) por pixel).
+ * Mobile: blur(14px) — glow visible pero ~90% más barato que blur(45px).
  * Desktop: blur(45px) — la GPU lo soporta sin sudar. */
 .screen-bg-aurora {
-  filter: blur(28px);
+  filter: blur(14px);
 }
 @media (min-width: 768px) {
   .screen-bg-aurora {
