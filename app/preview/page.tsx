@@ -2592,7 +2592,7 @@ export default function PreviewPage() {
 
       {/* ── TESTIMONIOS ──────────────────────────── */}
       <section id="testimonios" data-track-section="testimonios" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
-        <ScreenAmbientBg accent="orange" />
+        <ScreenAmbientBg />
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-16" />
           <div className="text-center mb-16">
@@ -2820,7 +2820,7 @@ export default function PreviewPage() {
 
       {/* ── CONTACTO ─────────────────────────────── */}
       <section id="contacto" data-track-section="contacto" className="relative z-10 px-6 md:px-12 py-20 overflow-hidden">
-        <ScreenAmbientBg accent="orange" />
+        <ScreenAmbientBg />
         <motion.div className="relative z-10 max-w-2xl mx-auto text-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
           <p className="font-mono text-xs tracking-[0.4em] text-aurora/70 uppercase mb-4">◆ Contacto</p>
           <h2 className="font-display text-4xl md:text-5xl font-light text-white mb-4">
