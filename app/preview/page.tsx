@@ -2679,119 +2679,102 @@ export default function PreviewPage() {
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
 
-          {/* Hero: card estilo Spotify Events */}
+          {/* Hero: tiquete doble — card info + flyer */}
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <div className="w-full max-w-sm md:max-w-md rounded-3xl overflow-hidden" style={{
-              background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
-              boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.07)',
+            <div className="w-full max-w-sm md:max-w-md relative" style={{
+              boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)',
+              borderRadius: '24px',
             }}>
 
-              {/* Foto superior */}
-              <div className="relative h-56 md:h-72">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
-                <div className="absolute bottom-4 left-5">
-                  <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
-                </div>
-              </div>
-
-              {/* Panel info */}
-              <div className="px-5 pt-4 pb-5">
-
-                {/* Header */}
-                <div className="flex justify-between items-center mb-1">
-                  <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                  <button onClick={() => setShowFlyer(true)} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform duration-100 cursor-pointer" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 16px rgba(196,82,0,0.5)', border: 'none' }}>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                  </button>
-                </div>
-                <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
-
-                {/* Fila evento */}
-                <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                  <div className="text-center min-w-[42px] flex-shrink-0">
-                    <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
-                    <p className="font-display text-4xl font-bold text-white leading-none">22</p>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
-                    <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
-                    <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
+              {/* ── Stub superior ── */}
+              <div className="rounded-t-3xl overflow-hidden" style={{
+                background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
+                outline: '1px solid rgba(255,255,255,0.07)',
+              }}>
+                {/* Foto */}
+                <div className="relative h-56 md:h-72">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
+                  <div className="absolute bottom-4 left-5">
+                    <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
                   </div>
                 </div>
 
-                {/* Countdown */}
-                <div className="flex items-center justify-center gap-1 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                  {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
-                    <div key={item.l} className="flex items-center gap-1">
-                      {i > 0 && <span className="font-display text-white/20 text-lg mb-3">:</span>}
-                      <div className="text-center">
-                        <p className="font-display text-xl font-light text-white leading-none">{String(item.v).padStart(2,'0')}</p>
-                        <p className="font-mono text-[9px] text-white/30 uppercase tracking-widest mt-0.5">{item.l}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* CTAs */}
-                {EVENT_MAX - eventSold <= 0 ? (
-                  <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
-                ) : (
-                  <div className="flex flex-col gap-2 mt-4">
-                    <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                      onClick={() => track({ type: 'click', target: 'open_event' })}
-                      className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
-                      style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                      Atento al lanzamiento
-                    </a>
-                    <button disabled
-                      className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
-                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
-                      Comprar entrada · $40.000
+                {/* Panel info */}
+                <div className="px-5 pt-4 pb-5">
+                  <div className="flex justify-between items-center mb-1">
+                    <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
+                    <button onClick={() => setShowFlyer(true)} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform duration-100 cursor-pointer" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 16px rgba(196,82,0,0.5)', border: 'none' }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
                     </button>
                   </div>
-                )}
+                  <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
+                  <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                    <div className="text-center min-w-[42px] flex-shrink-0">
+                      <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
+                      <p className="font-display text-4xl font-bold text-white leading-none">22</p>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
+                      <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
+                      <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-center gap-1 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                    {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
+                      <div key={item.l} className="flex items-center gap-1">
+                        {i > 0 && <span className="font-display text-white/20 text-lg mb-3">:</span>}
+                        <div className="text-center">
+                          <p className="font-display text-xl font-light text-white leading-none">{String(item.v).padStart(2,'0')}</p>
+                          <p className="font-mono text-[9px] text-white/30 uppercase tracking-widest mt-0.5">{item.l}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  {EVENT_MAX - eventSold <= 0 ? (
+                    <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
+                  ) : (
+                    <div className="flex flex-col gap-2 mt-4">
+                      <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
+                        onClick={() => track({ type: 'click', target: 'open_event' })}
+                        className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
+                        style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
+                        Atento al lanzamiento
+                      </a>
+                      <button disabled
+                        className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
+                        Comprar entrada · $40.000
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          </motion.div>
 
-          {/* Flyer — póster físico inclinado */}
-          <motion.div className="mb-16 flex justify-center"
-            initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <div className="relative" style={{ maxWidth: '300px', width: '100%' }}>
-              {/* Glow naranja ambiental */}
-              <div className="absolute inset-0 pointer-events-none" style={{
-                background: 'radial-gradient(ellipse, rgba(196,82,0,0.4) 0%, transparent 65%)',
-                transform: 'scale(1.35)',
-                filter: 'blur(24px)',
-              }} />
-              {/* Cinta adhesiva */}
-              <div className="absolute z-10 w-14 h-5 rounded-sm" style={{
-                top: '-10px', left: '50%',
-                transform: 'translateX(-50%) rotate(-1.5deg)',
-                background: 'rgba(255,225,160,0.72)',
-                boxShadow: '0 1px 4px rgba(0,0,0,0.35)',
-              }} />
-              {/* Póster con rotación */}
-              <motion.button
-                onClick={() => setShowFlyer(true)}
-                whileTap={{ scale: 0.97, rotate: 1 }}
-                className="relative block w-full rounded-2xl overflow-hidden cursor-pointer"
-                style={{
-                  transform: 'rotate(2.5deg)',
-                  boxShadow: '-8px 16px 50px rgba(0,0,0,0.75), 0 0 35px rgba(196,82,0,0.18)',
-                  border: 'none', background: 'none',
-                }}
-              >
+              {/* ── Línea de corte / perforación ── */}
+              <div className="relative flex items-center" style={{ background: '#100d18', height: '28px', outline: '1px solid rgba(255,255,255,0.07)' }}>
+                {/* Muesca izquierda */}
+                <div className="absolute w-7 h-7 rounded-full z-10" style={{ background: '#070508', left: '-13px', top: '50%', transform: 'translateY(-50%)' }} />
+                {/* Línea punteada */}
+                <div className="absolute inset-x-4" style={{ borderTop: '1.5px dashed rgba(255,255,255,0.18)', top: '50%' }} />
+                {/* Label central */}
+                <p className="absolute inset-x-0 text-center font-mono text-[9px] tracking-[0.35em] uppercase" style={{ color: 'rgba(255,255,255,0.25)', top: '50%', transform: 'translateY(-50%)', background: '#100d18', width: 'fit-content', margin: '0 auto', padding: '0 8px' }}>
+                  flyer oficial
+                </p>
+                {/* Muesca derecha */}
+                <div className="absolute w-7 h-7 rounded-full z-10" style={{ background: '#070508', right: '-13px', top: '50%', transform: 'translateY(-50%)' }} />
+              </div>
+
+              {/* ── Stub inferior: flyer ── */}
+              <button onClick={() => setShowFlyer(true)} className="block w-full rounded-b-3xl overflow-hidden cursor-pointer relative" style={{ border: 'none', background: 'none', outline: '1px solid rgba(255,255,255,0.07)', display: 'block' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
-                <div className="absolute inset-0 flex items-end justify-end p-3" style={{
-                  background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 45%)',
-                }}>
-                  <span className="font-mono text-[10px] text-white/55 tracking-widest uppercase">toca para ampliar</span>
+                <div className="absolute inset-0 flex items-end justify-end p-3" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 35%)' }}>
+                  <span className="font-mono text-[10px] tracking-widest uppercase" style={{ color: 'rgba(255,255,255,0.45)' }}>toca para ampliar ↗</span>
                 </div>
-              </motion.button>
+              </button>
+
             </div>
           </motion.div>
 
