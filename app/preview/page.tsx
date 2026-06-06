@@ -2756,6 +2756,45 @@ export default function PreviewPage() {
             </div>
           </motion.div>
 
+          {/* Flyer — póster físico inclinado */}
+          <motion.div className="mb-16 flex justify-center"
+            initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+            <div className="relative" style={{ maxWidth: '300px', width: '100%' }}>
+              {/* Glow naranja ambiental */}
+              <div className="absolute inset-0 pointer-events-none" style={{
+                background: 'radial-gradient(ellipse, rgba(196,82,0,0.4) 0%, transparent 65%)',
+                transform: 'scale(1.35)',
+                filter: 'blur(24px)',
+              }} />
+              {/* Cinta adhesiva */}
+              <div className="absolute z-10 w-14 h-5 rounded-sm" style={{
+                top: '-10px', left: '50%',
+                transform: 'translateX(-50%) rotate(-1.5deg)',
+                background: 'rgba(255,225,160,0.72)',
+                boxShadow: '0 1px 4px rgba(0,0,0,0.35)',
+              }} />
+              {/* Póster con rotación */}
+              <motion.button
+                onClick={() => setShowFlyer(true)}
+                whileTap={{ scale: 0.97, rotate: 1 }}
+                className="relative block w-full rounded-2xl overflow-hidden cursor-pointer"
+                style={{
+                  transform: 'rotate(2.5deg)',
+                  boxShadow: '-8px 16px 50px rgba(0,0,0,0.75), 0 0 35px rgba(196,82,0,0.18)',
+                  border: 'none', background: 'none',
+                }}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
+                <div className="absolute inset-0 flex items-end justify-end p-3" style={{
+                  background: 'linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 45%)',
+                }}>
+                  <span className="font-mono text-[10px] text-white/55 tracking-widest uppercase">toca para ampliar</span>
+                </div>
+              </motion.button>
+            </div>
+          </motion.div>
+
           {/* ¿De qué se trata? */}
           <motion.div className="grid md:grid-cols-2 gap-12 items-center mb-16"
             initial="hidden" whileInView="visible" viewport={VP} variants={stagger}>
