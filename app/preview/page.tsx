@@ -2799,7 +2799,7 @@ export default function PreviewPage() {
       </section>
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 overflow-hidden">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20">
         <ScreenAmbientBg accent="orange" />
         {/* Scrim oscuro detrás de la columna de texto — da contraste cinematográfico */}
         <div className="absolute inset-0 pointer-events-none" style={{
@@ -2807,7 +2807,7 @@ export default function PreviewPage() {
         }} />
         {/* Personaje Barranquilla — absolute relativo a la sección (full-width),
             NO al inner max-w-5xl para que quede al ras del borde derecho */}
-        <div className="md:hidden absolute z-20" style={{ top: '345px', left: '308px' }}>
+        <div className="md:hidden absolute z-20" style={{ top: '345px', right: '-14px' }}>
           <EventoCharacter />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto">
