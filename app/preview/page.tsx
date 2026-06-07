@@ -1159,7 +1159,7 @@ function VoiceNotePlayer({ src }: { src: string }) {
 
   return (
     <div className="flex items-center gap-3">
-      <audio ref={audioRef} src={src} preload="metadata" />
+      <audio ref={audioRef} src={src} preload="auto" />
       {/* Botón play/pause */}
       <button onClick={toggle} className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-transform active:scale-90" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 20px rgba(196,82,0,0.55)', border: 'none' }}>
         {playing
@@ -2797,6 +2797,10 @@ export default function PreviewPage() {
           </div>
         </div>
       </section>
+
+      {/* Preload voice note audio so it plays instantly when modal opens */}
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+      <audio src="/invitacion-evento.wav" preload="auto" style={{ display: 'none' }} />
 
       {/* ── EVENTO ───────────────────────────────── */}
       <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20">
