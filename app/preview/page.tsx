@@ -1920,7 +1920,7 @@ export default function PreviewPage() {
             >
               {/* Header */}
               <div className="flex items-center gap-3 mb-5">
-                <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 ring-2" style={{ ringColor: 'rgba(196,82,0,0.4)' }}>
+                <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0" style={{ outline: '2px solid rgba(196,82,0,0.4)' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src="/pipe-evento-card.png" alt="Pipe Santos" className="w-full h-full object-cover object-top" />
                 </div>
