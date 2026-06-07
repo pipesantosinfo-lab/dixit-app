@@ -1098,6 +1098,96 @@ function Tilt3D({
   )
 }
 
+/* ── VoiceNotePlayer ─────────────────────────────────────────────────── */
+function VoiceNotePlayer({ src }: { src: string }) {
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const [bars, setBars] = useState<number[]>([])
+  const [playing, setPlaying] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const [duration, setDuration] = useState(0)
+  const [loaded, setLoaded] = useState(false)
+
+  useEffect(() => {
+    const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+    if (!AudioCtx) return
+    const ctx = new AudioCtx()
+    fetch(src)
+      .then(r => r.arrayBuffer())
+      .then(buf => ctx.decodeAudioData(buf))
+      .then(decoded => {
+        const data = decoded.getChannelData(0)
+        const N = 72
+        const block = Math.floor(data.length / N)
+        const raw = Array.from({ length: N }, (_, i) => {
+          let sum = 0
+          for (let j = 0; j < block; j++) sum += Math.abs(data[i * block + j])
+          return sum / block
+        })
+        const max = Math.max(...raw)
+        setBars(raw.map(v => v / max))
+        setLoaded(true)
+        ctx.close()
+      })
+  }, [src])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!audio) return
+    const onTime = () => setProgress(audio.currentTime / (audio.duration || 1))
+    const onMeta = () => setDuration(audio.duration || 0)
+    const onEnd  = () => { setPlaying(false); setProgress(0) }
+    audio.addEventListener('timeupdate', onTime)
+    audio.addEventListener('loadedmetadata', onMeta)
+    audio.addEventListener('ended', onEnd)
+    return () => {
+      audio.removeEventListener('timeupdate', onTime)
+      audio.removeEventListener('loadedmetadata', onMeta)
+      audio.removeEventListener('ended', onEnd)
+    }
+  }, [])
+
+  const toggle = () => {
+    const audio = audioRef.current
+    if (!audio) return
+    if (playing) { audio.pause(); setPlaying(false) }
+    else { audio.play(); setPlaying(true) }
+  }
+
+  const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`
+
+  const skeleton = Array.from({ length: 72 }, (_, i) => 0.3 + 0.5 * Math.abs(Math.sin(i * 0.45)))
+
+  return (
+    <div className="flex items-center gap-3">
+      <audio ref={audioRef} src={src} preload="metadata" />
+      {/* Botón play/pause */}
+      <button onClick={toggle} className="w-11 h-11 rounded-full flex items-center justify-center flex-shrink-0 transition-transform active:scale-90" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 20px rgba(196,82,0,0.55)', border: 'none' }}>
+        {playing
+          ? <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+          : <svg width="13" height="13" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>}
+      </button>
+      {/* Forma de onda */}
+      <div className="flex-1 flex items-center gap-[2px]" style={{ height: '40px' }}>
+        {(loaded ? bars : skeleton).map((h, i) => {
+          const played = i / 72 < progress
+          return (
+            <div key={i} className="flex-1 rounded-full" style={{
+              height: `${Math.max(12, h * 100)}%`,
+              background: played ? 'rgba(255,154,60,0.95)' : playing && Math.abs(i / 72 - progress) < 0.03 ? 'rgba(255,200,100,1)' : 'rgba(255,255,255,0.18)',
+              transition: played ? 'none' : 'background 0.15s',
+              minWidth: '2px',
+            }} />
+          )
+        })}
+      </div>
+      {/* Tiempo */}
+      <span className="font-mono text-[10px] flex-shrink-0 tabular-nums" style={{ color: 'rgba(255,255,255,0.4)', minWidth: '28px', textAlign: 'right' }}>
+        {playing ? fmt(progress * duration) : fmt(duration)}
+      </span>
+    </div>
+  )
+}
+
 /* ── Divider con cluster de barritas tipo equalizer ─────────────────────
  * Reemplaza la línea fina morada por un cluster central animado (6 barras
  * con altura y delay distintos → vibe audio waveform). Subraya el ADN
@@ -1589,6 +1679,7 @@ export default function PreviewPage() {
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const [showEventModal, setShowEventModal] = useState(false)
   const [showFlyer, setShowFlyer] = useState(false)
+  const [showVoiceNote, setShowVoiceNote] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Lock body scroll mientras el menú móvil está abierto
@@ -1811,6 +1902,49 @@ export default function PreviewPage() {
           </div>
         </div>
       )}
+      {/* ── Modal nota de voz ── */}
+      <AnimatePresence>
+        {showVoiceNote && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-end justify-center p-4 pb-8"
+            style={{ background: 'rgba(7,5,8,0.88)', backdropFilter: 'blur(16px)' }}
+            onClick={() => setShowVoiceNote(false)}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="w-full max-w-sm rounded-3xl p-5"
+              style={{ background: 'linear-gradient(145deg,#1a1226,#0f0c18)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 -8px 60px rgba(0,0,0,0.7), 0 0 40px rgba(196,82,0,0.12)' }}
+              onClick={e => e.stopPropagation()}
+              initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
+              transition={{ type: 'spring', damping: 26, stiffness: 260 }}
+            >
+              {/* Header */}
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-11 h-11 rounded-full overflow-hidden flex-shrink-0 ring-2" style={{ ringColor: 'rgba(196,82,0,0.4)' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/pipe-evento-card.png" alt="Pipe Santos" className="w-full h-full object-cover object-top" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="font-display text-white font-semibold text-sm leading-tight">Pipe Santos</p>
+                  <p className="font-mono text-[10px] tracking-[0.25em] uppercase mt-0.5" style={{ color: 'rgba(255,154,60,0.8)' }}>🎙 Nota de voz</p>
+                </div>
+                <button onClick={() => setShowVoiceNote(false)} className="font-mono text-white/30 hover:text-white text-xs tracking-widest transition-colors">✕</button>
+              </div>
+
+              {/* Separador sutil */}
+              <div className="mb-4" style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(196,82,0,0.35), transparent)' }} />
+
+              {/* Player */}
+              <VoiceNotePlayer src="/invitacion-evento.wav" />
+
+              {/* Tagline */}
+              <p className="font-body text-center text-xs mt-4" style={{ color: 'rgba(255,255,255,0.3)' }}>
+                Una invitación personal para ti
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       {showReaderGallery && <ReaderGalleryModal onClose={() => setShowReaderGallery(false)} />}
 
       {lightboxIndex !== null && (
@@ -2706,7 +2840,7 @@ export default function PreviewPage() {
                 <div className="px-5 pt-4 pb-5">
                   <div className="flex justify-between items-center mb-1">
                     <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                    <button onClick={() => setShowFlyer(true)} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform duration-100 cursor-pointer" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 16px rgba(196,82,0,0.5)', border: 'none' }}>
+                    <button onClick={() => setShowVoiceNote(true)} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform duration-100 cursor-pointer" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 16px rgba(196,82,0,0.5)', border: 'none' }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
                     </button>
                   </div>
