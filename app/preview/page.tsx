@@ -2804,7 +2804,7 @@ export default function PreviewPage() {
       <audio src="/invitacion-evento.wav" preload="auto" style={{ display: 'none' }} />
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 md:[overflow-x:clip]">
         <ScreenAmbientBg accent="orange" />
         {/* Scrim oscuro detrás de la columna de texto — da contraste cinematográfico */}
         <div className="absolute inset-0 pointer-events-none" style={{
@@ -2817,6 +2817,71 @@ export default function PreviewPage() {
         </div>
         <div className="relative z-10 max-w-5xl mx-auto">
           <SectionDivider className="mb-14" />
+
+          {/* ── Evento PASADO: Cartagena — desktop only, peeks from left ── */}
+          <div className="hidden md:flex items-stretch gap-4 absolute pointer-events-none z-0"
+            style={{
+              top: '128px',
+              left: '-560px',
+              width: '680px',
+              opacity: 0.45,
+              filter: 'saturate(0.25) brightness(0.65)',
+            }}>
+            {/* Card pasado */}
+            <div className="flex-1 rounded-3xl overflow-hidden" style={{
+              background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
+              outline: '1px solid rgba(255,255,255,0.07)',
+            }}>
+              <div className="relative h-56">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/card-cartagena.jpg" alt="Cartagena" className="w-full h-full object-cover object-center" />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.3) 50%, transparent 75%)' }} />
+                <div className="absolute bottom-3 left-4">
+                  <p className="font-display text-2xl font-bold text-white">Pipe Santos</p>
+                </div>
+              </div>
+              <div className="px-4 pt-3 pb-4">
+                <p className="font-mono text-xs font-semibold text-white tracking-wide mb-2">Evento pasado</p>
+                <div className="h-0.5 w-16 rounded-full mb-3" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
+                <div className="flex gap-3 items-center py-2 border-b mb-3" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <div className="text-center min-w-[36px]">
+                    <p className="font-mono text-[10px] uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
+                    <p className="font-display text-3xl font-bold text-white leading-none">14</p>
+                  </div>
+                  <div>
+                    <p className="font-body text-white text-xs font-medium">La vida es cule viaje</p>
+                    <p className="font-mono text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Cartagena · 2:00 – 6:00 PM</p>
+                    <p className="font-mono text-[10px] mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Teatro San Francisco</p>
+                  </div>
+                </div>
+                {/* SoldOut badge */}
+                <div className="w-full py-2 rounded-full text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                  <span className="font-mono text-xs tracking-[0.25em] text-white/60 uppercase">#SoldOut</span>
+                </div>
+              </div>
+            </div>
+            {/* Conector pasado */}
+            <div className="flex flex-col items-center justify-center gap-0 w-7 flex-shrink-0">
+              <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to bottom, transparent, rgba(196,82,0,0.4))' }} />
+              <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(196,82,0,0.15)', border: '1px solid rgba(196,82,0,0.35)' }}>
+                <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.8)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/>
+                </svg>
+              </div>
+              <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to top, transparent, rgba(196,82,0,0.4))' }} />
+            </div>
+            {/* Flyer pasado */}
+            <div className="flex-1 rounded-3xl overflow-hidden relative" style={{ outline: '1px solid rgba(255,255,255,0.07)', minHeight: '200px' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/flyer-cartagena.jpg" alt="Flyer Cartagena" className="w-full h-full object-cover object-center block" />
+              {/* SoldOut overlay */}
+              <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(7,5,8,0.35)' }}>
+                <span className="font-mono font-bold tracking-[0.2em] text-white text-lg rotate-[-15deg]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>#SoldOut</span>
+              </div>
+            </div>
+            {/* Fade derecho — sugiere que hay más contenido a la izquierda */}
+            <div className="absolute inset-y-0 right-0 w-20 pointer-events-none" style={{ background: 'linear-gradient(to right, transparent, rgba(7,5,8,0.7))' }} />
+          </div>
 
           {/* Hero: tiquete doble — card info + flyer  */}
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
