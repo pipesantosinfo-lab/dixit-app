@@ -67,19 +67,18 @@ export default function EventoCharacter() {
         animate={{ y: [0, -8, 0] }}
         transition={{ repeat: Infinity, duration: 4.0, times: [0, 0.5, 1], ease: ['easeIn', 'easeOut'] }}
       >
-        <canvas
-          ref={canvasRef}
-          style={{
-            width: '72px',
-            height: 'auto',
-            opacity: ready ? 1 : 0,
-            transition: 'opacity 0.5s ease',
-            filter: 'drop-shadow(-6px 10px 24px rgba(0,0,0,0.6))',
-            display: 'block',
-            clipPath: 'inset(25% 0 0 0)',
-            marginTop: '-25%',
-          }}
-        />
+        <div style={{ overflow: 'hidden', width: '72px', clipPath: 'inset(25% 0 0 0)' }}>
+          <canvas
+            ref={canvasRef}
+            style={{
+              width: '72px',
+              height: 'auto',
+              opacity: ready ? 1 : 0,
+              transition: 'opacity 0.5s ease',
+              display: 'block',
+            }}
+          />
+        </div>
       </motion.div>
     </motion.div>
   )
