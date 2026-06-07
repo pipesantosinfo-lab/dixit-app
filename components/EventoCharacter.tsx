@@ -76,6 +76,8 @@ export default function EventoCharacter() {
             transition: 'opacity 0.5s ease',
             filter: 'drop-shadow(-6px 10px 24px rgba(0,0,0,0.6))',
             display: 'block',
+            clipPath: 'inset(25% 0 0 0)',
+            marginTop: '-25%',
           }}
         />
       </motion.div>

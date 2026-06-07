@@ -2807,7 +2807,7 @@ export default function PreviewPage() {
         }} />
         {/* Personaje Barranquilla — absolute relativo a la sección (full-width),
             NO al inner max-w-5xl para que quede al ras del borde derecho */}
-        <div className="md:hidden absolute right-0 top-24 z-20" style={{ transform: 'translateX(5%)' }}>
+        <div className="md:hidden absolute right-0 top-52 z-20" style={{ transform: 'translateX(5%)' }}>
           <EventoCharacter />
         </div>
         <div className="relative z-10 max-w-5xl mx-auto">
