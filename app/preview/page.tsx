@@ -2174,16 +2174,17 @@ export default function PreviewPage() {
                 Browser usa <picture>/<source>/srcset para elegir.
                 Ningún device descarga más de lo que necesita. */}
             <picture>
-              {/* Desktop ≥768px */}
+              {/* Desktop ≥768px — siempre la versión 2x (2880×1920) para
+                  compensar el scale(1.15) del parallax sin pérdida de nitidez */}
               <source
                 media="(min-width: 768px)"
                 type="image/webp"
-                srcSet="/hero-desktop-1x.webp 1x, /hero-desktop-2x.webp 2x"
+                srcSet="/hero-desktop-2x.webp"
               />
               <source
                 media="(min-width: 768px)"
                 type="image/jpeg"
-                srcSet="/hero-desktop-1x.jpg 1x, /hero-desktop-2x.jpg 2x"
+                srcSet="/hero-desktop-2x.jpg"
               />
               {/* Mobile <768px */}
               <source
