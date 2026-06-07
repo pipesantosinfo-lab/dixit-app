@@ -2804,7 +2804,7 @@ export default function PreviewPage() {
       <audio src="/invitacion-evento.wav" preload="auto" style={{ display: 'none' }} />
 
       {/* ── EVENTO ───────────────────────────────── */}
-      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 md:[overflow-x:clip]">
+      <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 [overflow-x:clip]">
         <ScreenAmbientBg accent="orange" />
         {/* Scrim oscuro detrás de la columna de texto — da contraste cinematográfico */}
         <div className="absolute inset-0 pointer-events-none" style={{
@@ -2885,7 +2885,7 @@ export default function PreviewPage() {
 
           {/* Hero: tiquete doble — card info + flyer  */}
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <div className="w-full max-w-sm md:max-w-3xl relative">
+            <div className="w-full max-w-sm md:max-w-3xl relative pr-16 md:pr-0">
 
             {/* ── DESKTOP: dos cards separados con conector ── */}
             <div className="hidden md:flex items-stretch gap-5">
@@ -2993,8 +2993,47 @@ export default function PreviewPage() {
 
             </div>{/* fin desktop */}
 
+            {/* ── Evento PASADO: Cartagena — mobile, asoma desde la derecha ── */}
+            <div className="md:hidden absolute top-0 pointer-events-none"
+              style={{ right: '-40px', width: '178px', zIndex: 5, opacity: 0.42, filter: 'saturate(0.22) brightness(0.62)' }}>
+              <div className="rounded-3xl overflow-hidden" style={{
+                background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
+                outline: '1px solid rgba(255,255,255,0.07)',
+              }}>
+                {/* Foto */}
+                <div className="relative h-44">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/card-cartagena.jpg" alt="Cartagena" className="w-full h-full object-cover object-center" />
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.3) 55%, transparent 75%)' }} />
+                  <div className="absolute bottom-3 left-3">
+                    <p className="font-display text-xl font-bold text-white">Pipe Santos</p>
+                  </div>
+                </div>
+                {/* Info */}
+                <div className="px-3 pt-3 pb-4">
+                  <div className="h-0.5 w-10 rounded-full mb-3" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
+                  <div className="flex gap-2 items-center py-2 border-b mb-3" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                    <div className="text-center min-w-[28px] flex-shrink-0">
+                      <p className="font-mono text-[9px] uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
+                      <p className="font-display text-2xl font-bold text-white leading-none">14</p>
+                    </div>
+                    <div className="min-w-0">
+                      <p className="font-body text-white text-[11px] font-medium leading-tight">La vida es cule viaje</p>
+                      <p className="font-mono text-[9px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Cartagena</p>
+                    </div>
+                  </div>
+                  {/* SoldOut badge */}
+                  <div className="w-full py-1.5 rounded-full text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                    <span className="font-mono text-[9px] tracking-[0.22em] text-white/60 uppercase">#SoldOut</span>
+                  </div>
+                </div>
+              </div>
+              {/* Fade izquierdo: suaviza la transición con el card principal */}
+              <div className="absolute inset-y-0 left-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.92), transparent)' }} />
+            </div>
+
             {/* ── MOBILE: card unificado ── */}
-            <div className="md:hidden rounded-3xl overflow-hidden" style={{
+            <div className="md:hidden rounded-3xl overflow-hidden relative z-10" style={{
               boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)',
               outline: '1px solid rgba(255,255,255,0.07)',
             }}>
