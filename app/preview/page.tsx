@@ -3114,8 +3114,8 @@ export default function PreviewPage() {
                   </div>
                 </div>
 
-                {/* ── Tiquete 2: Cartagena (#SoldOut) ── */}
-                <div style={{ width: 'calc(100vw - 80px)', flexShrink: 0, scrollSnapAlign: 'start' }}>
+                {/* ── Tiquete 2: Cartagena (#SoldOut) — más pequeño y opaco para indicar que pasó ── */}
+                <div style={{ width: 'calc(100vw - 80px)', flexShrink: 0, scrollSnapAlign: 'start', opacity: 0.62, transform: 'scale(0.93)', transformOrigin: 'top left' }}>
                   <div className="rounded-3xl overflow-hidden" style={{
                     boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
                     outline: '1px solid rgba(255,255,255,0.07)',
