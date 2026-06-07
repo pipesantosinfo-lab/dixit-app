@@ -70,7 +70,7 @@ export default function EventoCharacter() {
         <canvas
           ref={canvasRef}
           style={{
-            width: 'clamp(130px, 34vw, 200px)',
+            width: '72px',
             height: 'auto',
             opacity: ready ? 1 : 0,
             transition: 'opacity 0.5s ease',
