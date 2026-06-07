@@ -2196,8 +2196,8 @@ export default function PreviewPage() {
                 src="/hero-mobile-2x.jpg"
                 srcSet="/hero-mobile-2x.jpg 2x, /hero-mobile-3x.jpg 3x"
                 alt=""
-                className="absolute inset-0 w-full h-full"
-                style={{ objectFit: 'cover', objectPosition: 'center top' }}
+                className="absolute inset-0 w-full h-full object-cover object-top md:[object-position:center_60%]"
+                style={{  }}
                 fetchPriority="high"
                 decoding="async"
               />
