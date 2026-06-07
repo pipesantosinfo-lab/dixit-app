@@ -2840,9 +2840,16 @@ export default function PreviewPage() {
                 <div className="px-5 pt-4 pb-5">
                   <div className="flex justify-between items-center mb-1">
                     <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                    <button onClick={() => setShowVoiceNote(true)} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 active:scale-90 transition-transform duration-100 cursor-pointer" style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', boxShadow: '0 0 16px rgba(196,82,0,0.5)', border: 'none' }}>
+                    <motion.button
+                      onClick={() => setShowVoiceNote(true)}
+                      className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
+                      style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
+                      animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
+                      transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                      whileTap={{ scale: 0.88 }}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                    </button>
+                    </motion.button>
                   </div>
                   <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
                   <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
