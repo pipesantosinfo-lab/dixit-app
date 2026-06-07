@@ -2885,7 +2885,7 @@ export default function PreviewPage() {
 
           {/* Hero: tiquete doble — card info + flyer  */}
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <div className="w-full max-w-sm md:max-w-3xl relative pr-16 md:pr-0">
+            <div className="w-full max-w-sm md:max-w-3xl relative">
 
             {/* ── DESKTOP: dos cards separados con conector ── */}
             <div className="hidden md:flex items-stretch gap-5">
@@ -2993,177 +2993,197 @@ export default function PreviewPage() {
 
             </div>{/* fin desktop */}
 
-            {/* ── Evento PASADO: Cartagena — mobile, asoma desde la derecha ── */}
-            <div className="md:hidden absolute top-0 pointer-events-none"
-              style={{ right: '-40px', width: '178px', zIndex: 5, opacity: 0.42, filter: 'saturate(0.22) brightness(0.62)' }}>
-              <div className="rounded-3xl overflow-hidden" style={{
-                background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
-                outline: '1px solid rgba(255,255,255,0.07)',
+            {/* ── MOBILE: galería horizontal de tiquetes (scroll snap) ── */}
+            <div className="md:hidden -mx-6"
+              style={{
+                overflowX: 'auto',
+                scrollSnapType: 'x mandatory',
+                WebkitOverflowScrolling: 'touch',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                scrollPaddingLeft: '24px',
+                paddingBottom: '12px',
               }}>
-                {/* Foto */}
-                <div className="relative h-44">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/card-cartagena.jpg" alt="Cartagena" className="w-full h-full object-cover object-center" />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.3) 55%, transparent 75%)' }} />
-                  <div className="absolute bottom-3 left-3">
-                    <p className="font-display text-xl font-bold text-white">Pipe Santos</p>
-                  </div>
-                </div>
-                {/* Info */}
-                <div className="px-3 pt-3 pb-4">
-                  <div className="h-0.5 w-10 rounded-full mb-3" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
-                  <div className="flex gap-2 items-center py-2 border-b mb-3" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                    <div className="text-center min-w-[28px] flex-shrink-0">
-                      <p className="font-mono text-[9px] uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
-                      <p className="font-display text-2xl font-bold text-white leading-none">14</p>
-                    </div>
-                    <div className="min-w-0">
-                      <p className="font-body text-white text-[11px] font-medium leading-tight">La vida es cule viaje</p>
-                      <p className="font-mono text-[9px] mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Cartagena</p>
-                    </div>
-                  </div>
-                  {/* SoldOut badge */}
-                  <div className="w-full py-1.5 rounded-full text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                    <span className="font-mono text-[9px] tracking-[0.22em] text-white/60 uppercase">#SoldOut</span>
-                  </div>
-                </div>
-              </div>
-              {/* Fade izquierdo: suaviza la transición con el card principal */}
-              <div className="absolute inset-y-0 left-0 w-12 pointer-events-none" style={{ background: 'linear-gradient(to right, rgba(7,5,8,0.92), transparent)' }} />
-            </div>
+              <div className="flex gap-4" style={{ paddingLeft: '24px', paddingRight: '24px' }}>
 
-            {/* ── MOBILE: card unificado ── */}
-            <div className="md:hidden rounded-3xl overflow-hidden relative z-10" style={{
-              boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)',
-              outline: '1px solid rgba(255,255,255,0.07)',
-            }}>
-              <div className="flex flex-col">
-
-              {/* ── Stub izquierdo / superior ── */}
-              <div className="md:flex-1" style={{
-                background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
-              }}>
-                {/* Foto */}
-                <div className="relative h-56 md:h-72">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
-                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
-                  <div className="absolute bottom-4 left-5">
-                    <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
-                  </div>
-                </div>
-
-                {/* Panel info */}
-                <div className="px-5 pt-4 pb-5">
-                  <div className="flex justify-between items-center mb-1">
-                    <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                    <motion.button
-                      onClick={() => setShowVoiceNote(true)}
-                      className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
-                      style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
-                      animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
-                      transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-                      whileTap={{ scale: 0.88 }}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                    </motion.button>
-                  </div>
-                  <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
-                  <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                    <div className="text-center min-w-[42px] flex-shrink-0">
-                      <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
-                      <p className="font-display text-4xl font-bold text-white leading-none">22</p>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
-                      <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
-                      <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                    {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
-                      <div key={item.l} className="flex items-center gap-2">
-                        {i > 0 && <span className="font-mono text-xs mb-3" style={{ color: 'rgba(196,82,0,0.5)' }}>:</span>}
-                        <div className="text-center">
-                          <div className="w-8 h-8 rounded-md flex items-center justify-center" style={{
-                            background: 'rgba(196,82,0,0.1)',
-                            border: '1px solid rgba(196,82,0,0.35)',
-                          }}>
-                            <span className="font-mono text-sm font-medium leading-none tabular-nums" style={{ color: '#FF9A3C' }}>
-                              {String(item.v).padStart(2,'0')}
-                            </span>
+                {/* ── Tiquete 1: Barranquilla (próximo evento) ── */}
+                <div style={{ width: 'calc(100vw - 80px)', flexShrink: 0, scrollSnapAlign: 'start' }}>
+                  <div className="rounded-3xl overflow-hidden" style={{
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(196,82,0,0.08)',
+                    outline: '1px solid rgba(255,255,255,0.07)',
+                  }}>
+                    <div className="flex flex-col">
+                      {/* Foto */}
+                      <div style={{ background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)' }}>
+                        <div className="relative h-56">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
+                          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
+                          <div className="absolute bottom-4 left-5">
+                            <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
                           </div>
-                          <p className="font-mono text-[7px] uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{item.l}</p>
+                        </div>
+                        {/* Panel info */}
+                        <div className="px-5 pt-4 pb-5">
+                          <div className="flex justify-between items-center mb-1">
+                            <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
+                            <motion.button
+                              onClick={() => setShowVoiceNote(true)}
+                              className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
+                              style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
+                              animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
+                              transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                              whileTap={{ scale: 0.88 }}
+                            >
+                              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                            </motion.button>
+                          </div>
+                          <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
+                          <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                            <div className="text-center min-w-[42px] flex-shrink-0">
+                              <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
+                              <p className="font-display text-4xl font-bold text-white leading-none">22</p>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
+                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
+                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                            {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
+                              <div key={item.l} className="flex items-center gap-2">
+                                {i > 0 && <span className="font-mono text-xs mb-3" style={{ color: 'rgba(196,82,0,0.5)' }}>:</span>}
+                                <div className="text-center">
+                                  <div className="w-8 h-8 rounded-md flex items-center justify-center" style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.35)' }}>
+                                    <span className="font-mono text-sm font-medium leading-none tabular-nums" style={{ color: '#FF9A3C' }}>{String(item.v).padStart(2,'0')}</span>
+                                  </div>
+                                  <p className="font-mono text-[7px] uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{item.l}</p>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          {EVENT_MAX - eventSold <= 0 ? (
+                            <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
+                          ) : (
+                            <div className="flex flex-col gap-2 mt-4">
+                              <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
+                                onClick={() => track({ type: 'click', target: 'open_event' })}
+                                className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
+                                style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
+                                Atento al lanzamiento
+                              </a>
+                              <button disabled
+                                className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
+                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
+                                Comprar entrada · $40.000
+                              </button>
+                            </div>
+                          )}
                         </div>
                       </div>
-                    ))}
-                  </div>
-                  {EVENT_MAX - eventSold <= 0 ? (
-                    <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
-                  ) : (
-                    <div className="flex flex-col gap-2 mt-4">
-                      <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                        onClick={() => track({ type: 'click', target: 'open_event' })}
-                        className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
-                        style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                        Atento al lanzamiento
-                      </a>
-                      <button disabled
-                        className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
-                        Comprar entrada · $40.000
+                      {/* Separador tiquete */}
+                      <div className="relative" style={{ background: '#0d0a14' }}>
+                        <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.7) 30%, rgba(255,154,60,0.9) 50%, rgba(196,82,0,0.7) 70%, transparent 100%)' }} />
+                        <div className="relative flex items-center justify-center" style={{ height: '52px' }}>
+                          {[28, 48, 68, 88, 108].map(x => (
+                            <div key={'l'+x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', left: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
+                          ))}
+                          <div className="relative z-10 flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: 'linear-gradient(135deg, rgba(196,82,0,0.18) 0%, rgba(224,120,32,0.12) 100%)', border: '1px solid rgba(196,82,0,0.45)', boxShadow: '0 0 20px rgba(196,82,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/></svg>
+                            <span className="font-mono text-[9px] tracking-[0.3em] uppercase font-semibold" style={{ color: 'rgba(255,154,60,0.95)' }}>Flyer oficial</span>
+                          </div>
+                          {[28, 48, 68, 88, 108].map(x => (
+                            <div key={'r'+x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', right: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
+                          ))}
+                        </div>
+                        <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.5) 30%, rgba(255,154,60,0.7) 50%, rgba(196,82,0,0.5) 70%, transparent 100%)' }} />
+                      </div>
+                      {/* Flyer Barranquilla */}
+                      <button onClick={() => setShowFlyer(true)}
+                        className="block cursor-pointer relative overflow-hidden"
+                        style={{ border: 'none', background: 'none', display: 'block', minHeight: '200px' }}>
+                        <div className="absolute top-0 inset-x-0 h-10 pointer-events-none z-10" style={{ background: 'linear-gradient(to bottom, rgba(13,10,20,0.6), transparent)' }} />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
+                        <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
+                          <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
+                        </div>
                       </button>
                     </div>
-                  )}
-                </div>
-              </div>
-
-              {/* ── Separador horizontal (solo mobile) ── */}
-              <div className="md:hidden relative" style={{ background: '#0d0a14' }}>
-                {/* Acento naranja superior */}
-                <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.7) 30%, rgba(255,154,60,0.9) 50%, rgba(196,82,0,0.7) 70%, transparent 100%)' }} />
-                {/* Cuerpo del separador */}
-                <div className="relative flex items-center justify-center" style={{ height: '52px' }}>
-                  {/* Perforaciones izquierda */}
-                  {[28, 48, 68, 88, 108].map(x => (
-                    <div key={x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', left: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
-                  ))}
-                  {/* Pill central */}
-                  <div className="relative z-10 flex items-center gap-2 px-4 py-2 rounded-full" style={{
-                    background: 'linear-gradient(135deg, rgba(196,82,0,0.18) 0%, rgba(224,120,32,0.12) 100%)',
-                    border: '1px solid rgba(196,82,0,0.45)',
-                    boxShadow: '0 0 20px rgba(196,82,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)',
-                  }}>
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/>
-                    </svg>
-                    <span className="font-mono text-[9px] tracking-[0.3em] uppercase font-semibold" style={{ color: 'rgba(255,154,60,0.95)' }}>Flyer oficial</span>
                   </div>
-                  {/* Perforaciones derecha */}
-                  {[28, 48, 68, 88, 108].map(x => (
-                    <div key={x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', right: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
-                  ))}
                 </div>
-                {/* Acento naranja inferior */}
-                <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.5) 30%, rgba(255,154,60,0.7) 50%, rgba(196,82,0,0.5) 70%, transparent 100%)' }} />
+
+                {/* ── Tiquete 2: Cartagena (#SoldOut) ── */}
+                <div style={{ width: 'calc(100vw - 80px)', flexShrink: 0, scrollSnapAlign: 'start' }}>
+                  <div className="rounded-3xl overflow-hidden" style={{
+                    boxShadow: '0 20px 60px rgba(0,0,0,0.7)',
+                    outline: '1px solid rgba(255,255,255,0.07)',
+                  }}>
+                    <div className="flex flex-col">
+                      {/* Foto */}
+                      <div style={{ background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)' }}>
+                        <div className="relative h-56">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src="/card-cartagena.jpg" alt="Pipe Santos — Cartagena" className="w-full h-full object-cover object-center" />
+                          <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
+                          <div className="absolute bottom-4 left-5">
+                            <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
+                          </div>
+                        </div>
+                        {/* Panel info */}
+                        <div className="px-5 pt-4 pb-5">
+                          <p className="font-mono text-sm font-semibold text-white tracking-wide mb-1">Evento pasado</p>
+                          <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
+                          <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                            <div className="text-center min-w-[42px] flex-shrink-0">
+                              <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
+                              <p className="font-display text-4xl font-bold text-white leading-none">14</p>
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
+                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Cartagena · 2:00 – 6:00 PM</p>
+                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Teatro San Francisco</p>
+                            </div>
+                          </div>
+                          {/* SoldOut en lugar de botones/countdown */}
+                          <div className="w-full py-3 rounded-full text-center mt-4" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.12)' }}>
+                            <span className="font-mono text-sm tracking-[0.3em] text-white/50 uppercase">#SoldOut</span>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Separador tiquete */}
+                      <div className="relative" style={{ background: '#0d0a14' }}>
+                        <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.7) 30%, rgba(255,154,60,0.9) 50%, rgba(196,82,0,0.7) 70%, transparent 100%)' }} />
+                        <div className="relative flex items-center justify-center" style={{ height: '52px' }}>
+                          {[28, 48, 68, 88, 108].map(x => (
+                            <div key={'l'+x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', left: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
+                          ))}
+                          <div className="relative z-10 flex items-center gap-2 px-4 py-2 rounded-full" style={{ background: 'linear-gradient(135deg, rgba(196,82,0,0.18) 0%, rgba(224,120,32,0.12) 100%)', border: '1px solid rgba(196,82,0,0.45)', boxShadow: '0 0 20px rgba(196,82,0,0.2), inset 0 1px 0 rgba(255,255,255,0.06)' }}>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/></svg>
+                            <span className="font-mono text-[9px] tracking-[0.3em] uppercase font-semibold" style={{ color: 'rgba(255,154,60,0.95)' }}>Flyer oficial</span>
+                          </div>
+                          {[28, 48, 68, 88, 108].map(x => (
+                            <div key={'r'+x} className="absolute w-1.5 h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.08)', right: `${x}px`, top: '50%', transform: 'translateY(-50%)' }} />
+                          ))}
+                        </div>
+                        <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.5) 30%, rgba(255,154,60,0.7) 50%, rgba(196,82,0,0.5) 70%, transparent 100%)' }} />
+                      </div>
+                      {/* Flyer Cartagena con overlay #SoldOut */}
+                      <div className="relative overflow-hidden" style={{ minHeight: '200px' }}>
+                        <div className="absolute top-0 inset-x-0 h-10 pointer-events-none z-10" style={{ background: 'linear-gradient(to bottom, rgba(13,10,20,0.6), transparent)' }} />
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src="/flyer-cartagena.jpg" alt="Flyer — Cartagena" className="w-full h-auto block" />
+                        <div className="absolute inset-0 flex items-center justify-center z-10" style={{ background: 'rgba(7,5,8,0.32)' }}>
+                          <span className="font-mono font-bold tracking-[0.2em] text-white text-lg rotate-[-15deg]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>#SoldOut</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
               </div>
-
-              {/* ── Stub derecho / inferior: flyer ── */}
-              <button onClick={() => setShowFlyer(true)}
-                className="block cursor-pointer relative overflow-hidden"
-                style={{ border: 'none', background: 'none', display: 'block', minHeight: '200px' }}>
-                {/* Fade superior */}
-                <div className="absolute top-0 inset-x-0 h-10 pointer-events-none z-10" style={{ background: 'linear-gradient(to bottom, rgba(13,10,20,0.6), transparent)' }} />
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje"
-                  className="w-full h-auto block" />
-                <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
-                  <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
-                </div>
-              </button>
-
-              </div>{/* cierre flex flex-col mobile */}
-            </div>{/* cierre md:hidden unified card */}
+            </div>{/* fin galería mobile */}
             </div>{/* cierre outer container */}
           </motion.div>
 
