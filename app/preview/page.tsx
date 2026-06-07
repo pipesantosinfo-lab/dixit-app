@@ -1906,7 +1906,7 @@ export default function PreviewPage() {
       <AnimatePresence>
         {showVoiceNote && (
           <motion.div
-            className="fixed inset-0 z-50 flex items-end justify-center p-4 pb-8"
+            className="fixed inset-0 z-50 flex items-center justify-center p-6"
             style={{ background: 'rgba(7,5,8,0.88)', backdropFilter: 'blur(16px)' }}
             onClick={() => setShowVoiceNote(false)}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -1915,7 +1915,7 @@ export default function PreviewPage() {
               className="w-full max-w-sm rounded-3xl p-5"
               style={{ background: 'linear-gradient(145deg,#1a1226,#0f0c18)', border: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 -8px 60px rgba(0,0,0,0.7), 0 0 40px rgba(196,82,0,0.12)' }}
               onClick={e => e.stopPropagation()}
-              initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
+              initial={{ scale: 0.92, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.92, opacity: 0 }}
               transition={{ type: 'spring', damping: 26, stiffness: 260 }}
             >
               {/* Header */}
