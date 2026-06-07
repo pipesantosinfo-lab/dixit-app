@@ -2856,13 +2856,20 @@ export default function PreviewPage() {
                       <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-center gap-1 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                  <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                     {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
-                      <div key={item.l} className="flex items-center gap-1">
-                        {i > 0 && <span className="font-display text-white/20 text-lg mb-3">:</span>}
+                      <div key={item.l} className="flex items-center gap-2">
+                        {i > 0 && <span className="font-mono text-xs mb-3" style={{ color: 'rgba(196,82,0,0.5)' }}>:</span>}
                         <div className="text-center">
-                          <p className="font-display text-xl font-light text-white leading-none">{String(item.v).padStart(2,'0')}</p>
-                          <p className="font-mono text-[9px] text-white/30 uppercase tracking-widest mt-0.5">{item.l}</p>
+                          <div className="w-8 h-8 rounded-md flex items-center justify-center" style={{
+                            background: 'rgba(196,82,0,0.1)',
+                            border: '1px solid rgba(196,82,0,0.35)',
+                          }}>
+                            <span className="font-mono text-sm font-medium leading-none tabular-nums" style={{ color: '#FF9A3C' }}>
+                              {String(item.v).padStart(2,'0')}
+                            </span>
+                          </div>
+                          <p className="font-mono text-[7px] uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{item.l}</p>
                         </div>
                       </div>
                     ))}
