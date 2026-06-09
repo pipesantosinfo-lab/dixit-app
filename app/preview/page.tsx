@@ -2815,187 +2815,157 @@ export default function PreviewPage() {
 
           {/* Hero: tiquete doble — card info + flyer  */}
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
-            <div className="w-full max-w-sm md:max-w-3xl relative">
+            <div className="w-full max-w-sm md:max-w-full relative">
 
-            {/* ── DESKTOP: galería drag — Barranquilla visible, Cartagena oculto a la derecha ── */}
-            <div className="hidden md:block relative overflow-hidden"
-              style={{ cursor: 'grab', userSelect: 'none', WebkitUserSelect: 'none' } as React.CSSProperties}>
-              <motion.div
-                className="flex items-stretch"
-                drag="x"
-                dragConstraints={{ left: -720, right: 0 }}
-                dragElastic={0.06}
-                dragMomentum={false}
-                whileDrag={{ cursor: 'grabbing' }}
-                style={{ gap: '32px' }}
-              >
-                {/* ── Par Barranquilla (próximo evento) — ocupa 100% del contenedor ── */}
-                <div className="flex items-stretch gap-5 flex-shrink-0" style={{ minWidth: '100%' }}>
+            {/* ── DESKTOP: Barranquilla (principal) + Cartagena (pasado, compacto) ── */}
+            <div className="hidden md:flex items-stretch gap-6">
 
-                  {/* Card izquierdo */}
-                  <div className="flex-1 rounded-3xl overflow-hidden" style={{
-                    background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
-                    boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)',
-                    outline: '1px solid rgba(255,255,255,0.07)',
-                  }}>
-                    {/* Foto */}
-                    <div className="relative h-72">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
-                      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
-                      <div className="absolute bottom-4 left-5">
-                        <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
+              {/* ── Par principal: Barranquilla ── */}
+              <div className="flex items-stretch gap-5 flex-1">
+
+                {/* Card */}
+                <div className="flex-1 rounded-3xl overflow-hidden" style={{
+                  background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)',
+                  boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)',
+                  outline: '1px solid rgba(255,255,255,0.07)',
+                }}>
+                  <div className="relative h-72">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src="/pipe-evento-card.png" alt="Pipe Santos en escenario" className="w-full h-full object-cover object-center" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.35) 45%, transparent 70%)' }} />
+                    <div className="absolute bottom-4 left-5">
+                      <p className="font-display text-3xl font-bold text-white" style={{ textShadow: '0 2px 16px rgba(0,0,0,0.9)' }}>Pipe Santos</p>
+                    </div>
+                  </div>
+                  <div className="px-5 pt-4 pb-5">
+                    <div className="flex justify-between items-center mb-1">
+                      <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
+                      <motion.button
+                        onClick={() => setShowVoiceNote(true)}
+                        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
+                        style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
+                        animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
+                        transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                        whileTap={{ scale: 0.88 }}
+                      >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+                      </motion.button>
+                    </div>
+                    <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
+                    <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                      <div className="text-center min-w-[42px] flex-shrink-0">
+                        <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
+                        <p className="font-display text-4xl font-bold text-white leading-none">22</p>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
+                        <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
+                        <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
                       </div>
                     </div>
-                    {/* Panel info */}
-                    <div className="px-5 pt-4 pb-5">
-                      <div className="flex justify-between items-center mb-1">
-                        <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                        <motion.button
-                          onClick={() => setShowVoiceNote(true)}
-                          className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
-                          style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
-                          animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
-                          transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-                          whileTap={{ scale: 0.88 }}
-                        >
-                          <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                        </motion.button>
-                      </div>
-                      <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
-                      <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                        <div className="text-center min-w-[42px] flex-shrink-0">
-                          <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
-                          <p className="font-display text-4xl font-bold text-white leading-none">22</p>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
-                          <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
-                          <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                        {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
-                          <div key={item.l} className="flex items-center gap-2">
-                            {i > 0 && <span className="font-mono text-xs mb-3" style={{ color: 'rgba(196,82,0,0.5)' }}>:</span>}
-                            <div className="text-center">
-                              <div className="w-8 h-8 rounded-md flex items-center justify-center" style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.35)' }}>
-                                <span className="font-mono text-sm font-medium leading-none tabular-nums" style={{ color: '#FF9A3C' }}>{String(item.v).padStart(2,'0')}</span>
-                              </div>
-                              <p className="font-mono text-[7px] uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{item.l}</p>
+                    <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
+                      {[{ v: countdown.days, l: 'días' }, { v: countdown.hours, l: 'hrs' }, { v: countdown.minutes, l: 'min' }, { v: countdown.seconds, l: 'seg' }].map((item, i) => (
+                        <div key={item.l} className="flex items-center gap-2">
+                          {i > 0 && <span className="font-mono text-xs mb-3" style={{ color: 'rgba(196,82,0,0.5)' }}>:</span>}
+                          <div className="text-center">
+                            <div className="w-8 h-8 rounded-md flex items-center justify-center" style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.35)' }}>
+                              <span className="font-mono text-sm font-medium leading-none tabular-nums" style={{ color: '#FF9A3C' }}>{String(item.v).padStart(2,'0')}</span>
                             </div>
+                            <p className="font-mono text-[7px] uppercase tracking-wider mt-1" style={{ color: 'rgba(255,255,255,0.25)' }}>{item.l}</p>
                           </div>
-                        ))}
-                      </div>
-                      {EVENT_MAX - eventSold <= 0 ? (
-                        <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
-                      ) : (
-                        <div className="flex flex-col gap-2 mt-4">
-                          <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                            onClick={() => track({ type: 'click', target: 'open_event' })}
-                            className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
-                            style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                            Atento al lanzamiento
-                          </a>
-                          <button disabled
-                            className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
-                            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
-                            Comprar entrada · $40.000
-                          </button>
                         </div>
-                      )}
+                      ))}
                     </div>
+                    {EVENT_MAX - eventSold <= 0 ? (
+                      <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
+                    ) : (
+                      <div className="flex flex-col gap-2 mt-4">
+                        <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
+                          onClick={() => track({ type: 'click', target: 'open_event' })}
+                          className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
+                          style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
+                          Atento al lanzamiento
+                        </a>
+                        <button disabled
+                          className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
+                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
+                          Comprar entrada · $40.000
+                        </button>
+                      </div>
+                    )}
                   </div>
+                </div>
 
-                  {/* Conector desktop */}
-                  <div className="flex flex-col items-center justify-center gap-0 w-8 flex-shrink-0">
-                    <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to bottom, transparent, rgba(196,82,0,0.5))' }} />
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(196,82,0,0.18), rgba(224,120,32,0.10))', border: '1px solid rgba(196,82,0,0.4)', boxShadow: '0 0 16px rgba(196,82,0,0.25)' }}>
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/>
-                      </svg>
-                    </div>
-                    <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to top, transparent, rgba(196,82,0,0.5))' }} />
+                {/* Conector */}
+                <div className="flex flex-col items-center justify-center w-8 flex-shrink-0">
+                  <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to bottom, transparent, rgba(196,82,0,0.5))' }} />
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'linear-gradient(135deg, rgba(196,82,0,0.18), rgba(224,120,32,0.10))', border: '1px solid rgba(196,82,0,0.4)', boxShadow: '0 0 16px rgba(196,82,0,0.25)' }}>
+                    <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/></svg>
                   </div>
+                  <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to top, transparent, rgba(196,82,0,0.5))' }} />
+                </div>
 
-                  {/* Flyer desktop */}
-                  <button onClick={() => setShowFlyer(true)}
-                    className="flex-1 rounded-3xl overflow-hidden cursor-pointer relative"
-                    style={{ border: 'none', background: 'none', boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)', outline: '1px solid rgba(255,255,255,0.07)' }}>
+                {/* Flyer */}
+                <button onClick={() => setShowFlyer(true)}
+                  className="flex-1 rounded-3xl overflow-hidden cursor-pointer relative"
+                  style={{ border: 'none', background: 'none', boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)', outline: '1px solid rgba(255,255,255,0.07)' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-full object-cover object-center block" />
+                  <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
+                    <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
+                  </div>
+                </button>
+
+              </div>{/* fin par Barranquilla */}
+
+              {/* Divisor vertical */}
+              <div className="flex flex-col items-center gap-3 py-6 flex-shrink-0 w-5">
+                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 30%, rgba(255,255,255,0.07) 70%, transparent)' }} />
+                <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }} />
+                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 30%, rgba(255,255,255,0.07) 70%, transparent)' }} />
+              </div>
+
+              {/* ── Card Cartagena (pasado) — compacta, desaturada ── */}
+              <div className="flex-shrink-0 flex flex-col gap-3" style={{ width: '210px', opacity: 0.68, filter: 'saturate(0.28) brightness(0.72)' }}>
+                {/* Etiqueta */}
+                <p className="font-mono text-[9px] tracking-[0.35em] uppercase text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>Otras ciudades</p>
+                {/* Card foto + info */}
+                <div className="rounded-2xl overflow-hidden flex-1" style={{ background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)', outline: '1px solid rgba(255,255,255,0.07)' }}>
+                  <div className="relative h-32">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-full object-cover object-center block" />
-                    <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
-                      <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
-                    </div>
-                  </button>
-
-                </div>{/* fin par Barranquilla */}
-
-                {/* ── Par Cartagena (evento pasado) — aparece al arrastrar izquierda ── */}
-                <div className="flex items-stretch gap-4 flex-shrink-0"
-                  style={{ width: '680px', opacity: 0.6, filter: 'saturate(0.25) brightness(0.65)', transform: 'scale(0.93)', transformOrigin: 'top left' }}>
-                  {/* Card Cartagena */}
-                  <div className="flex-1 rounded-3xl overflow-hidden" style={{ background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)', outline: '1px solid rgba(255,255,255,0.07)' }}>
-                    <div className="relative h-72">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src="/card-cartagena.jpg" alt="Cartagena" className="w-full h-full object-cover object-center" />
-                      <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.95) 0%, rgba(14,10,20,0.3) 50%, transparent 75%)' }} />
-                      <div className="absolute bottom-4 left-5">
-                        <p className="font-display text-3xl font-bold text-white">Pipe Santos</p>
-                      </div>
-                    </div>
-                    <div className="px-5 pt-4 pb-5">
-                      <p className="font-mono text-sm font-semibold text-white tracking-wide mb-1">Evento pasado</p>
-                      <div className="h-0.5 w-16 rounded-full mb-3" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
-                      <div className="flex gap-4 items-center py-3 border-b mb-4" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
-                        <div className="text-center min-w-[42px] flex-shrink-0">
-                          <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
-                          <p className="font-display text-4xl font-bold text-white leading-none">14</p>
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
-                          <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Cartagena · 2:00 – 6:00 PM</p>
-                          <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Teatro San Francisco</p>
-                        </div>
-                      </div>
-                      <div className="w-full py-2.5 rounded-full text-center" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.12)' }}>
-                        <span className="font-mono text-sm tracking-[0.28em] text-white/60 uppercase">#SoldOut</span>
-                      </div>
+                    <img src="/card-cartagena.jpg" alt="Cartagena" className="w-full h-full object-cover object-center" />
+                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.9) 0%, transparent 60%)' }} />
+                    <div className="absolute bottom-2 left-3">
+                      <p className="font-display text-base font-bold text-white leading-tight">Pipe Santos</p>
                     </div>
                   </div>
-                  {/* Conector Cartagena */}
-                  <div className="flex flex-col items-center justify-center gap-0 w-7 flex-shrink-0">
-                    <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to bottom, transparent, rgba(196,82,0,0.4))' }} />
-                    <div className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0" style={{ background: 'rgba(196,82,0,0.15)', border: '1px solid rgba(196,82,0,0.35)' }}>
-                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.8)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 5v2M15 11v2M15 17v2M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/></svg>
+                  <div className="px-3 pt-3 pb-3">
+                    <div className="flex gap-2 items-center mb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', paddingBottom: '10px' }}>
+                      <div className="text-center flex-shrink-0">
+                        <p className="font-mono text-[9px] uppercase tracking-widest leading-none" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
+                        <p className="font-display text-2xl font-bold text-white leading-none">14</p>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="font-body text-white text-xs font-medium leading-snug">La vida es cule viaje</p>
+                        <p className="font-mono text-[9px] mt-0.5 leading-snug" style={{ color: 'rgba(255,255,255,0.4)' }}>Cartagena · Teatro San Francisco</p>
+                      </div>
                     </div>
-                    <div className="flex-1" style={{ width: '1px', background: 'linear-gradient(to top, transparent, rgba(196,82,0,0.4))' }} />
-                  </div>
-                  {/* Flyer Cartagena */}
-                  <div className="flex-1 rounded-3xl overflow-hidden relative" style={{ outline: '1px solid rgba(255,255,255,0.07)', minHeight: '200px' }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/flyer-cartagena.jpg" alt="Flyer Cartagena" className="w-full h-full object-cover object-center block" />
-                    <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(7,5,8,0.35)' }}>
-                      <span className="font-mono font-bold tracking-[0.2em] text-white text-xl rotate-[-15deg]" style={{ textShadow: '0 2px 12px rgba(0,0,0,0.8)' }}>#SoldOut</span>
+                    <div className="w-full py-1.5 rounded-full text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
+                      <span className="font-mono text-[10px] tracking-[0.28em] text-white/50 uppercase">#SoldOut</span>
                     </div>
                   </div>
-                </div>{/* fin par Cartagena */}
+                </div>
+                {/* Mini flyer */}
+                <div className="rounded-xl overflow-hidden relative flex-shrink-0" style={{ height: '100px', outline: '1px solid rgba(255,255,255,0.06)' }}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src="/flyer-cartagena.jpg" alt="Flyer Cartagena" className="w-full h-full object-cover object-center block" />
+                  <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(7,5,8,0.32)' }}>
+                    <span className="font-mono font-bold tracking-[0.18em] text-white text-sm rotate-[-12deg]" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.9)' }}>#SoldOut</span>
+                  </div>
+                </div>
+              </div>{/* fin Cartagena */}
 
-              </motion.div>
-
-              {/* Indicador de arrastre — rebota hacia la izquierda */}
-              <motion.div
-                className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none z-10 flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.22)' }}
-                animate={{ x: [0, -6, 0] }}
-                transition={{ repeat: Infinity, duration: 1.8, ease: 'easeInOut', delay: 2 }}
-              >
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="rgba(255,154,60,0.7)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-                <span className="font-mono text-[9px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,154,60,0.6)' }}>arrastrar</span>
-              </motion.div>
-            </div>{/* fin desktop drag gallery */}
+            </div>{/* fin desktop */}
 
             {/* ── MOBILE: galería horizontal de tiquetes (scroll snap) ── */}
             <div className="md:hidden -mx-6"
