@@ -2021,7 +2021,7 @@ export default function PreviewPage() {
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/evento-flyer-v2.jpg"
+              src="/flyer-barranquilla.png"
               alt="La vida es cule viaje — Barranquilla 2026"
               className="w-full h-auto rounded-2xl"
               style={{ boxShadow: '0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(196,82,0,0.2)' }}
@@ -3032,7 +3032,7 @@ export default function PreviewPage() {
                   className="flex-1 rounded-3xl overflow-hidden cursor-pointer relative"
                   style={{ border: 'none', background: 'none', boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)', outline: '1px solid rgba(255,255,255,0.07)' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-full object-cover object-center block" />
+                  <img src="/flyer-barranquilla.png" alt="Flyer — La vida es cule viaje" className="w-full h-full object-cover object-center block" />
                   <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
                     <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
                   </div>
@@ -3186,7 +3186,7 @@ export default function PreviewPage() {
                         style={{ border: 'none', background: 'none', display: 'block', minHeight: '200px' }}>
                         <div className="absolute top-0 inset-x-0 h-10 pointer-events-none z-10" style={{ background: 'linear-gradient(to bottom, rgba(13,10,20,0.6), transparent)' }} />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src="/evento-flyer-v2.jpg" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
+                        <img src="/flyer-barranquilla.png" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
                         <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
                           <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
                         </div>
