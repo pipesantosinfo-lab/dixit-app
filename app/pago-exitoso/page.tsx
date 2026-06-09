@@ -1,11 +1,47 @@
 'use client'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Particles from '@/components/Particles'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+type TicketStatus = 'pending' | 'active' | 'not_found' | 'unknown'
+
+function useTicketStatus(order: string | null): TicketStatus {
+  const [status, setStatus] = useState<TicketStatus>('unknown')
+
+  useEffect(() => {
+    if (!order) return
+    let cancelled = false
+    let attempts = 0
+    const MAX_ATTEMPTS = 20   // ~60 s de polling máximo
+
+    async function poll() {
+      if (cancelled || attempts >= MAX_ATTEMPTS) return
+      attempts++
+      try {
+        const res = await fetch(`/api/ticket-status?order=${order}`)
+        if (!cancelled && res.ok) {
+          const json = await res.json()
+          setStatus(json.status ?? 'unknown')
+          if (json.status !== 'active') {
+            // Reintentar con back-off leve: 3 s las primeras 5 veces, luego 5 s
+            setTimeout(poll, attempts < 5 ? 3_000 : 5_000)
+          }
+        }
+      } catch {
+        if (!cancelled) setTimeout(poll, 5_000)
+      }
+    }
+
+    poll()
+    return () => { cancelled = true }
+  }, [order])
+
+  return status
+}
 
 /* Pequeñas chispas que salen del punto de choque de las manos.
  * Posiciones precomputadas para que sea determinista (no rehidrata distinto). */
@@ -95,6 +131,8 @@ function Content() {
   const rawOrder = params.get('order')
   // Validar formato UUID antes de usar en href para prevenir open-redirect y URLs malformadas
   const order = rawOrder && UUID_RE.test(rawOrder) ? rawOrder : null
+  const ticketStatus = useTicketStatus(order)
+  const isActive = ticketStatus === 'active'
 
   return (
     <main className="grain min-h-screen flex flex-col items-center justify-center px-6" style={{ background: '#070508' }}>
@@ -127,10 +165,23 @@ function Content() {
           </div>
 
           {order && (
-            <a href={`/lavida/ticket/${order}-1`}
-              className="btn-primary w-full inline-block text-center mb-4">
-              <span>Ver mi entrada →</span>
-            </a>
+            isActive ? (
+              <a href={`/lavida/ticket/${order}-1`}
+                className="btn-primary w-full inline-block text-center mb-4">
+                <span>Ver mi entrada →</span>
+              </a>
+            ) : (
+              <div className="w-full flex items-center justify-center gap-2 mb-4 py-3 rounded-2xl"
+                style={{ background: 'rgba(139,60,247,0.12)', border: '1px solid rgba(139,60,247,0.2)' }}>
+                {/* Spinner */}
+                <svg className="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="6" stroke="rgba(139,60,247,0.3)" strokeWidth="2" />
+                  <path d="M8 2a6 6 0 0 1 6 6" stroke="#8B3CF7" strokeWidth="2" strokeLinecap="round" />
+                </svg>
+                <span className="font-mono text-xs tracking-widest uppercase"
+                  style={{ color: 'rgba(139,60,247,0.7)' }}>Activando tu entrada…</span>
+              </div>
+            )
           )}
 
           <a href="/evento" className="font-mono text-xs text-white/25 hover:text-white/50 transition-colors tracking-widest uppercase">

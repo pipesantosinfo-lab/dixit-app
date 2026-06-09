@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Particles from '@/components/Particles'
 
 const EVENT_DATE = new Date('2026-08-22T14:00:00-05:00')
-const MAX_TICKETS = 300
+const MAX_TICKETS = 340
 
 function useCountdown() {
   const [time, setTime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 })
@@ -30,7 +30,8 @@ const PRICE = 40000
 const INSTAGRAM_URL = 'https://www.instagram.com/pipesantos93/'
 
 function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number }) {
-  const [form, setForm] = useState({ name: '', email: '', cedula: '' })
+  const [form, setForm] = useState({ name: '', email: '', cedula: '', age: '' })
+  const [ageConfirmed, setAgeConfirmed] = useState(false)
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -52,6 +53,15 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
       setError('La cédula debe tener entre 6 y 10 dígitos.')
       return
     }
+    const age = parseInt(form.age)
+    if (!form.age.trim() || isNaN(age) || age < 18 || age > 120) {
+      setError('Debes tener 18 años o más para adquirir una entrada.')
+      return
+    }
+    if (!ageConfirmed) {
+      setError('Debes confirmar que eres mayor de edad para continuar.')
+      return
+    }
     setLoading(true)
     setError('')
     try {
@@ -62,6 +72,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
           buyerName: form.name,
           buyerEmail: form.email,
           buyerCedula: form.cedula,
+          buyerAge: parseInt(form.age),
           quantity,
         }),
       })
@@ -155,7 +166,54 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
               />
             </div>
           ))}
+
+          {/* Edad */}
+          <div>
+            <label className="block mb-2">
+              <span className="font-mono text-xs text-white/30 tracking-widest uppercase">¿Cuántos años tienes? *</span>
+              <span className="block normal-case tracking-normal font-body mt-1 leading-snug" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>
+                💛 Este show contiene anécdotas y temas que requieren que seas mayor de edad para escucharlos. Por favor, asegúrate de tener 18 años o más antes de reservar tu lugar.
+              </span>
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={120}
+              value={form.age}
+              onChange={e => setForm(p => ({ ...p, age: e.target.value }))}
+              placeholder="Ej: 25"
+              className="w-full rounded-xl px-4 py-3 font-body text-white placeholder-white/20 text-sm outline-none transition-all"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onFocus={e => (e.currentTarget.style.borderColor = 'rgba(139,60,247,0.5)')}
+              onBlur={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            />
+          </div>
         </div>
+
+        {/* Confirmación mayor de edad */}
+        <label className="flex items-start gap-3 mb-5 cursor-pointer group">
+          <div
+            onClick={() => setAgeConfirmed(v => !v)}
+            className="flex-shrink-0 mt-0.5 w-5 h-5 rounded flex items-center justify-center transition-all"
+            style={{
+              background: ageConfirmed ? 'rgba(139,60,247,0.9)' : 'rgba(255,255,255,0.05)',
+              border: ageConfirmed ? '1.5px solid rgba(139,60,247,1)' : '1.5px solid rgba(255,255,255,0.2)',
+            }}
+          >
+            {ageConfirmed && (
+              <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                <path d="M1 4L4 7.5L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </div>
+          <span
+            onClick={() => setAgeConfirmed(v => !v)}
+            className="font-body text-xs leading-relaxed select-none"
+            style={{ color: ageConfirmed ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.35)' }}
+          >
+            Confirmo que soy mayor de edad (18+) y entiendo que me solicitarán mi documento de identidad físico al ingresar al evento.
+          </span>
+        </label>
 
         {error && <p className="text-red-400 text-sm mb-4 font-body">{error}</p>}
 

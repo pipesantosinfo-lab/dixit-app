@@ -143,7 +143,7 @@ html {
   display: inline-flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 24px;                     /* aire entre 'A partir de historias' y el CTA */
+  margin-top: 44px;                     /* aire entre 'A partir de historias' y el CTA */
   padding: 11px 16px;
   border-radius: 12px;
   background: linear-gradient(135deg, rgba(139,60,247,0.10), rgba(196,82,0,0.06));

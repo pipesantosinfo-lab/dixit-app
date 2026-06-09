@@ -313,7 +313,7 @@ function HeartParticles({ active }: { active: boolean }) {
 
 /* ── Evento ─────────────────────────────────────── */
 const EVENT_DATE  = new Date('2026-08-22T14:00:00-05:00')
-const EVENT_MAX   = 300
+const EVENT_MAX   = 340
 const EVENT_PRICE = 40000
 const EVENT_IG    = 'https://www.instagram.com/pipesantos93/'
 
@@ -336,35 +336,35 @@ function getUrgencyMessage(sold: number) {
 
   if (sold === 0) {
     return {
-      full: `CUPOS LIMITADOS · ${EVENT_MAX} ENTRADAS · BARRANQUILLA`,
-      short: `CUPOS LIMITADOS · ${EVENT_MAX} ENTRADAS`,
+      full: 'CUPOS LIMITADOS · ⚡ SHOW EN VIVO · 📍 BARRANQUILLA',
+      short: 'CUPOS LIMITADOS · ⚡ 📍 BARRANQUILLA',
       level: 'normal' as const,
     }
   }
   if (ratio >= 1) {
     return {
-      full: 'AGOTADAS · LISTA DE ESPERA · BARRANQUILLA',
+      full: 'AGOTADAS · LISTA DE ESPERA · 📍 BARRANQUILLA',
       short: 'AGOTADAS · LISTA DE ESPERA',
       level: 'critical' as const,
     }
   }
   if (ratio >= 0.8) {
     return {
-      full: `ÚLTIMAS ${available} ENTRADAS · NO TE QUEDES AFUERA`,
-      short: `ÚLTIMAS ${available} ENTRADAS`,
+      full: 'ÚLTIMAS ENTRADAS DISPONIBLES · NO TE QUEDES AFUERA',
+      short: 'ÚLTIMAS ENTRADAS DISPONIBLES',
       level: 'critical' as const,
     }
   }
   if (ratio >= 0.5) {
     return {
-      full: `VAN +${sold} ENTRADAS · QUEDAN POCAS · BARRANQUILLA`,
-      short: `VAN +${sold} · QUEDAN POCAS`,
+      full: 'SOLD OUT PRONTO · ASEGURA TU LUGAR · 📍 BARRANQUILLA',
+      short: 'SOLD OUT PRONTO · 📍 BARRANQUILLA',
       level: 'high' as const,
     }
   }
   return {
-    full: `CUPOS LIMITADOS · QUEDAN ${available} ENTRADAS · BARRANQUILLA`,
-    short: `CUPOS LIMITADOS · ${available} ENTRADAS`,
+    full: 'CUPOS LIMITADOS · ⚡ SHOW EN VIVO · 📍 BARRANQUILLA',
+    short: 'CUPOS LIMITADOS · ⚡ 📍 BARRANQUILLA',
     level: 'normal' as const,
   }
 }
@@ -405,7 +405,8 @@ function CountdownBox({ value, label }: { value: number; label: string }) {
 }
 
 function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
-  const [form, setForm]     = useState({ name: '', email: '' })
+  const [form, setForm]       = useState({ name: '', email: '', age: '' })
+  const [ageConfirmed, setAgeConfirmed] = useState(false)
   const [quantity, setQty]  = useState(1)
   const [loading, setLoad]  = useState(false)
   const [error, setError]   = useState('')
@@ -416,10 +417,13 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
   const handleSubmit = async () => {
     if (!form.name.trim() || !form.email.trim()) { setError('Tu nombre y correo son obligatorios.'); return }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) { setError('Por favor ingresa un correo válido.'); return }
+    const age = parseInt(form.age)
+    if (!form.age.trim() || isNaN(age) || age < 18 || age > 120) { setError('Debes tener 18 años o más para adquirir una entrada.'); return }
+    if (!ageConfirmed) { setError('Debes confirmar que eres mayor de edad para continuar.'); return }
     setLoad(true); setError('')
     try {
       const res  = await fetch('/api/create-order', { method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ buyerName: form.name, buyerEmail: form.email, quantity }) })
+        body: JSON.stringify({ buyerName: form.name, buyerEmail: form.email, buyerAge: age, quantity }) })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error inesperado')
       window.location.href = data.url
@@ -465,7 +469,7 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
         {available <= 20 && (
           <div className="mb-4 rounded-xl px-4 py-2 text-center"
             style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.25)' }}>
-            <p className="font-mono text-xs tracking-widest uppercase" style={{ color: 'rgba(196,82,0,0.9)' }}>⚡ Solo quedan {available} entradas</p>
+            <p className="font-mono text-xs tracking-widest uppercase" style={{ color: 'rgba(196,82,0,0.9)' }}>⚡ Últimas entradas disponibles</p>
           </div>
         )}
         <div className="space-y-4 mb-6">
@@ -481,7 +485,54 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
                 onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')} />
             </div>
           ))}
+
+          {/* Edad */}
+          <div>
+            <label className="block mb-2">
+              <span className="font-mono text-xs text-white/30 tracking-widest uppercase">¿Cuántos años tienes? *</span>
+              <span className="block normal-case tracking-normal font-body mt-1 leading-snug" style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>
+                💛 Este show contiene anécdotas y temas que requieren que seas mayor de edad para escucharlos. Por favor, asegúrate de tener 18 años o más antes de reservar tu lugar.
+              </span>
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={120}
+              value={form.age}
+              onChange={e => setForm(p => ({ ...p, age: e.target.value }))}
+              placeholder="Ej: 25"
+              className="w-full rounded-xl px-4 py-3 font-body text-white placeholder-white/20 text-sm outline-none transition-all"
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+              onFocus={e => (e.currentTarget.style.borderColor = 'rgba(139,60,247,0.5)')}
+              onBlur={e  => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)')}
+            />
+          </div>
         </div>
+        {/* Confirmación mayor de edad */}
+        <label className="flex items-start gap-3 mb-5 cursor-pointer">
+          <div
+            onClick={() => setAgeConfirmed(v => !v)}
+            className="flex-shrink-0 mt-0.5 w-5 h-5 rounded flex items-center justify-center transition-all"
+            style={{
+              background: ageConfirmed ? 'rgba(139,60,247,0.9)' : 'rgba(255,255,255,0.05)',
+              border: ageConfirmed ? '1.5px solid rgba(139,60,247,1)' : '1.5px solid rgba(255,255,255,0.2)',
+            }}
+          >
+            {ageConfirmed && (
+              <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
+                <path d="M1 4L4 7.5L10 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            )}
+          </div>
+          <span
+            onClick={() => setAgeConfirmed(v => !v)}
+            className="font-body text-xs leading-relaxed select-none"
+            style={{ color: ageConfirmed ? 'rgba(255,255,255,0.6)' : 'rgba(255,255,255,0.35)' }}
+          >
+            Confirmo que soy mayor de edad (18+) y entiendo que me solicitarán mi documento de identidad físico al ingresar al evento.
+          </span>
+        </label>
+
         {error && <p className="text-red-400 text-sm mb-4 font-body">{error}</p>}
         <button onClick={handleSubmit} disabled={loading} className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
           <span>{loading ? 'Redirigiendo a pago seguro...' : `Continuar al pago — $${total.toLocaleString('es-CO')} →`}</span>
@@ -1670,6 +1721,79 @@ function ScrollScale({
   )
 }
 
+/* ── Sales status (v2) ───────────────────────────────── */
+function useSalesStatus(): boolean | null {
+  const [open, setOpen] = useState<boolean | null>(null)
+  useEffect(() => {
+    fetch('/api/sales-status')
+      .then(r => r.json())
+      .then(d => setOpen(!!d.open))
+      .catch(() => setOpen(false))
+  }, [])
+  return open
+}
+
+/* ── Modal "¡Muy pronto!" ────────────────────────────── */
+function ComingSoonModal({ onClose }: { onClose: () => void }) {
+  const { days, hours, minutes, seconds } = useCountdown()
+  return (
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ background: 'rgba(7,5,8,0.92)', backdropFilter: 'blur(14px)' }}
+      onClick={e => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        className="w-full max-w-sm rounded-3xl p-8 text-center animate-fade-up"
+        style={{
+          background: 'linear-gradient(145deg,#0d0a14,#1a0e28)',
+          border: '1px solid rgba(196,82,0,0.45)',
+          boxShadow: '0 40px 100px rgba(0,0,0,0.8), 0 0 60px rgba(196,82,0,0.12)',
+        }}
+      >
+        <button onClick={onClose} className="absolute top-5 right-5 text-white/30 hover:text-white transition-colors text-2xl leading-none" style={{ position: 'absolute' }}>×</button>
+
+        <div className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5"
+          style={{ background: 'linear-gradient(135deg,rgba(196,82,0,0.25),rgba(255,154,60,0.1))', border: '1px solid rgba(196,82,0,0.4)' }}>
+          <span style={{ fontSize: 26 }}>⚡</span>
+        </div>
+
+        <p className="font-mono text-[10px] tracking-[0.4em] uppercase mb-3" style={{ color: 'rgba(196,82,0,0.8)' }}>Próximamente</p>
+        <h2 className="font-display text-2xl text-white mb-2 font-light">¡Las entradas abren muy pronto!</h2>
+        <p className="font-body text-sm leading-relaxed mb-7" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          Sigue el Instagram de Pipe Santos para enterarte exactamente cuándo se habilitan.
+        </p>
+
+        <div className="flex items-center justify-center gap-4 mb-7">
+          {[{ v: days, l: 'días' }, { v: hours, l: 'hrs' }, { v: minutes, l: 'min' }, { v: seconds, l: 'seg' }].map((item, i) => (
+            <div key={item.l} className="flex items-center gap-4">
+              {i > 0 && <span className="font-mono text-xs" style={{ color: 'rgba(196,82,0,0.4)' }}>:</span>}
+              <div className="text-center">
+                <div className="w-12 h-12 rounded-xl flex items-center justify-center"
+                  style={{ background: 'rgba(196,82,0,0.1)', border: '1px solid rgba(196,82,0,0.3)' }}>
+                  <span className="font-mono text-lg font-semibold tabular-nums" style={{ color: '#FF9A3C' }}>{String(item.v).padStart(2,'0')}</span>
+                </div>
+                <p className="font-mono text-[8px] uppercase tracking-wider mt-1.5" style={{ color: 'rgba(255,255,255,0.25)' }}>{item.l}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <a
+          href={EVENT_IG}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={onClose}
+          className="w-full py-3.5 rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all flex items-center justify-center gap-2"
+          style={{ background: 'linear-gradient(135deg,#C45200,#E07820,#FF9A3C)', boxShadow: '0 4px 20px rgba(196,82,0,0.4)' }}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Seguir en Instagram
+        </a>
+      </div>
+    </div>
+  )
+}
+
 export default function PreviewPage() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
   const [contactStatus, setContactStatus] = useState<'idle' | 'loading' | 'ok' | 'error'>('idle')
@@ -1678,6 +1802,8 @@ export default function PreviewPage() {
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const [pipeMsgIndex, setPipeMsgIndex] = useState(0)
   const [showEventModal, setShowEventModal] = useState(false)
+  const [showComingSoon, setShowComingSoon] = useState(false)
+  const salesOpen = useSalesStatus()
   const [showFlyer, setShowFlyer] = useState(false)
   const [showVoiceNote, setShowVoiceNote] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -1879,6 +2005,7 @@ export default function PreviewPage() {
       <Particles />
 
       {showEventModal && <EventoModal onClose={() => setShowEventModal(false)} sold={eventSold} />}
+      {showComingSoon && <ComingSoonModal onClose={() => setShowComingSoon(false)} />}
       {showFlyer && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -2238,7 +2365,7 @@ export default function PreviewPage() {
               href="#evento"
               onClick={() => track({ type: 'click', target: 'hero_buy_cta' })}
               className={`hero-cta group hero-cta--${urgency.level}`}
-              aria-label="Comprar entrada para el evento del 22 de agosto"
+              aria-label="Quiero asistir al show del 22 de agosto"
             >
               {/* Top: mensaje de urgencia (cambia con el nivel de venta) */}
               <span className="hero-cta__meta">
@@ -2247,7 +2374,7 @@ export default function PreviewPage() {
               </span>
               {/* Botón */}
               <span className="hero-cta__btn">
-                <span>Comprar entrada · $40.000</span>
+                <span>¡Quiero asistir al show!</span>
                 <svg className="hero-cta__arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M13 5l7 7-7 7"/>
                 </svg>
@@ -2880,15 +3007,10 @@ export default function PreviewPage() {
                       <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
                     ) : (
                       <div className="flex flex-col gap-2 mt-4">
-                        <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                          onClick={() => track({ type: 'click', target: 'open_event' })}
+                        <button
+                          onClick={() => { track({ type: 'click', target: 'open_event' }); salesOpen ? setShowEventModal(true) : setShowComingSoon(true) }}
                           className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
                           style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                          Atento al lanzamiento
-                        </a>
-                        <button disabled
-                          className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
-                          style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
                           Comprar entrada · $40.000
                         </button>
                       </div>
@@ -3031,15 +3153,10 @@ export default function PreviewPage() {
                             <p className="text-center font-mono text-xs text-white/40 tracking-widest uppercase mt-4">Agotadas</p>
                           ) : (
                             <div className="flex flex-col gap-2 mt-4">
-                              <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                                onClick={() => track({ type: 'click', target: 'open_event' })}
+                              <button
+                                onClick={() => { track({ type: 'click', target: 'open_event' }); salesOpen ? setShowEventModal(true) : setShowComingSoon(true) }}
                                 className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
                                 style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                                Atento al lanzamiento
-                              </a>
-                              <button disabled
-                                className="w-full py-3 text-center rounded-full font-mono text-xs tracking-widest uppercase cursor-not-allowed"
-                                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.25)' }}>
                                 Comprar entrada · $40.000
                               </button>
                             </div>
@@ -3194,17 +3311,7 @@ export default function PreviewPage() {
                   <p className="font-body text-white/80 font-medium">Entrada General</p>
                   <p className="font-mono text-xs text-white/30 mt-1">Acceso completo al evento</p>
                 </div>
-                <p className="font-display text-3xl font-light" style={{ color: '#8B3CF7' }}>$40.000</p>
-              </div>
-              <div className="mb-6">
-                <div className="flex justify-between font-mono text-xs text-white/30 mb-2">
-                  <span>{eventSold} vendidas</span>
-                  <span>{EVENT_MAX - eventSold} disponibles</span>
-                </div>
-                <div className="h-1 rounded-full" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div className="h-1 rounded-full transition-all duration-700"
-                    style={{ width: `${(eventSold / EVENT_MAX) * 100}%`, background: 'linear-gradient(90deg,#8B3CF7,#C45200)' }} />
-                </div>
+                <p className="font-display text-3xl font-light" style={{ color: '#FF9A3C' }}>$40.000</p>
               </div>
               {EVENT_MAX - eventSold <= 0 ? (
                 <div className="rounded-xl py-4 text-center"
@@ -3213,13 +3320,11 @@ export default function PreviewPage() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-3">
-                  <a href={EVENT_IG} target="_blank" rel="noopener noreferrer"
-                    className="btn-primary w-full py-5 text-center block"
+                  <button
+                    onClick={() => salesOpen ? setShowEventModal(true) : setShowComingSoon(true)}
+                    className="btn-primary w-full py-5 text-center"
                     style={{ background: 'linear-gradient(135deg, #C45200, #E07820, #FF9A3C)', boxShadow: '0 4px 24px rgba(196,82,0,0.45)' }}>
-                    <span>Atento al lanzamiento</span>
-                  </a>
-                  <button disabled className="btn-primary w-full py-5 opacity-30 cursor-not-allowed">
-                    <span>Comprar ahora — $40.000 COP</span>
+                    <span>Comprar entrada · $40.000 COP</span>
                   </button>
                 </div>
               )}

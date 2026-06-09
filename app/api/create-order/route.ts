@@ -3,7 +3,7 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { createBoldPaymentLink } from '@/lib/bold'
 import { v4 as uuidv4 } from 'uuid'
 
-const MAX_TICKETS = 300
+const MAX_TICKETS = 340
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/
 const PHONE_RE = /^[+]?[\d\s()-]{6,20}$/
 
@@ -29,6 +29,7 @@ export async function POST(req: NextRequest) {
   const buyerEmail  = String(body.buyerEmail  ?? '').trim().toLowerCase().slice(0, 254)
   const buyerPhone  = String(body.buyerPhone  ?? '').trim().slice(0, 20) || null
   const buyerCedula = String(body.buyerCedula ?? '').replace(/\D/g, '').slice(0, 10) || null
+  const buyerAge    = parseInt(String(body.buyerAge)) || 0
   const quantity    = Math.min(Math.max(1, parseInt(String(body.quantity)) || 1), 10)
 
   if (!buyerName || !buyerEmail) {
@@ -39,6 +40,9 @@ export async function POST(req: NextRequest) {
   }
   if (buyerPhone && !PHONE_RE.test(buyerPhone)) {
     return NextResponse.json({ error: 'Teléfono inválido.' }, { status: 400 })
+  }
+  if (!buyerAge || buyerAge < 18 || buyerAge > 120) {
+    return NextResponse.json({ error: 'Debes tener 18 años o más para adquirir una entrada.' }, { status: 400 })
   }
   if (buyerCedula && (buyerCedula.length < 6 || buyerCedula.length > 10)) {
     return NextResponse.json({ error: 'Cédula inválida.' }, { status: 400 })
@@ -97,6 +101,29 @@ export async function POST(req: NextRequest) {
   if (error) {
     console.error('DB insert error:', error)
     return NextResponse.json({ error: 'Error al crear el pedido. Intenta de nuevo.' }, { status: 500 })
+  }
+
+  /* Post-insert race-condition check:
+   * Dos requests concurrentes pueden pasar el pre-check simultáneamente e insertar
+   * ambas. Después de insertar, volvemos a contar para detectar el oversell y
+   * hacer rollback antes de crear el link de pago. */
+  const [{ count: confirmedNow }, { count: pendingNow }] = await Promise.all([
+    db.from('lavida_tickets')
+      .select('id', { count: 'exact', head: true })
+      .in('status', ['active', 'used']),
+    db.from('lavida_tickets')
+      .select('id', { count: 'exact', head: true })
+      .eq('status', 'pending')
+      .gte('created_at', pendingCutoff),
+  ])
+  if ((confirmedNow ?? 0) + (pendingNow ?? 0) > MAX_TICKETS) {
+    // Rollback: eliminar las entradas que acabamos de insertar
+    await db.from('lavida_tickets').delete().like('ticket_number', `${orderId}-%`)
+    console.warn('create-order: oversell detectado, rollback para', orderId)
+    return NextResponse.json(
+      { error: 'Las últimas entradas acaban de venderse. Intenta de nuevo.' },
+      { status: 409 }
+    )
   }
 
   // Create Bold payment link for the full amount
