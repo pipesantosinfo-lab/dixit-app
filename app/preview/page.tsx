@@ -2918,49 +2918,39 @@ export default function PreviewPage() {
 
               </div>{/* fin par Barranquilla */}
 
-              {/* Divisor vertical */}
-              <div className="flex flex-col items-center gap-3 py-6 flex-shrink-0 w-5">
-                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 30%, rgba(255,255,255,0.07) 70%, transparent)' }} />
-                <div className="w-1 h-1 rounded-full flex-shrink-0" style={{ background: 'rgba(255,255,255,0.12)' }} />
-                <div className="flex-1 w-px" style={{ background: 'linear-gradient(to bottom, transparent, rgba(255,255,255,0.07) 30%, rgba(255,255,255,0.07) 70%, transparent)' }} />
-              </div>
+              {/* ── Otras ciudades: póster Cartagena — full height ── */}
+              <div className="flex-shrink-0 flex flex-col gap-2" style={{ width: '195px' }}>
+                <p className="font-mono text-[9px] tracking-[0.35em] uppercase text-center flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }}>Otras ciudades</p>
 
-              {/* ── Card Cartagena (pasado) — compacta, desaturada ── */}
-              <div className="flex-shrink-0 flex flex-col gap-3" style={{ width: '210px', opacity: 0.68, filter: 'saturate(0.28) brightness(0.72)' }}>
-                {/* Etiqueta */}
-                <p className="font-mono text-[9px] tracking-[0.35em] uppercase text-center" style={{ color: 'rgba(255,255,255,0.35)' }}>Otras ciudades</p>
-                {/* Card foto + info */}
-                <div className="rounded-2xl overflow-hidden flex-1" style={{ background: 'linear-gradient(180deg, #1e1826 0%, #100d18 100%)', outline: '1px solid rgba(255,255,255,0.07)' }}>
-                  <div className="relative h-32">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src="/card-cartagena.jpg" alt="Cartagena" className="w-full h-full object-cover object-center" />
-                    <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(14,10,20,0.9) 0%, transparent 60%)' }} />
-                    <div className="absolute bottom-2 left-3">
-                      <p className="font-display text-base font-bold text-white leading-tight">Pipe Santos</p>
-                    </div>
-                  </div>
-                  <div className="px-3 pt-3 pb-3">
-                    <div className="flex gap-2 items-center mb-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.07)', paddingBottom: '10px' }}>
-                      <div className="text-center flex-shrink-0">
-                        <p className="font-mono text-[9px] uppercase tracking-widest leading-none" style={{ color: 'rgba(196,82,0,0.9)' }}>MAR</p>
-                        <p className="font-display text-2xl font-bold text-white leading-none">14</p>
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-body text-white text-xs font-medium leading-snug">La vida es cule viaje</p>
-                        <p className="font-mono text-[9px] mt-0.5 leading-snug" style={{ color: 'rgba(255,255,255,0.4)' }}>Cartagena · Teatro San Francisco</p>
-                      </div>
-                    </div>
-                    <div className="w-full py-1.5 rounded-full text-center" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)' }}>
-                      <span className="font-mono text-[10px] tracking-[0.28em] text-white/50 uppercase">#SoldOut</span>
-                    </div>
-                  </div>
-                </div>
-                {/* Mini flyer */}
-                <div className="rounded-xl overflow-hidden relative flex-shrink-0" style={{ height: '100px', outline: '1px solid rgba(255,255,255,0.06)' }}>
+                {/* Póster: flyer como fondo, sello #SoldOut al centro, info abajo */}
+                <div className="flex-1 rounded-2xl overflow-hidden relative" style={{
+                  outline: '1px solid rgba(255,255,255,0.09)',
+                  filter: 'saturate(0.55) brightness(0.68)',
+                  minHeight: 0,
+                }}>
+                  {/* Flyer full bleed */}
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/flyer-cartagena.jpg" alt="Flyer Cartagena" className="w-full h-full object-cover object-center block" />
-                  <div className="absolute inset-0 flex items-center justify-center" style={{ background: 'rgba(7,5,8,0.32)' }}>
-                    <span className="font-mono font-bold tracking-[0.18em] text-white text-sm rotate-[-12deg]" style={{ textShadow: '0 2px 8px rgba(0,0,0,0.9)' }}>#SoldOut</span>
+                  <img src="/flyer-cartagena.jpg" alt="Flyer Cartagena" className="absolute inset-0 w-full h-full object-cover" style={{ objectPosition: 'center top' }} />
+
+                  {/* Scrim superior suave */}
+                  <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(4,2,8,0.25) 0%, transparent 30%)' }} />
+
+                  {/* Sello #SoldOut */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="rotate-[-16deg] px-3.5 py-1.5" style={{
+                      border: '2px solid rgba(255,255,255,0.5)',
+                      borderRadius: '4px',
+                      background: 'rgba(4,2,8,0.18)',
+                    }}>
+                      <span className="font-mono font-black text-white text-sm tracking-[0.22em] uppercase">#SoldOut</span>
+                    </div>
+                  </div>
+
+                  {/* Info inferior */}
+                  <div className="absolute bottom-0 left-0 right-0 px-3.5 pb-4 pt-10" style={{ background: 'linear-gradient(to top, rgba(4,2,8,0.97) 55%, transparent)' }}>
+                    <p className="font-mono text-[10px] font-semibold tracking-wide mb-1" style={{ color: 'rgba(220,100,20,0.9)' }}>MAR 14 · Cartagena</p>
+                    <p className="font-body text-white text-xs font-medium leading-snug">La vida es cule viaje</p>
+                    <p className="font-mono text-[9px] mt-1" style={{ color: 'rgba(255,255,255,0.38)' }}>Teatro San Francisco</p>
                   </div>
                 </div>
               </div>{/* fin Cartagena */}
