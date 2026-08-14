@@ -585,7 +585,15 @@ const VP_REPLAY = { once: true, amount: 0.2 }
 const VP = { once: true, amount: 0.15 }
 
 const galleryPhotos = [
-  // Fotos nuevas (eventos más recientes) — primero para protagonismo
+  // Fotos nuevas (agosto 2026) — primero para protagonismo
+  '/gallery/IMG_0223.jpg',
+  '/gallery/IMG_0261-2.jpg',
+  '/gallery/IMG_0271-2.jpg',
+  '/gallery/IMG_0280-2.jpg',
+  '/gallery/IMG_0298-2.jpg',
+  '/gallery/IMG_7303.JPG',
+  '/gallery/PHOTO-2026-08-03-17-31-37.jpg',
+  // Fotos anteriores
   '/gallery/_MG_8609.jpg',
   '/gallery/DSC04719.jpg',
   '/gallery/_MG_8653.jpg',
