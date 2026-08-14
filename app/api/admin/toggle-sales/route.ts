@@ -21,8 +21,8 @@ export async function POST(req: NextRequest) {
   }
   const { enabled } = body
   const db = supabaseAdmin()
-  const body = JSON.stringify({ enabled: !!enabled })
-  const blob = new Blob([body], { type: 'application/json' })
+  const payload = JSON.stringify({ enabled: !!enabled })
+  const blob = new Blob([payload], { type: 'application/json' })
   const { error } = await db.storage.from('config').upload('sales.json', blob, { upsert: true, contentType: 'application/json' })
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
   return NextResponse.json({ ok: true, enabled: !!enabled })
