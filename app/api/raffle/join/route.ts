@@ -30,7 +30,9 @@ export async function POST(req: NextRequest) {
   }
 
   const ticketNumber = String(body.ticket_number ?? '').slice(0, 64)
-  if (!ticketNumber || !/^[a-f0-9-]+$/i.test(ticketNumber)) {
+  // Formato: <uuid>-<dígito(s)> — igual al regex de validate-qr
+  const TICKET_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-\d+$/i
+  if (!ticketNumber || !TICKET_RE.test(ticketNumber)) {
     return NextResponse.json({ error: 'Número de entrada inválido' }, { status: 400 })
   }
 

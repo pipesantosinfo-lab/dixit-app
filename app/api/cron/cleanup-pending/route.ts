@@ -8,7 +8,7 @@ export const dynamic = 'force-dynamic'
  * Cancela tickets 'pending' con más de PENDING_TTL_MIN minutos de antigüedad.
  * Previene que checkouts abandonados ocupen inventario permanentemente.
  *
- * Ejecutado por Vercel Cron cada 15 minutos.
+ * Ejecutado por Vercel Cron una vez al día (vercel.json: "0 5 * * *").
  * Autorizado vía Bearer <CRON_SECRET> (timing-safe).
  */
 const PENDING_TTL_MIN = 30
