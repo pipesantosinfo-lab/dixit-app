@@ -2328,7 +2328,7 @@ export default function PreviewPage() {
                 src="/hero-mobile-2x-v3.jpg"
                 srcSet="/hero-mobile-2x-v3.jpg 2x, /hero-mobile-3x-v3.jpg 3x"
                 alt=""
-                className="absolute inset-0 w-full h-full object-cover object-top md:[object-position:center_60%]"
+                className="absolute inset-0 w-full h-full object-contain object-center"
                 style={{  }}
                 fetchPriority="high"
                 decoding="async"
