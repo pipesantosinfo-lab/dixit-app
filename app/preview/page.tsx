@@ -2311,22 +2311,22 @@ export default function PreviewPage() {
               <source
                 media="(min-width: 768px)"
                 type="image/webp"
-                srcSet="/hero-desktop-2x-v4.webp"
+                srcSet="/hero-desktop-2x-v5.webp"
               />
               <source
                 media="(min-width: 768px)"
                 type="image/jpeg"
-                srcSet="/hero-desktop-2x-v4.jpg"
+                srcSet="/hero-desktop-2x-v5.jpg"
               />
               {/* Mobile <768px */}
               <source
                 type="image/webp"
-                srcSet="/hero-mobile-2x-v4.webp 2x, /hero-mobile-3x-v4.webp 3x"
+                srcSet="/hero-mobile-2x-v5.webp 2x, /hero-mobile-3x-v5.webp 3x"
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/hero-mobile-2x-v4.jpg"
-                srcSet="/hero-mobile-2x-v4.jpg 2x, /hero-mobile-3x-v4.jpg 3x"
+                src="/hero-mobile-2x-v5.jpg"
+                srcSet="/hero-mobile-2x-v5.jpg 2x, /hero-mobile-3x-v5.jpg 3x"
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover object-top md:[object-position:center_60%]"
                 style={{  }}
