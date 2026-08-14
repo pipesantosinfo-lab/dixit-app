@@ -586,15 +586,12 @@ const VP = { once: true, amount: 0.15 }
 
 const galleryPhotos = [
   // Fotos nuevas (agosto 2026) — primero para protagonismo
-  '/gallery/IMG_0223.jpg',
-  '/gallery/IMG_0261-2.jpg',
+  '/gallery/IMG_0298-2.jpg',
+  '/gallery/PHOTO-2026-08-03-17-31-37.jpg',
   '/gallery/IMG_0271-2.jpg',
   '/gallery/IMG_0280-2.jpg',
-  '/gallery/IMG_0298-2.jpg',
   '/gallery/IMG_7303.JPG',
-  '/gallery/PHOTO-2026-08-03-17-31-37.jpg',
   // Fotos anteriores
-  '/gallery/_MG_8609.jpg',
   '/gallery/DSC04719.jpg',
   '/gallery/_MG_8653.jpg',
   '/gallery/DSC04778.jpg',
@@ -615,8 +612,8 @@ const galleryPhotos = [
   '/gallery/IMG_7542-2.jpg',
   '/gallery/Archivo_540-3.jpg',
   '/gallery/IMG_5232.JPG',
-  '/gallery/IMG_8760.jpg',
   '/gallery/Archivo_545-3.jpg',
+  '/gallery/_MG_8609.jpg',
   '/gallery/IMG_9090.jpg',
   '/gallery/Archivo_565-4.jpg',
   '/gallery/IMG_9667.JPG',
