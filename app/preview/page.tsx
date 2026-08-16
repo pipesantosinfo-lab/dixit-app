@@ -2743,7 +2743,7 @@ export default function PreviewPage() {
               />
             </div>
             <p className="text-center font-mono text-xs tracking-widest mt-4" style={{ color: 'rgba(255,255,255,0.25)' }}>
-              ← desliza o usa las flechas para ver más →
+              desliza para ver todas las fotos
             </p>
           </div>
 

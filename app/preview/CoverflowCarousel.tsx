@@ -246,6 +246,25 @@ export default function CoverflowCarousel(props: Partial<Props>) {
     return () => window.removeEventListener("keydown", onKey)
   }, [autoplay, goPrev, goNext])
 
+  // Swipe táctil
+  const touchStartX = useRef<number | null>(null)
+  const touchStartY = useRef<number | null>(null)
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }, [])
+  const onTouchEnd = useCallback((e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return
+    const dx = e.changedTouches[0].clientX - touchStartX.current
+    const dy = e.changedTouches[0].clientY - touchStartY.current
+    // Solo actuar si el movimiento es más horizontal que vertical
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 30) {
+      if (dx < 0) goNext(); else goPrev()
+    }
+    touchStartX.current = null
+    touchStartY.current = null
+  }, [goNext, goPrev])
+
   const selectable = !autoplay
   const cards = images.map((img, i) => (
     <Card
@@ -261,6 +280,8 @@ export default function CoverflowCarousel(props: Partial<Props>) {
       tabIndex={0}
       onMouseEnter={() => { isHoveredRef.current = true }}
       onMouseLeave={() => { isHoveredRef.current = false }}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
       style={{
         ...style, position: "relative", width: "100%", height: "100%",
         overflow: "hidden", userSelect: "none", touchAction: "pan-y", outline: "none",
