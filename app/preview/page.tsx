@@ -2733,9 +2733,42 @@ export default function PreviewPage() {
             </p>
           </div>
 
-          {/* Spin orbit — todas las plataformas */}
-          <div className="w-full" style={{ height: '520px' }}>
-            <SpinImage images={galleryPhotos} />
+          {/* Mobile: carrusel horizontal con snap-scroll y pagination */}
+          <GalleryMobileCarousel photos={galleryPhotos} onPhotoClick={openLightbox} />
+
+          {/* Desktop (md+): masonry grid con hover overlays */}
+          <div className="hidden md:block columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
+            {galleryPhotos.map((src, i) => (
+              <motion.div
+                key={src}
+                className="break-inside-avoid relative overflow-hidden rounded-xl cursor-pointer group"
+                style={{ marginBottom: '12px' }}
+                onClick={() => { track({ type: 'click', target: 'view_gallery' }); openLightbox(i) }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true, amount: 0.1 }}
+                transition={{ duration: 0.5, delay: (i % 4) * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                whileHover={{ scale: 1.03, transition: { duration: 0.3 } }}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className="w-full h-auto block transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+                {/* Hover overlay */}
+                <div
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center"
+                  style={{ background: 'linear-gradient(135deg, rgba(139,60,247,0.45), rgba(196,82,0,0.35))' }}
+                >
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.3)' }}>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                      <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+                    </svg>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
