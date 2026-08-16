@@ -2735,8 +2735,16 @@ export default function PreviewPage() {
           </div>
 
           {/* Mobile: coverflow carousel */}
-          <div className="md:hidden" style={{ height: '380px' }}>
-            <CoverflowCarousel images={galleryPhotos.map(src => ({ srcUrl: src, alt: '' }))} />
+          <div className="md:hidden">
+            <div style={{ height: '380px' }}>
+              <CoverflowCarousel
+                images={galleryPhotos.map(src => ({ srcUrl: src, alt: '' }))}
+                autoplay={false}
+              />
+            </div>
+            <p className="text-center font-mono text-xs tracking-widest mt-4" style={{ color: 'rgba(255,255,255,0.25)' }}>
+              ← desliza o usa las flechas para ver más →
+            </p>
           </div>
 
           {/* Desktop (md+): masonry grid con hover overlays */}
