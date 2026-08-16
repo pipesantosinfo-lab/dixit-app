@@ -2674,7 +2674,7 @@ export default function PreviewPage() {
             <ScrollScale className="relative">
               <div className="absolute inset-0 rounded-3xl" style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.15) 0%, transparent 70%)', transform: 'scale(1.2)' }} />
               <div className="relative rounded-3xl overflow-hidden" style={{ aspectRatio: '3/4' }}>
-                <div className="w-full h-full bg-cover bg-center bg-top" style={{ backgroundImage: "url('/gallery/DSC01807.jpg')" }} />
+                <div className="w-full h-full bg-cover bg-center bg-top" style={{ backgroundImage: "url('/gallery/PHOTO-2026-08-03-17-31-37.jpg')" }} />
               </div>
             </ScrollScale>
           </div>
