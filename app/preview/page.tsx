@@ -10,6 +10,7 @@ import BorisCharacter from '@/components/BorisCharacter'
 import EventoCharacter from '@/components/EventoCharacter'
 import { track } from '@/lib/track'
 import SpinImage from './SpinImage'
+import CoverflowCarousel from './CoverflowCarousel'
 
 /* ── ScrambleText ────────────────────────────────── */
 const SCRAMBLE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz@#$%&'
@@ -2733,8 +2734,10 @@ export default function PreviewPage() {
             </p>
           </div>
 
-          {/* Mobile: carrusel horizontal con snap-scroll y pagination */}
-          <GalleryMobileCarousel photos={galleryPhotos} onPhotoClick={openLightbox} />
+          {/* Mobile: coverflow carousel */}
+          <div className="md:hidden" style={{ height: '380px' }}>
+            <CoverflowCarousel images={galleryPhotos.map(src => ({ srcUrl: src, alt: '' }))} />
+          </div>
 
           {/* Desktop (md+): masonry grid con hover overlays */}
           <div className="hidden md:block columns-2 md:columns-3 lg:columns-4 gap-3 space-y-3">
