@@ -32,9 +32,15 @@ export async function POST(req: NextRequest) {
   const events = Array.isArray(body.events) ? (body.events as unknown[]).slice(0, MAX_EVENTS_PER_REQUEST) : []
   if (events.length === 0) return NextResponse.json({ ok: true })
 
-  // Hash de IP con salt (no almacenamos IP en claro)
-  const salt = process.env.ANALYTICS_SALT ?? 'pipesantos-default-salt-2026'
-  const ipHash = createHash('sha256').update(`${ip}-${salt}`).digest('hex').slice(0, 16)
+  // Hash de IP con salt (no almacenamos IP en claro).
+  // Si no hay salt configurado en producción, hasheamos sin IP identificable
+  // — preferimos perder granularidad antes que filtrar PII por un default público.
+  const salt = process.env.ANALYTICS_SALT
+  if (!salt && process.env.NODE_ENV === 'production') {
+    console.warn('ANALYTICS_SALT no configurado — IP hash será aleatorio por request')
+  }
+  const ipMaterial = salt ? `${ip}-${salt}` : `${ip}-${Math.random()}-${Date.now()}`
+  const ipHash = createHash('sha256').update(ipMaterial).digest('hex').slice(0, 16)
   const userAgent = req.headers.get('user-agent')?.slice(0, 300) ?? null
 
   const rows = events

@@ -48,7 +48,8 @@ export async function POST(req: NextRequest) {
       from: 'Pipe Santos Web <entradas@pipesantos.com>',
       to:   'pipesantos93@gmail.com',
       replyTo: email,
-      subject: `✉️ Nuevo mensaje de ${escapeHtml(name)}`,
+      // Subject es plain text → strip CRLF (prevenir header injection) y limitar largo
+      subject: `✉️ Nuevo mensaje de ${name.replace(/[\r\n<>]/g, '').slice(0, 80)}`,
       html: `
         <div style="font-family:sans-serif;color:#1a1a1a;max-width:520px">
           <h2 style="color:#8B3CF7;margin:0 0 20px">Nuevo mensaje desde pipesantos.com</h2>

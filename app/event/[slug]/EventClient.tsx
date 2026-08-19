@@ -25,7 +25,7 @@ export default function EventClient({ event, tiers }: Props) {
       <section className="relative min-h-screen flex flex-col">
         {/* Background image with deep overlay */}
         <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero.jpg')" }} />
+          <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: "url('/hero-desktop-1x.jpg')" }} />
           {/* Multi-layer gradient overlay for depth */}
           <div className="absolute inset-0" style={{
             background: 'linear-gradient(to bottom, rgba(7,5,8,0.5) 0%, rgba(7,5,8,0.2) 30%, rgba(7,5,8,0.75) 70%, rgba(7,5,8,1) 100%)',

@@ -1,81 +1,202 @@
 'use client'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, animate } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
 
+/* Tiempos (ms) */
+const SHOW_DURATION = 2400
+const EXIT_DURATION = 1200
+
 export default function IntroOverlay() {
-  const [phase, setPhase] = useState<'in' | 'hold' | 'out'>('in')
+  const [exiting, setExiting] = useState(false)
   const [gone, setGone] = useState(false)
+  /* sweep va de -8 → 112: el beam recorre toda la pantalla diagonalmente.
+   * Arranca un poco fuera del top-left y termina un poco fuera del bottom-right. */
+  const [sweep, setSweep] = useState(-8)
 
   useEffect(() => {
-    const t1 = setTimeout(() => setPhase('hold'), 1400)
-    const t2 = setTimeout(() => setPhase('out'), 2500)
-    const t3 = setTimeout(() => setGone(true), 3400)
-    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+    const t1 = setTimeout(() => setExiting(true), SHOW_DURATION)
+    const t2 = setTimeout(() => setGone(true), SHOW_DURATION + EXIT_DURATION + 50)
+    return () => { clearTimeout(t1); clearTimeout(t2) }
   }, [])
+
+  useEffect(() => {
+    if (!exiting) return
+    const controls = animate(-8, 112, {
+      duration: EXIT_DURATION / 1000,
+      ease: [0.65, 0, 0.35, 1],
+      onUpdate: setSweep,
+    })
+    return () => controls.stop()
+  }, [exiting])
 
   if (gone) return null
 
+  /* Mask 135deg → la zona transparente avanza del top-left al bottom-right.
+   * El "edge" entre transparente y negro queda como una banda diagonal nítida. */
+  const overlayMask = `linear-gradient(135deg, transparent ${sweep}%, black ${sweep + 4}%)`
+
+  /* El beam: stripe gradient morado→rosa→naranja a lo largo de la línea de
+   * sweep, con mix-blend-mode: screen para que ilumine lo que pasa debajo. */
+  const beamBg = `linear-gradient(135deg,
+    transparent ${sweep - 2}%,
+    rgba(139,60,247,0.85) ${sweep + 0.3}%,
+    rgba(196,82,255,1) ${sweep + 1.5}%,
+    rgba(255,140,50,0.9) ${sweep + 3}%,
+    rgba(255,200,80,0.4) ${sweep + 5}%,
+    transparent ${sweep + 8}%
+  )`
+
   return (
-    <AnimatePresence>
-      {!gone && (
+    <div
+      className="fixed inset-0 z-[9999] overflow-hidden"
+      style={{ pointerEvents: exiting ? 'none' : 'auto' }}
+    >
+      {/* ── Overlay principal con mask diagonal ─────────────────────────── */}
+      <div
+        className="absolute inset-0 flex flex-col items-center justify-center"
+        style={{
+          background: '#070508',
+          WebkitMaskImage: overlayMask,
+          maskImage: overlayMask,
+          WebkitMaskRepeat: 'no-repeat',
+          maskRepeat: 'no-repeat',
+          willChange: 'mask-image',
+        }}
+      >
+        {/* Capa 1: textura grain */}
+        <div
+          className="absolute inset-0"
+          aria-hidden
+          style={{
+            backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.8  0 0 0 0 0.8  0 0 0 0 0.9  0 0 0 0.22 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>")`,
+            backgroundSize: '240px 240px',
+            opacity: 0.45,
+            mixBlendMode: 'overlay',
+          }}
+        />
+
+        {/* Capa 2: aurora morada que respira */}
         <motion.div
-          className="fixed inset-0 z-[999] flex flex-col items-center justify-center"
-          style={{ background: '#070508' }}
-          animate={phase === 'out' ? { y: '-100%' } : { y: 0 }}
-          transition={phase === 'out' ? { duration: 0.9, ease: [0.76, 0, 0.24, 1] } : { duration: 0 }}
+          className="absolute rounded-full"
+          aria-hidden
+          style={{
+            width: 'min(140vmin, 1200px)',
+            height: 'min(140vmin, 1200px)',
+            background: 'radial-gradient(circle, rgba(139,60,247,0.40) 0%, rgba(139,60,247,0.22) 25%, rgba(196,82,255,0.12) 45%, transparent 70%)',
+            filter: 'blur(40px)',
+            willChange: 'transform, opacity',
+          }}
+          animate={{ scale: [0.92, 1.04, 0.92], opacity: [0.55, 0.85, 0.55] }}
+          transition={{ duration: 3.4, repeat: Infinity, ease: 'easeInOut' }}
+        />
+
+        {/* Capa 3: aurora naranja secundaria */}
+        <motion.div
+          className="absolute rounded-full"
+          aria-hidden
+          style={{
+            width: 'min(80vmin, 720px)',
+            height: 'min(80vmin, 720px)',
+            top: '15%',
+            right: '10%',
+            background: 'radial-gradient(circle, rgba(255,140,50,0.22) 0%, rgba(196,82,0,0.12) 35%, transparent 65%)',
+            filter: 'blur(50px)',
+            willChange: 'transform, opacity',
+          }}
+          animate={{ scale: [1, 1.15, 1], opacity: [0.35, 0.6, 0.35] }}
+          transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 0.8 }}
+        />
+
+        {/* Vignette */}
+        <div
+          className="absolute inset-0"
+          aria-hidden
+          style={{ background: 'radial-gradient(ellipse at center, transparent 30%, rgba(7,5,8,0.65) 90%)' }}
+        />
+
+        {/* Logo */}
+        <motion.div
+          className="relative z-10"
+          initial={{ opacity: 0, scale: 0.88, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
         >
-          {/* Logo + overlays animados */}
-          <motion.div
-            className="relative"
-            initial={{ opacity: 0, scale: 0.88 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          >
-            <Image
-              src="/logo-opening.png"
-              alt="Pipe Santos"
-              width={420}
-              height={280}
-              className="w-[72vw] max-w-sm md:max-w-md h-auto"
-              priority
-            />
-
-            {/* ── Guiño sobre el ● rojo del REC ───────────────
-                Cubre el punto con el color de fondo para simular
-                el parpadeo de un ojo (scaleY 0→1→0)            */}
-            <motion.div
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                background: '#070508',
-                width: '8%',
-                aspectRatio: '1',
-                top: '61%',
-                left: '33%',
-                transformOrigin: 'center center',
-              }}
-              animate={{ scaleY: [0, 1, 0, 0, 0, 1, 0] }}
-              transition={{
-                duration: 3.2,
-                repeat: Infinity,
-                times: [0, 0.05, 0.1, 0.45, 0.6, 0.65, 0.7],
-                ease: 'easeInOut',
-                delay: 1.3,
-              }}
-            />
-
-          </motion.div>
-
-          {/* Línea morada inferior */}
-          <motion.div
-            className="absolute bottom-0 left-0 right-0 h-[2px]"
-            style={{ background: 'linear-gradient(to right, transparent, rgba(139,60,247,0.7), transparent)' }}
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ duration: 1.2, ease: 'easeInOut', delay: 0.3 }}
+          <Image
+            src="/logo-opening.png"
+            alt="Pipe Santos"
+            width={420}
+            height={280}
+            className="w-[72vw] max-w-sm md:max-w-md h-auto"
+            priority
           />
         </motion.div>
-      )}
-    </AnimatePresence>
+
+        {/* Tagline — aparece antes para que esté presente más tiempo
+            (antes tenía delay 0.85s + duration 0.8s = visible hasta 1.65s,
+            casi pegado al exit. Ahora aparece a los 0.35s.) */}
+        <motion.div
+          className="relative z-10 mt-6 md:mt-8"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1], delay: 0.35 }}
+        >
+          <p
+            className="font-mono text-[10px] md:text-xs tracking-[0.45em] uppercase text-center"
+            style={{
+              color: 'rgba(255,255,255,0.85)',
+              textShadow: '0 0 12px rgba(196,82,255,0.6), 0 0 30px rgba(139,60,247,0.3)',
+            }}
+          >
+            Historias · Storytelling · Conexión
+          </p>
+        </motion.div>
+
+        {/* Progress line */}
+        <div
+          className="absolute bottom-10 md:bottom-14 h-[1.5px] overflow-hidden rounded-full"
+          style={{
+            width: 'min(60vw, 320px)',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(255,255,255,0.08)',
+          }}
+          aria-hidden
+        >
+          <motion.div
+            className="h-full"
+            style={{
+              background: 'linear-gradient(to right, rgba(139,60,247,0.95), rgba(196,82,255,0.95), rgba(255,140,50,0.85))',
+              boxShadow: '0 0 12px rgba(139,60,247,0.7)',
+            }}
+            initial={{ width: '0%' }}
+            animate={{ width: '100%' }}
+            transition={{ duration: SHOW_DURATION / 1000, ease: 'easeOut' }}
+          />
+        </div>
+      </div>
+
+      {/* ── Beam: stripe luminosa que barre diagonal ─────────────────────── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: beamBg,
+          mixBlendMode: 'screen',
+          filter: 'blur(2px)',
+          opacity: exiting ? 1 : 0,
+          willChange: 'background, opacity',
+        }}
+      />
+      {/* Glow extra alrededor del beam (más blur, mix-blend-mode plus-lighter) */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: beamBg,
+          filter: 'blur(20px)',
+          opacity: exiting ? 0.65 : 0,
+          willChange: 'background, opacity',
+        }}
+      />
+    </div>
   )
 }

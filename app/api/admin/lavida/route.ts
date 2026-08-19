@@ -21,9 +21,10 @@ export async function GET(req: NextRequest) {
   const all = tickets ?? []
 
   const stats = {
-    total:   all.filter(t => t.status !== 'pending').length,
+    total:   all.filter(t => t.status === 'active' || t.status === 'used').length,
+    active:  all.filter(t => t.status === 'active').length,
     used:    all.filter(t => t.status === 'used').length,
-    pending: all.filter(t => t.status === 'active').length,
+    pending: all.filter(t => t.status === 'pending').length,
   }
 
   return NextResponse.json({ tickets: all, stats })

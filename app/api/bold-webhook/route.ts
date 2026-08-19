@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { sendTicketEmail } from '@/lib/email'
-import { sendWhatsAppTicket } from '@/lib/whatsapp'
 import { generateLavidaExcel } from '@/lib/analytics'
 import { Resend } from 'resend'
 import { createHmac, timingSafeEqual } from 'crypto'
@@ -71,10 +70,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true })
   }
 
-  // Sanitizar comodines SQL antes de usar en LIKE — solo permitir UUID chars
+  // Sanitizar y validar formato UUID estricto — previene wildcards SQL y referencias inválidas
   const safeOrderId = orderId.replace(/[^0-9a-f-]/gi, '')
-  if (!safeOrderId) {
-    console.warn('Bold webhook: orderId inválido después de sanitizar')
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (!safeOrderId || !UUID_RE.test(safeOrderId)) {
+    console.warn('Bold webhook: orderId no tiene formato UUID válido:', safeOrderId)
     return NextResponse.json({ received: true })
   }
 
@@ -141,24 +141,6 @@ export async function POST(req: NextRequest) {
       })
     } catch (err) {
       console.error('Email error for', ticket.ticket_number, err)
-    }
-  }
-
-  // Send one WhatsApp with the first ticket link
-  if (buyer.buyer_phone) {
-    try {
-      const firstUrl = `${APP_URL}/lavida/ticket/${tickets[0].ticket_number}`
-      await sendWhatsAppTicket({
-        to: buyer.buyer_phone,
-        name: buyer.buyer_name,
-        eventName: EVENT.name,
-        eventDate: EVENT.date,
-        eventLocation: EVENT.location,
-        ticketPageUrl: firstUrl,
-        ticketId: tickets[0].ticket_number,
-      })
-    } catch (err) {
-      console.error('WhatsApp error:', err)
     }
   }
 
