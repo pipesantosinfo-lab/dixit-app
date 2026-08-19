@@ -2649,58 +2649,105 @@ export default function PreviewPage() {
               ◆ Momentos antes del escenario
             </p>
 
-            <div
-              className="flex items-center gap-4 overflow-x-auto pb-4"
-              style={{
-                scrollSnapType: 'x mandatory',
-                scrollbarWidth: 'none' as 'none',
-                WebkitOverflowScrolling: 'touch' as 'touch',
-              }}
-            >
-              {[
-                { src: '/showreel/preconf-1.mov', type: 'video/quicktime', portrait: false },
-                { src: '/showreel/preconf-2.mov', type: 'video/quicktime', portrait: false },
-                { src: '/showreel/preconf-3.mov', type: 'video/quicktime', portrait: false },
-                { src: '/showreel/preconf-4.mov', type: 'video/quicktime', portrait: true  },
-                { src: '/showreel/preconf-5.mp4', type: 'video/mp4',       portrait: true  },
-              ].map(({ src, type, portrait }, i) => (
-                <motion.div
-                  key={src}
-                  className="flex-none relative rounded-2xl overflow-hidden"
-                  style={{
-                    /* Portrait: ancho fijo angosto | Landscape: ancho generoso */
-                    width:  portrait ? '175px'            : 'min(68vw, 420px)',
-                    height: portrait ? '310px'            : 'auto',
-                    aspectRatio: portrait ? '9/16'        : '16/9',
-                    scrollSnapAlign: 'start',
-                    boxShadow: '0 0 0 1px rgba(139,60,247,0.12), 0 20px 50px rgba(0,0,0,0.55), 0 0 30px rgba(139,60,247,0.06)',
-                    background: '#070508',
-                  }}
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
-                  whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
-                >
-                  <div
-                    className="absolute -inset-1 rounded-2xl pointer-events-none"
-                    style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.08) 0%, transparent 70%)', zIndex: 0 }}
-                  />
-                  <video
-                    controls
-                    playsInline
-                    preload="none"
-                    className="w-full h-full block relative z-10"
-                    style={{ objectFit: 'cover', background: '#070508' }}
+            {/* Wrapper relativo para posicionar las flechas */}
+            <div className="relative">
+
+              {/* Flecha izquierda — solo desktop */}
+              <button
+                className="hidden md:flex items-center justify-center absolute left-0 top-1/2 -translate-y-1/2 -translate-x-5 z-20 w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                style={{
+                  background: 'rgba(7,5,8,0.85)',
+                  border: '1px solid rgba(139,60,247,0.35)',
+                  backdropFilter: 'blur(8px)',
+                  boxShadow: '0 0 16px rgba(139,60,247,0.2)',
+                }}
+                onClick={() => {
+                  const el = document.querySelector('[data-carousel="preconf"]') as HTMLElement
+                  if (el) el.scrollBy({ left: -450, behavior: 'smooth' })
+                }}
+                aria-label="Anterior"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(139,60,247,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 18l-6-6 6-6"/>
+                </svg>
+              </button>
+
+              {/* Scroll container */}
+              <div
+                data-carousel="preconf"
+                className="flex items-center gap-4 overflow-x-auto pb-4"
+                style={{
+                  scrollSnapType: 'x mandatory',
+                  scrollbarWidth: 'none' as 'none',
+                  WebkitOverflowScrolling: 'touch' as 'touch',
+                }}
+              >
+                {[
+                  { src: '/showreel/preconf-1.mov', type: 'video/quicktime', portrait: false },
+                  { src: '/showreel/preconf-2.mov', type: 'video/quicktime', portrait: false },
+                  { src: '/showreel/preconf-3.mov', type: 'video/quicktime', portrait: false },
+                  { src: '/showreel/preconf-4.mov', type: 'video/quicktime', portrait: true  },
+                  { src: '/showreel/preconf-5.mp4', type: 'video/mp4',       portrait: true  },
+                ].map(({ src, type, portrait }, i) => (
+                  <motion.div
+                    key={src}
+                    className="flex-none relative rounded-2xl overflow-hidden"
+                    style={{
+                      width:       portrait ? '175px'         : 'min(68vw, 420px)',
+                      height:      portrait ? '310px'         : 'auto',
+                      aspectRatio: portrait ? '9/16'          : '16/9',
+                      scrollSnapAlign: 'start',
+                      boxShadow: '0 0 0 1px rgba(139,60,247,0.12), 0 20px 50px rgba(0,0,0,0.55), 0 0 30px rgba(139,60,247,0.06)',
+                      background: '#070508',
+                    }}
+                    initial={{ opacity: 0, x: 30 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
                   >
-                    <source src={src} type={type} />
-                    <source src={src} type="video/mp4" />
-                  </video>
-                </motion.div>
-              ))}
+                    <div
+                      className="absolute -inset-1 rounded-2xl pointer-events-none"
+                      style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.08) 0%, transparent 70%)', zIndex: 0 }}
+                    />
+                    <video
+                      controls
+                      playsInline
+                      preload="none"
+                      className="w-full h-full block relative z-10"
+                      style={{ objectFit: 'cover', background: '#070508' }}
+                    >
+                      <source src={src} type={type} />
+                      <source src={src} type="video/mp4" />
+                    </video>
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Flecha derecha — solo desktop */}
+              <button
+                className="hidden md:flex items-center justify-center absolute right-0 top-1/2 -translate-y-1/2 translate-x-5 z-20 w-10 h-10 rounded-full transition-all duration-200 hover:scale-110"
+                style={{
+                  background: 'rgba(7,5,8,0.85)',
+                  border: '1px solid rgba(139,60,247,0.35)',
+                  backdropFilter: 'blur(8px)',
+                  boxShadow: '0 0 16px rgba(139,60,247,0.2)',
+                }}
+                onClick={() => {
+                  const el = document.querySelector('[data-carousel="preconf"]') as HTMLElement
+                  if (el) el.scrollBy({ left: 450, behavior: 'smooth' })
+                }}
+                aria-label="Siguiente"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(139,60,247,0.9)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 18l6-6-6-6"/>
+                </svg>
+              </button>
+
             </div>
 
-            <p className="text-center text-white/20 text-xs mt-3 font-mono tracking-widest">
+            {/* Indicador desliza — solo mobile */}
+            <p className="md:hidden text-center text-white/20 text-xs mt-3 font-mono tracking-widest">
               ← desliza →
             </p>
           </motion.div>
