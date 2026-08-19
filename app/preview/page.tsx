@@ -2650,7 +2650,7 @@ export default function PreviewPage() {
             </p>
 
             <div
-              className="flex gap-4 overflow-x-auto pb-4"
+              className="flex items-center gap-4 overflow-x-auto pb-4"
               style={{
                 scrollSnapType: 'x mandatory',
                 scrollbarWidth: 'none' as 'none',
@@ -2658,17 +2658,20 @@ export default function PreviewPage() {
               }}
             >
               {[
-                { src: '/showreel/preconf-1.mov', type: 'video/quicktime' },
-                { src: '/showreel/preconf-2.mov', type: 'video/quicktime' },
-                { src: '/showreel/preconf-3.mov', type: 'video/quicktime' },
-                { src: '/showreel/preconf-4.mov', type: 'video/quicktime' },
-                { src: '/showreel/preconf-5.mp4', type: 'video/mp4' },
-              ].map(({ src, type }, i) => (
+                { src: '/showreel/preconf-1.mov', type: 'video/quicktime', portrait: false },
+                { src: '/showreel/preconf-2.mov', type: 'video/quicktime', portrait: false },
+                { src: '/showreel/preconf-3.mov', type: 'video/quicktime', portrait: false },
+                { src: '/showreel/preconf-4.mov', type: 'video/quicktime', portrait: true  },
+                { src: '/showreel/preconf-5.mp4', type: 'video/mp4',       portrait: true  },
+              ].map(({ src, type, portrait }, i) => (
                 <motion.div
                   key={src}
                   className="flex-none relative rounded-2xl overflow-hidden"
                   style={{
-                    width: 'min(72vw, 400px)',
+                    /* Portrait: ancho fijo angosto | Landscape: ancho generoso */
+                    width:  portrait ? '175px'            : 'min(68vw, 420px)',
+                    height: portrait ? '310px'            : 'auto',
+                    aspectRatio: portrait ? '9/16'        : '16/9',
                     scrollSnapAlign: 'start',
                     boxShadow: '0 0 0 1px rgba(139,60,247,0.12), 0 20px 50px rgba(0,0,0,0.55), 0 0 30px rgba(139,60,247,0.06)',
                     background: '#070508',
@@ -2686,9 +2689,9 @@ export default function PreviewPage() {
                   <video
                     controls
                     playsInline
-                    preload="metadata"
-                    className="w-full block relative z-10"
-                    style={{ maxHeight: '260px', background: '#070508' }}
+                    preload="none"
+                    className="w-full h-full block relative z-10"
+                    style={{ objectFit: 'cover', background: '#070508' }}
                   >
                     <source src={src} type={type} />
                     <source src={src} type="video/mp4" />
