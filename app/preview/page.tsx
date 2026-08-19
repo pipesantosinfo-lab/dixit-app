@@ -428,7 +428,34 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
         <button onClick={handleSubmit} disabled={loading} className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed">
           <span>{loading ? 'Redirigiendo a pago seguro...' : `Continuar al pago — $${total.toLocaleString('es-CO')} →`}</span>
         </button>
-        <p className="font-mono text-xs text-white/20 text-center mt-4">Pago seguro con Bold · Tu QR llega al instante</p>
+        <div className="flex gap-3 mt-5 flex-wrap justify-center">
+          {/* Badge Bold — texto con gradiente de marca Bold */}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"), linear-gradient(145deg, #ffffff 0%, #fff4ec 100%)`,
+              border: '1px solid rgba(255,255,255,0.95)',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(255,100,0,0.12)',
+            }}>
+            <span className="text-sm">🔒</span>
+            <span className="font-mono text-[10px] font-bold tracking-widest uppercase"
+              style={{
+                background: 'linear-gradient(90deg, #1E2F9E 0%, #C42A38 55%, #E8414E 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>Pago 100% seguro con Bold</span>
+          </div>
+          {/* Badge QR */}
+          <div className="flex items-center gap-2 px-4 py-2 rounded-xl"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"), linear-gradient(145deg, #ffffff 0%, #f0edf8 100%)`,
+              border: '1px solid rgba(255,255,255,0.95)',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(139,60,247,0.1)',
+            }}>
+            <span className="text-sm">⚡</span>
+            <span className="font-mono text-[10px] font-bold tracking-widest uppercase" style={{ color: '#1a1228' }}>QR instantáneo por email</span>
+          </div>
+        </div>
       </div>
     </div>
   )
@@ -866,6 +893,8 @@ export default function PreviewPage() {
       heroParallaxRef.current.style.transform = `translateY(${translateY}%) scale(1.15)`
     }
   })
+  // ── (parallax refs removed — float animations are client-only) ──────
+
   const openLightbox = (i: number) => { setLightboxIndex(i); document.body.style.overflow = 'hidden' }
   const closeLightbox = useCallback(() => { setLightboxIndex(null); document.body.style.overflow = '' }, [])
   const prevPhoto = useCallback(() => setLightboxIndex(i => i === null ? null : (i - 1 + galleryPhotos.length) % galleryPhotos.length), [])
@@ -1196,6 +1225,69 @@ export default function PreviewPage() {
               <source src="/showreel.mp4" type="video/mp4" />
             </video>
           </motion.div>
+
+          {/* ── Carrusel pre-conferencia ───────────────────── */}
+          <motion.div className="mt-12" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
+            <p className="font-mono text-[10px] tracking-[0.4em] text-aurora/50 uppercase mb-6 text-center">
+              ◆ Momentos antes del escenario
+            </p>
+
+            {/* Scroll container */}
+            <div
+              className="flex gap-4 overflow-x-auto pb-4"
+              style={{
+                scrollSnapType: 'x mandatory',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+                WebkitOverflowScrolling: 'touch' as 'touch',
+              }}
+            >
+              {[
+                { src: '/showreel/preconf-1.mov', type: 'video/quicktime' },
+                { src: '/showreel/preconf-2.mov', type: 'video/quicktime' },
+                { src: '/showreel/preconf-3.mov', type: 'video/quicktime' },
+                { src: '/showreel/preconf-4.mov', type: 'video/quicktime' },
+                { src: '/showreel/preconf-5.mp4', type: 'video/mp4' },
+              ].map(({ src, type }, i) => (
+                <motion.div
+                  key={src}
+                  className="flex-none relative rounded-2xl overflow-hidden"
+                  style={{
+                    width: 'min(72vw, 400px)',
+                    scrollSnapAlign: 'start',
+                    boxShadow: '0 0 0 1px rgba(139,60,247,0.12), 0 20px 50px rgba(0,0,0,0.55), 0 0 30px rgba(139,60,247,0.06)',
+                    background: '#070508',
+                  }}
+                  initial={{ opacity: 0, x: 30 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] }}
+                  whileHover={{ scale: 1.02, transition: { duration: 0.3 } }}
+                >
+                  <div
+                    className="absolute -inset-1 rounded-2xl pointer-events-none"
+                    style={{ background: 'radial-gradient(ellipse at 50% 50%, rgba(139,60,247,0.08) 0%, transparent 70%)', zIndex: 0 }}
+                  />
+                  <video
+                    controls
+                    playsInline
+                    preload="metadata"
+                    className="w-full block relative z-10"
+                    style={{ maxHeight: '260px', background: '#070508' }}
+                  >
+                    <source src={src} type={type} />
+                    <source src={src} type="video/mp4" />
+                  </video>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Indicador de scroll */}
+            <p className="text-center text-white/20 text-xs mt-3 font-mono tracking-widest">
+              ← desliza →
+            </p>
+          </motion.div>
+
         </div>
       </section>
 
@@ -1271,6 +1363,200 @@ export default function PreviewPage() {
               <BorisCharacter />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── COMUNIDAD (estilo Bold) ──────────────── */}
+      <section className="relative z-10 overflow-hidden py-20 md:py-28">
+        {/* Fondo blanco con blobs de color Bold en las esquinas */}
+        <div className="absolute inset-0" style={{ background: '#ffffff' }} />
+        <div className="absolute bottom-0 left-0 w-2/3 h-2/3 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at 0% 100%, rgba(30,47,158,0.22) 0%, transparent 65%)' }} />
+        <div className="absolute bottom-0 right-0 w-2/3 h-2/3 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse at 100% 100%, rgba(204,42,56,0.18) 0%, transparent 60%)' }} />
+
+        <div className="relative z-10 max-w-6xl mx-auto px-6 md:px-12">
+
+          {/* ── MOBILE: texto arriba, grid de fotos abajo ── */}
+          <div className="md:hidden">
+            <p className="font-mono text-[10px] tracking-[0.4em] text-gray-400 uppercase text-center mb-5">◆ Comunidad</p>
+            <h2 className="text-4xl font-black leading-tight text-center mb-10" style={{ fontFamily: 'sans-serif' }}>
+              <span style={{ color: '#1E2F9E' }}>+300 </span>
+              <span style={{ color: '#CC2A38' }}>escenarios</span>
+              <span style={{ color: '#1E2F9E' }}> que han cambiado vidas, ¿falta el tuyo?</span>
+            </h2>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                '/gallery/DSC01807.jpg',
+                '/gallery/IMG_6477.JPG',
+                '/gallery/DSC01734.jpg',
+                '/gallery/Archivo_096-3.jpg',
+                '/gallery/IMG_9090.jpg',
+                '/gallery/DSC05052.jpg',
+              ].map((src, i) => (
+                <motion.div
+                  key={src}
+                  className={`overflow-hidden ${i === 0 ? 'row-span-2' : ''}`}
+                  style={{ borderRadius: '20px', aspectRatio: i === 0 ? '3/4' : '4/3' }}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                >
+                  <img src={src} alt="" className="w-full h-full object-cover" loading="lazy" />
+                </motion.div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── DESKTOP: layout scattered estilo Bold ── */}
+          {/* Cada imagen tiene 3 capas: parallax (scroll) → float (loop) → entrada (whileInView) */}
+          <div className="hidden md:grid md:grid-cols-[1fr_1.4fr_1fr] gap-6 items-center">
+
+            {/* ── Columna izquierda ── */}
+            <div className="flex flex-col gap-5">
+
+              {/* L1 */}
+              <motion.div initial={false}>
+                <motion.div
+                  initial={false}
+                  animate={{ y: [0, -12, 0] }}
+                  transition={{ repeat: Infinity, duration: 4.0, ease: 'easeInOut' }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: -50, scale: 0.9 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.04, transition: { duration: 0.4 } }}
+                    className="overflow-hidden group cursor-pointer"
+                    style={{ borderRadius: '24px', aspectRatio: '4/5' }}
+                  >
+                    <img src="/gallery/DSC01807.jpg" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+
+              {/* L2 */}
+              <motion.div initial={false}>
+                <motion.div
+                  initial={false}
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ repeat: Infinity, duration: 3.5, ease: 'easeInOut', delay: 0.6 }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: -50, scale: 0.9 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.85, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.04, transition: { duration: 0.4 } }}
+                    className="overflow-hidden group cursor-pointer"
+                    style={{ borderRadius: '24px', aspectRatio: '4/3' }}
+                  >
+                    <img src="/gallery/Archivo_096-3.jpg" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+
+            </div>
+
+            {/* ── Columna central: texto ── */}
+            <motion.div
+              className="text-center py-8"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <p className="font-mono text-[10px] tracking-[0.5em] text-gray-400 uppercase mb-6">◆ Comunidad</p>
+              <h2 className="text-5xl lg:text-6xl font-black leading-tight" style={{ fontFamily: 'sans-serif' }}>
+                <span style={{ color: '#1E2F9E' }}>+300 </span>
+                <span style={{ color: '#CC2A38' }}>escenarios</span>
+                <br />
+                <span style={{ color: '#1E2F9E' }}>que han cambiado</span>
+                <br />
+                <span style={{ color: '#1E2F9E' }}>vidas, ¿falta</span>
+                <br />
+                <span style={{ color: '#CC2A38' }}>el tuyo?</span>
+              </h2>
+            </motion.div>
+
+            {/* ── Columna derecha ── */}
+            <div className="flex flex-col gap-5">
+
+              {/* R1 */}
+              <motion.div initial={false}>
+                <motion.div
+                  initial={false}
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 3.8, ease: 'easeInOut', delay: 1.2 }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.04, transition: { duration: 0.4 } }}
+                    className="overflow-hidden group cursor-pointer"
+                    style={{ borderRadius: '24px', aspectRatio: '4/3' }}
+                  >
+                    <img src="/gallery/IMG_6477.JPG" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+
+              {/* R2 */}
+              <motion.div initial={false}>
+                <motion.div
+                  initial={false}
+                  animate={{ y: [0, -14, 0] }}
+                  transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut', delay: 0.8 }}
+                >
+                  <motion.div
+                    initial={{ opacity: 0, x: 50, scale: 0.9 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.85, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                    whileHover={{ scale: 1.04, transition: { duration: 0.4 } }}
+                    className="overflow-hidden group cursor-pointer"
+                    style={{ borderRadius: '24px', aspectRatio: '4/5' }}
+                  >
+                    <img src="/gallery/DSC05052.jpg" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+
+            </div>
+          </div>
+
+          {/* ── Fila inferior desktop — 3 fotos con parallax independiente ── */}
+          <div className="hidden md:flex justify-center gap-5 mt-5">
+            {/* B1 */}
+            <motion.div className="flex-1 max-w-xs" initial={false}>
+              <motion.div initial={false} animate={{ y: [0, -7, 0] }} transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut', delay: 0.3 }}>
+                <motion.div initial={{ opacity: 0, y: 50, scale: 0.92 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} whileHover={{ scale: 1.04, transition: { duration: 0.4 } }} className="overflow-hidden group cursor-pointer" style={{ borderRadius: '24px', aspectRatio: '4/3' }}>
+                  <img src="/gallery/DSC01734.jpg" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+            {/* B2 */}
+            <motion.div className="flex-1 max-w-xs" initial={false}>
+              <motion.div initial={false} animate={{ y: [0, -9, 0] }} transition={{ repeat: Infinity, duration: 4.1, ease: 'easeInOut', delay: 1.0 }}>
+                <motion.div initial={{ opacity: 0, y: 50, scale: 0.92 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }} whileHover={{ scale: 1.04, transition: { duration: 0.4 } }} className="overflow-hidden group cursor-pointer" style={{ borderRadius: '24px', aspectRatio: '4/3' }}>
+                  <img src="/gallery/IMG_9090.jpg" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+            {/* B3 */}
+            <motion.div className="flex-1 max-w-xs" initial={false}>
+              <motion.div initial={false} animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 3.7, ease: 'easeInOut', delay: 1.5 }}>
+                <motion.div initial={{ opacity: 0, y: 50, scale: 0.92 }} whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true }} transition={{ duration: 0.7, delay: 0.2, ease: [0.16, 1, 0.3, 1] }} whileHover={{ scale: 1.04, transition: { duration: 0.4 } }} className="overflow-hidden group cursor-pointer" style={{ borderRadius: '24px', aspectRatio: '4/3' }}>
+                  <img src="/gallery/IMG_7200.JPG" alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
+                </motion.div>
+              </motion.div>
+            </motion.div>
+          </div>
+
         </div>
       </section>
 
@@ -1595,13 +1881,33 @@ export default function PreviewPage() {
                 </div>
               )}
             </div>
-            <div className="flex justify-center gap-8">
-              {[{ icon: '🔒', text: 'Pago 100% seguro con Bold' }, { icon: '⚡', text: 'QR instantáneo por email' }].map(item => (
-                <div key={item.text} className="flex items-center gap-2">
-                  <span>{item.icon}</span>
-                  <span className="font-mono text-xs text-white/30">{item.text}</span>
-                </div>
-              ))}
+            <div className="flex justify-center gap-3 flex-wrap">
+              {/* Badge Bold */}
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"), linear-gradient(145deg, #ffffff 0%, #fff4ec 100%)`,
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(255,100,0,0.12)',
+                }}>
+                <span className="text-sm">🔒</span>
+                <span className="font-mono text-[10px] font-bold tracking-widest uppercase"
+                  style={{
+                    background: 'linear-gradient(90deg, #1E2F9E 0%, #C42A38 55%, #E8414E 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text',
+                  }}>Pago 100% seguro con Bold</span>
+              </div>
+              {/* Badge QR */}
+              <div className="flex items-center gap-2 px-4 py-2 rounded-xl"
+                style={{
+                  backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"), linear-gradient(145deg, #ffffff 0%, #f0edf8 100%)`,
+                  border: '1px solid rgba(255,255,255,0.95)',
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1), 0 0 0 1px rgba(139,60,247,0.1)',
+                }}>
+                <span className="text-sm">⚡</span>
+                <span className="font-mono text-[10px] font-bold tracking-widest uppercase" style={{ color: '#1a1228' }}>QR instantáneo por email</span>
+              </div>
             </div>
           </motion.div>
 
