@@ -1,7 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════════════
 -- Cierra el acceso publico de lectura a las tablas de Supabase.
 --
--- Contexto: la auditoria del 31/08/2026 encontro que events, ticket_tiers,
+-- Contexto: la auditoria del 07/09/2026 encontro que events, ticket_tiers,
 -- event_photos y photo_raffles devuelven filas a cualquiera que use la llave
 -- anonima. event_photos expone el ticket_number completo y el nombre de cada
 -- asistente que subio foto, y photo_raffles el ticket del ganador.

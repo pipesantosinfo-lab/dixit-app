@@ -17,7 +17,7 @@ export const metadata: Metadata = {
    quito por pedido del cliente. Si algun dia la pagina empieza a usar
    cookies, publicidad o herramientas de terceros, hay que ampliarla y
    cambiar la fecha de abajo. */
-const VIGENTE_DESDE = '31 de agosto de 2026'
+const VIGENTE_DESDE = '7 de septiembre de 2026'
 const CORREO = 'pipesantosinfo@gmail.com'
 const TELEFONO = '+57 302 824 5457'
 const TELEFONO_LINK = '+573028245457'

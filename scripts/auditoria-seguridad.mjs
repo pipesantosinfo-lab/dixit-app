@@ -9,7 +9,7 @@
  * de servicio. Termina con código 1 si algo falla, para poder engancharlo a
  * un CI algún día.
  *
- * Lecciones de la auditoría del 31/08/2026, incorporadas a propósito:
+ * Lecciones de la auditoría del 07/09/2026, incorporadas a propósito:
  *
  *   - NUNCA juzgar por el código HTTP solo. Supabase devolvió 400 a una
  *     subida anónima y parecía "bloqueado", pero el cuerpo decía que era el
