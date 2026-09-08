@@ -37,10 +37,10 @@ next-env.d.ts
 preview-weekly-report.html
 public/_hero-source.jpg
 
-# Video del showreel (~176 MB). Fuera de git a proposito: git guarda cada
-# version para siempre y el repo crecería sin vuelta atras. Los archivos
-# viven en public/ en el disco y dentro del despliegue publicado; el plan
-# es moverlos a almacenamiento externo. El audio del podcast SI se versiona
-# porque es contenido original y pesa poco en comparacion.
-public/showreel/
-public/showreel.mp4
+# Los despliegues se construyen desde GitHub: lo que no esta versionado no
+# llega a produccion. Por eso los videos que el sitio reproduce (-web.mp4 y
+# sus posters) SI van en git, aunque pesen. Excluir la carpeta entera dejo
+# el showreel en 404 durante unos minutos el 07/09/2026.
+# Fuera quedan solo los originales en crudo, que nadie reproduce y que ya
+# estan guardados en el historial (commits del 19 de agosto).
+public/showreel/*.mov
