@@ -255,7 +255,11 @@ function BrandsSection() {
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
               key={copy}
-              src="/marcas/logos-mejor.webp"
+              /* -v2 en el nombre a proposito: las imagenes se sirven con
+                 max-age de un dia, asi que al regenerar el archivo los
+                 navegadores seguian mostrando el anterior. Cambiar el nombre
+                 es lo unico que rompe esa cache de verdad. */
+              src="/marcas/logos-mejor-v2.webp"
               alt={copy === 0 ? 'Marcas con las que ha trabajado Pipe Santos' : ''}
               className="brands-marquee-img"
               loading="eager"
