@@ -106,7 +106,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           type="image/webp"
           fetchPriority="high"
           media="(max-width: 767px)"
-          imageSrcSet="/hero-mobile-2x-pan.webp 2x, /hero-mobile-3x-pan.webp 3x"
+          imageSrcSet="/hero-mobile-1x-pan-v2.webp 1x, /hero-mobile-2x-pan-v2.webp 2x"
         />
         <link
           rel="preload"

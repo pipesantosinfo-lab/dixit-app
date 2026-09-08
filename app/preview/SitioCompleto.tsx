@@ -2848,8 +2848,8 @@ export default function PreviewPage() {
             style={{ transform: 'scale(1.15)', willChange: 'transform' }}
           >
             {/* Adaptive HD con srcset por DPR + WebP + JPG fallback:
-                - DPR 2 (iPhone 8, Android mid, iPad):     hero-mobile-2x-pan (2x)
-                - DPR 3+ (iPhone Pro, Galaxy S):           hero-mobile-3x-pan (3x)
+                - DPR 1 (raro aqui):        hero-mobile-1x-pan-v2 (2775x1850)
+                - DPR 2 y 3 (iPad, iPhone): hero-mobile-2x-pan-v2 (5535x3690)
                 Browser usa <picture>/<source>/srcset para elegir. */}
             <picture>
               {/* Este bloque ahora se puede ver en cualquier ancho (móvil real
@@ -2857,14 +2857,19 @@ export default function PreviewPage() {
                   así que la foto es siempre la de grupo — nada de un source
                   aparte para "escritorio", esa maqueta vive en su propio
                   bloque (.hero-view-desktop) con su propia fila de fotos. */}
+              {/* -v2 y densidades 1x/2x: la version anterior tenia 1334px de
+                  alto y en un iPad la caja pide ~3500, asi que se estiraba 2.6
+                  veces. Ahora el 2x es el frame completo a 5535x3690, que cubre
+                  tanto el iPad (3492) como un iPhone Pro (3573). El encuadre no
+                  cambia: es la misma foto entera, solo sin reducir. */}
               <source
                 type="image/webp"
-                srcSet="/hero-mobile-2x-pan.webp 2x, /hero-mobile-3x-pan.webp 3x"
+                srcSet="/hero-mobile-1x-pan-v2.webp 1x, /hero-mobile-2x-pan-v2.webp 2x"
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/hero-mobile-2x-pan.jpg"
-                srcSet="/hero-mobile-2x-pan.jpg 2x, /hero-mobile-3x-pan.jpg 3x"
+                src="/hero-mobile-2x-pan-v2.jpg"
+                srcSet="/hero-mobile-1x-pan-v2.jpg 1x, /hero-mobile-2x-pan-v2.jpg 2x"
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{ objectPosition: '63% top' }}
