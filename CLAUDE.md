@@ -50,6 +50,15 @@ pensado para fotos. Aplicarlo a una imagen ancha (cintas de logos,
 panorámicas, banners) la destroza: la cinta de marcas es de 4560×300 y quedó
 en 1400×92. Revisar anchos antes de pasarlo.
 
+**En el hero móvil manda la ALTURA, no el ancho.** La foto llena un
+contenedor vertical con `object-cover`, así que lo que hay que cubrir son los
+~3.500 px de alto que pide un iPad con densidad 2 o un iPhone Pro con
+densidad 3. Al pasar del recorte vertical a la foto horizontal completa —lo
+que hizo falta para el control de paneo del 63%— la altura cayó de 4667 a
+1334 y la imagen se estiraba 2,6 veces. Se sirve el frame completo a
+5535×3690 por eso. Antes de tocar esas imágenes, medir en el navegador:
+`img.getBoundingClientRect().height * devicePixelRatio`.
+
 **Para imágenes con transparencia plana, WebP sin pérdida gana.** En la
 cinta de logos: PNG 105 KB, WebP q85 149 KB, WebP sin pérdida **85 KB** e
 idéntica al original. Medir antes de elegir formato.
