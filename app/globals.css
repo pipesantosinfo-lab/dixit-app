@@ -547,16 +547,16 @@ html {
 
 /* ── Glitch / CRT TV (solo "Conectando") ───────────── */
 @keyframes glitch-rgb {
-  0%,  75%, 100% { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  0%,  75%, 100% { text-shadow: var(--glitch-rest, 0 2px 20px rgba(7,5,8,0.8)); }
   76%  { text-shadow:  4px 0 rgba(255,0,80,0.9),  -4px 0 rgba(0,220,255,0.9); }
   77%  { text-shadow: -3px 0 rgba(255,0,80,0.85),  3px 0 rgba(0,220,255,0.85); }
   78%  { text-shadow:  2px 0 rgba(255,0,80,0.6),  -2px 0 rgba(0,220,255,0.6); }
-  79%  { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  79%  { text-shadow: var(--glitch-rest, 0 2px 20px rgba(7,5,8,0.8)); }
   88%  { text-shadow: -6px 0 rgba(255,0,80,0.7),   6px 0 rgba(0,220,255,0.7); }
   89%  { text-shadow:  3px 0 rgba(255,0,80,0.5),  -3px 0 rgba(0,220,255,0.5); }
-  90%  { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  90%  { text-shadow: var(--glitch-rest, 0 2px 20px rgba(7,5,8,0.8)); }
   95%  { text-shadow:  1px 0 rgba(255,0,80,0.4),  -1px 0 rgba(0,220,255,0.4); }
-  96%  { text-shadow: 0 2px 20px rgba(7,5,8,0.8); }
+  96%  { text-shadow: var(--glitch-rest, 0 2px 20px rgba(7,5,8,0.8)); }
 }
 
 @keyframes glitch-slice {
@@ -1071,6 +1071,34 @@ html {
   .trust-badge-bolt { width: 20px; height: 20px; }
 }
 
+/* ── Ocultar controles nativos del video de fondo en "Sobre mí" ── */
+/* Scoped a .video-bg para no romper los controles del showreel */
+.video-bg::-webkit-media-controls { display: none !important; }
+.video-bg::-webkit-media-controls-enclosure { display: none !important; }
+.video-bg::-webkit-media-controls-panel { display: none !important; }
+.video-bg::-webkit-media-controls-play-button { display: none !important; }
+.video-bg::-webkit-media-controls-overlay-play-button { display: none !important; }
+.video-bg::-webkit-media-controls-start-playback-button { display: none !important; }
+
+/* ── Influencia video cards — estela pulsante ── */
+@keyframes inf-glow-pulse {
+  0%   { box-shadow: 0 0 0 1px rgba(139,60,247,0.15), 0 0 8px 0px rgba(139,60,247,0); }
+  50%  { box-shadow: 0 0 0 1px rgba(196,92,255,0.55), 0 0 22px 6px rgba(139,60,247,0.35), 0 0 40px 8px rgba(196,92,255,0.12); }
+  100% { box-shadow: 0 0 0 1px rgba(139,60,247,0.15), 0 0 8px 0px rgba(139,60,247,0); }
+}
+.inf-vid-card {
+  animation: inf-glow-pulse 2.8s ease-in-out infinite;
+}
+.inf-vid-card:nth-child(2) { animation-delay: 0.4s; }
+.inf-vid-card:nth-child(3) { animation-delay: 0.8s; }
+.inf-vid-card:nth-child(4) { animation-delay: 1.2s; }
+.inf-vid-card:nth-child(5) { animation-delay: 1.6s; }
+.inf-vid-card:nth-child(6) { animation-delay: 2.0s; }
+.inf-vid-card:hover {
+  animation-play-state: paused;
+  box-shadow: 0 0 0 1px rgba(196,92,255,0.7), 0 0 28px 8px rgba(139,60,247,0.45), 0 0 50px 12px rgba(196,92,255,0.15) !important;
+}
+
 /* ── Social card entrance — hints GPU para que la animación corra fluido ── */
 .social-card-3d {
   position: relative;
@@ -1080,4 +1108,258 @@ html {
   transform: translateZ(0);
   backface-visibility: hidden;
   contain: layout style paint;
+}
+
+/* ── Hero desktop: flotación en cascada de las fotos ──
+   Cinco keyframes con el valor final ya escrito (nada de var() dentro de la
+   animación): Safari no siempre interpola bien un calc() que depende de una
+   custom property, así que cada foto usa su propio keyframe fijo — el nombre
+   lo elige el inline style de cada tarjeta. */
+.hero-card-slot {
+  animation-duration: 5.6s;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform;
+}
+@keyframes hero-card-float-1 {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-2.38 * min(0.97vh, 0.5vw))); }
+}
+@keyframes hero-card-float-2 {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-2.05 * min(0.97vh, 0.5vw))); }
+}
+@keyframes hero-card-float-3 {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-1.73 * min(0.97vh, 0.5vw))); }
+}
+@keyframes hero-card-float-4 {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-1.40 * min(0.97vh, 0.5vw))); }
+}
+@keyframes hero-card-float-5 {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(calc(-1.08 * min(0.97vh, 0.5vw))); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-card-slot { animation: none; }
+}
+
+/* ── Hero desktop: el objeto decorativo respira, para que no se vea pegado.
+   El giro base va en el contenedor; aquí sólo el vaivén, así sirve con
+   cualquier inclinación sin tocar el keyframe. ── */
+.hero-prop-float {
+  animation: hero-prop-drift 7.5s ease-in-out infinite;
+  will-change: transform;
+}
+@keyframes hero-prop-drift {
+  0%, 100% { transform: translateY(0)    rotate(-0.9deg); }
+  50%      { transform: translateY(-9px) rotate(0.9deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-prop-float { animation: none; }
+}
+
+/* ── Hero desktop: ambiente tomado de la sección de eventos ──────────
+   Las auroras van en multiply porque aquí el fondo es papel claro: sobre
+   el negro de eventos son luces, sobre crema tienen que ser sombra de color. */
+.hero-aurora {
+  position: absolute; top: 0; bottom: 0;
+  width: min(70vmin, 720px);
+  filter: blur(45px);
+  mix-blend-mode: multiply;
+  will-change: transform, opacity;
+}
+.hero-aurora-l { left: -15%;  animation: hero-aurora-l 9s  ease-in-out infinite; }
+.hero-aurora-r { right: -15%; animation: hero-aurora-r 11s ease-in-out infinite 1.5s; }
+@keyframes hero-aurora-l {
+  0%, 100% { transform: scale(.95); opacity: .70; }
+  50%      { transform: scale(1.05); opacity: 1; }
+}
+@keyframes hero-aurora-r {
+  0%, 100% { transform: scale(1.05); opacity: .65; }
+  50%      { transform: scale(.95);  opacity: .95; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-aurora { animation: none; }
+}
+
+/* ── Cierre del hero de escritorio ──────────────────────────────────
+   La sección reserva la ola más una cola negra donde respira el
+   indicador de scroll. En móvil ambas valen 0: allí no hay cierre. */
+.hero-section {
+  --hero-wave: 0px;
+  --hero-tail: 0px;
+  --hint-b: clamp(16px, 4vh, 36px);
+}
+@media (min-width: 768px) {
+  .hero-section {
+    --hero-wave: 78px;
+    --hero-tail: 74px;
+    --hint-b: 13px;
+  }
+}
+
+/* ── Hero desktop: unidad única de escala ───────────────────────────
+   TODO lo que se ve en el hero de escritorio (fotos, títulos, etiquetas,
+   firma, micrófono, separaciones) se mide en múltiplos de --hs. Antes cada
+   pieza usaba su propia unidad — el título en vw con clamp, las fotos en
+   min(vw,vh), el micrófono en vh, y varios ajustes en px fijos — así que al
+   cambiar de pantalla cada una crecía a un ritmo distinto y la composición
+   se desarmaba (medido: hasta 13% de desviación entre 1366×768 y 1568×772).
+   Con una sola unidad, las proporciones internas quedan idénticas en
+   cualquier monitor o portátil, Windows o Mac.
+
+   La fórmula la manda el ancho en la práctica (0.39vw); el término en vh
+   sólo entra como tope en pantallas anormalmente bajas (más anchas que
+   2.3:1) para que el bloque no se salga por abajo. Calibrada de modo que
+   en la referencia aprobada (1568×772) dé exactamente 6.1152px, que es el
+   valor con el que están calculadas todas las medidas de abajo. */
+.hero-view-desktop {
+  --hs: min(0.39vw, 0.9vh);
+}
+.hero-photo-rail {
+  --u-base: var(--hs);
+  --u: calc(var(--u-base) * var(--u-scale, 1));
+}
+
+/* ── Hero: qué versión se muestra, móvil o de escritorio ─────────────
+   Antes era solo min-width:768px (el md: de Tailwind), y eso metía a
+   cualquier iPad — vertical u horizontal — dentro de la maqueta de
+   escritorio, pensada para monitores anchos: quedaba casi todo el alto
+   de la pantalla vacío entre el título y las fotos. Un iPad tiene mucho
+   ancho pero una pantalla casi cuadrada (horizontal ronda 4:3), muy lejos
+   de un monitor (16:9 o 16:10) — así que además del ancho se exige una
+   relación de aspecto de "pantalla ancha" para entrar a la de escritorio;
+   si no la cumple, se queda con la maqueta simple de móvil aunque tenga
+   mucho ancho. */
+.hero-view-desktop { display: none; }
+.hero-view-mobile { display: block; }
+@media (min-width: 1024px) and (min-aspect-ratio: 3/2) {
+  .hero-view-desktop { display: block; }
+  .hero-view-mobile { display: none; }
+}
+
+/* ── Enlaces del nav: resaltado tipo marcador ───────────────────────
+   En reposo es una línea fina bajo la palabra; al pasar el cursor crece
+   hasta convertirse en un trazo que la subraya por dentro. El isolate crea
+   contexto propio: sin él, el ::after con z-index -1 se iría detrás del
+   degradado del nav en vez de quedar tras el texto. */
+.nav-link { position: relative; isolation: isolate; }
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: -4px; right: -4px; bottom: -2px;
+  height: 8px;
+  border-radius: 3px;
+  background: var(--nav-hl, #2E5FD9);
+  transform-origin: bottom;
+  transform: scaleY(.22);
+  opacity: .5;
+  transition: transform .3s cubic-bezier(.4, 0, .2, 1), opacity .3s ease, background .35s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleY(1);
+  opacity: .92;
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after { transition: opacity .2s ease; }
+}
+
+/* ── Anticipo del podcast en la portada ─────────────────────────────
+   Las dos tarjetas que antes eran reproductores de Spotify. Ahora son un
+   enlace al universo del podcast, así que se comportan como tal: el marco
+   se enciende en morado al pasar por encima y el botón de play se llena,
+   igual que en la lista de episodios. */
+.pod-teaser {
+  background: linear-gradient(150deg, rgba(139, 60, 247, .07), rgba(255, 255, 255, .022));
+  border: 1px solid rgba(255, 255, 255, .07);
+  text-decoration: none;
+  transition: border-color .3s ease, background .3s ease, transform .3s cubic-bezier(.16, 1, .3, 1);
+}
+.pod-teaser:hover {
+  border-color: rgba(139, 60, 247, .45);
+  background: linear-gradient(150deg, rgba(139, 60, 247, .14), rgba(255, 255, 255, .03));
+  transform: translateY(-3px);
+}
+.pod-teaser__cara {
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .5);
+  transition: transform .35s cubic-bezier(.16, 1, .3, 1);
+}
+.pod-teaser:hover .pod-teaser__cara { transform: scale(1.04); }
+.pod-teaser__play {
+  background: rgba(139, 60, 247, .18);
+  border: 1px solid rgba(139, 60, 247, .5);
+  color: #C452EB;
+  transition: background .3s ease, color .3s ease, box-shadow .3s ease;
+}
+.pod-teaser:hover .pod-teaser__play {
+  background: #8B3CF7;
+  color: #fff;
+  box-shadow: 0 0 22px rgba(139, 60, 247, .55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .pod-teaser, .pod-teaser__cara { transition: none; }
+  .pod-teaser:hover { transform: none; }
+  .pod-teaser:hover .pod-teaser__cara { transform: none; }
+}
+
+/* ── Enlace al universo del podcast ──────────────────────────────────
+   Antes era un boton discreto de contorno y se perdia entre las dos
+   tarjetas. Ahora va relleno, con el morado de la marca y un brillo que lo
+   cruza cada tanto, para que se lea como la puerta de entrada que es. */
+.btn-podcast {
+  padding: 15px 30px;
+  border-radius: 999px;
+  font-family: var(--font-body), sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  letter-spacing: .06em;
+  color: #fff;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #8B3CF7 0%, #A855F7 48%, #C452EB 100%);
+  box-shadow: 0 10px 30px rgba(139, 60, 247, .38), 0 0 0 1px rgba(196, 82, 235, .35) inset;
+  transition: transform .3s cubic-bezier(.16, 1, .3, 1), box-shadow .3s ease;
+}
+.btn-podcast:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 42px rgba(139, 60, 247, .55), 0 0 0 1px rgba(226, 180, 255, .5) inset;
+}
+.btn-podcast__flecha { transition: transform .3s cubic-bezier(.16, 1, .3, 1); }
+.btn-podcast:hover .btn-podcast__flecha { transform: translateX(4px); }
+
+/* el brillo que lo recorre: pasa cada 4,5s y llama la atencion sin ruido */
+.btn-podcast::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, .38) 50%, transparent 70%);
+  background-size: 260% 100%;
+  background-position: 200% 0;
+  animation: btn-podcast-brillo 4.5s ease-in-out infinite;
+}
+@keyframes btn-podcast-brillo {
+  0%, 62% { background-position: 200% 0; }
+  100%    { background-position: -60% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-podcast::after { animation: none; }
+  .btn-podcast:hover { transform: none; }
+}
+
+/* En pantalla de telefono el texto no cabia y "aquí" se caia al renglon de
+   abajo. Se queda en una linea: tipografia y espaciado algo mas ajustados,
+   y prohibido partir. */
+@media (max-width: 430px) {
+  .btn-podcast {
+    padding: 14px 20px;
+    font-size: 12.5px;
+    letter-spacing: .03em;
+    gap: 9px;
+    white-space: nowrap;
+  }
+  .btn-podcast__flecha { width: 15px; height: 15px; }
 }

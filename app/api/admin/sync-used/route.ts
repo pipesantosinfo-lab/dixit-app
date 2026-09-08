@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAdmin } from '@/lib/auth'
+import { requireValidator } from '@/lib/auth'
 
 /**
  * Recibe una lista de tickets validados offline y los marca como usados
@@ -11,7 +11,7 @@ import { requireAdmin } from '@/lib/auth'
  * Response: { synced: number, conflicts: [{ ticket_number, existing_used_at, attempted_used_at }] }
  */
 export async function POST(req: NextRequest) {
-  const denied = requireAdmin(req)
+  const denied = requireValidator(req)
   if (denied) return denied
 
   let body: Record<string, unknown>

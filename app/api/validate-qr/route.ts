@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAdmin } from '@/lib/auth'
+import { requireValidator } from '@/lib/auth'
 
 // Formato: <uuid>-<digit(s)>
 const TICKET_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}-\d+$/i
 
 export async function POST(req: NextRequest) {
-  const denied = requireAdmin(req)
+  const denied = requireValidator(req)
   if (denied) return denied
 
   let body: Record<string, unknown>

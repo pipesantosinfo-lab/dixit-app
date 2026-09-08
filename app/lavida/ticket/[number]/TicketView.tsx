@@ -147,71 +147,96 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           filter: isUsed ? 'grayscale(0.6) opacity(0.6)' : 'none',
           zIndex: 2,
         }}>
-          {/* Diseño de boleta */}
-          <div className="relative w-full" style={{ aspectRatio: '16 / 6' }}>
+          {/* Art header — foto teatro de fondo */}
+          <div className="relative w-full overflow-hidden" style={{ height: '148px' }}>
             <img
-              src="/ticket-design.jpg"
-              alt="La vida es cule viaje — Pipe Santos"
+              src="/theater-bg.jpg"
+              alt=""
+              aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover"
+              style={{ opacity: 0.6, objectPosition: 'center 62%' }}
             />
-            {/* Número de boleto sobre el rectángulo blanco del diseño */}
-            <div
-              className="absolute flex items-center justify-center font-mono text-black"
-              style={{
-                top: '24.4%',
-                bottom: '68.9%',
-                left: '78.6%',
-                right: '6.3%',
-                fontSize: 'clamp(7px, 1.6vw, 10px)',
-                letterSpacing: '0.5px',
-                fontWeight: 700,
-                zIndex: 2,
-              }}
-            >
-              {shortId}
+            <div className="absolute inset-0" style={{
+              background: 'linear-gradient(to bottom, rgba(10,6,20,0.1) 0%, rgba(10,6,20,0.5) 55%, rgba(10,6,20,0.92) 100%)',
+            }} />
+            <div className="absolute" style={{
+              top: '-20px', left: '-10px', width: '180px', height: '160px', borderRadius: '50%',
+              background: 'radial-gradient(ellipse, rgba(139,60,247,0.35) 0%, transparent 65%)',
+              filter: 'blur(25px)',
+            }} />
+            <div className="absolute inset-0 flex flex-col justify-end" style={{ padding: '14px 18px' }}>
+              <p className="font-mono text-[9px] tracking-[3px] uppercase mb-1" style={{ color: 'rgba(220,195,255,0.7)' }}>
+                ◆ Pipe Santos · Show en vivo
+              </p>
+              <p className="font-display text-2xl font-light text-white" style={{ lineHeight: 1.1, letterSpacing: '-0.3px' }}>
+                La vida es <em style={{ color: '#C45CFF' }}>cule viaje</em>
+              </p>
+            </div>
+            <div className="absolute font-mono text-[9px] tracking-[2px] uppercase" style={{
+              top: '14px', right: '14px',
+              background: 'rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.5)',
+              borderRadius: '6px', padding: '4px 9px',
+              color: 'rgba(220,195,255,0.95)',
+            }}>
+              Entrada general
             </div>
           </div>
 
-          {/* Mensaje de bienvenida personalizado */}
-          <div className="px-6 pt-5 pb-3 text-center">
-            <p className="font-body text-white leading-relaxed" style={{ fontSize: '15px' }}>
-              ¡Felicidades <b style={{ color: '#C45CFF' }}>{ticket.buyer_name.split(' ')[0]}</b>, ya estás dentro!
-              <br />
-              Nos vemos este <b className="text-white">22 de agosto</b> con la mejor energía
-              <span className="ml-1" aria-label="rayo y corazón naranja">⚡🧡</span>
-            </p>
+          {/* Metadata row: fecha · ciudad · valor */}
+          <div className="grid grid-cols-3" style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
+            {[
+              { label: 'Fecha', value: '22 ago', hl: false },
+              { label: 'Ciudad', value: 'Bquilla', hl: false },
+              { label: 'Valor', value: '$40.000', hl: true },
+            ].map((item, i) => (
+              <div key={i} className="py-3 px-4" style={{ borderRight: i < 2 ? '1px dashed rgba(255,255,255,0.08)' : 'none' }}>
+                <p className="font-mono text-[8px] tracking-[2px] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.label}</p>
+                <p className="text-xs font-medium" style={{ color: item.hl ? '#C45CFF' : 'rgba(255,255,255,0.9)' }}>{item.value}</p>
+              </div>
+            ))}
           </div>
 
           {/* Perforated divider */}
-          <div className="relative flex items-center px-6 py-4" style={{ borderTop: '1px dashed rgba(255,255,255,0.08)' }}>
+          <div className="relative flex items-center" style={{ height: '28px', padding: '0 20px' }}>
             <div className="absolute -left-3 w-6 h-6 rounded-full" style={{ background: '#070508' }} />
             <div className="absolute -right-3 w-6 h-6 rounded-full" style={{ background: '#070508' }} />
-            <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,60,247,0.3), transparent)' }} />
+            <div className="flex-1 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(139,60,247,0.25), transparent)' }} />
           </div>
 
-          {/* QR */}
-          <div className="px-6 pb-6">
-            <div className="flex justify-center mb-5">
-              <div className="relative">
-                <div className="absolute inset-0 rounded-xl" style={{ boxShadow: '0 0 30px rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.2)' }} />
-                <div className="bg-white rounded-xl p-3 relative z-10">
-                  {qrUrl
-                    ? <img src={qrUrl} alt="QR" width={180} height={180} className="block" />
-                    : <div className="w-[180px] h-[180px] flex items-center justify-center">
-                        <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#8B3CF7 transparent transparent transparent' }} />
-                      </div>
-                  }
-                </div>
-              </div>
+          {/* QR zone — compacto, lado a lado */}
+          <div className="flex items-center gap-4" style={{ padding: '20px 20px 20px' }}>
+            <div className="flex-shrink-0 relative rounded-xl bg-white" style={{ padding: '10px', boxShadow: '0 0 0 1px rgba(139,60,247,0.2), 0 0 20px rgba(139,60,247,0.15)' }}>
+              {/* Esquinas moradas */}
+              {[
+                { top: '-1px', left: '-1px', borderWidth: '2px 0 0 2px', borderRadius: '3px 0 0 0' },
+                { top: '-1px', right: '-1px', borderWidth: '2px 2px 0 0', borderRadius: '0 3px 0 0' },
+                { bottom: '-1px', left: '-1px', borderWidth: '0 0 2px 2px', borderRadius: '0 0 0 3px' },
+                { bottom: '-1px', right: '-1px', borderWidth: '0 2px 2px 0', borderRadius: '0 0 3px 0' },
+              ].map((s, i) => (
+                <div key={i} className="absolute" style={{ width: '10px', height: '10px', borderColor: '#8B3CF7', borderStyle: 'solid', position: 'absolute', ...s }} />
+              ))}
+              {qrUrl
+                ? <img src={qrUrl} alt="QR de entrada" width={100} height={100} className="block" />
+                : <div className="flex items-center justify-center" style={{ width: '100px', height: '100px' }}>
+                    <div className="w-6 h-6 border-2 rounded-full animate-spin" style={{ borderColor: '#8B3CF7 transparent transparent transparent' }} />
+                  </div>
+              }
             </div>
-
-            <p className="text-center font-display text-lg text-white mb-1">{ticket.buyer_name}</p>
-            <p className="text-center font-mono text-xs tracking-[0.3em] mb-4" style={{ color: 'rgba(139,60,247,0.7)' }}>
-              Boleto · {shortId}
-            </p>
+            <div className="flex-1 min-w-0">
+              <p className="font-display mb-1" style={{ fontSize: '16px', letterSpacing: '-0.2px', color: 'white' }}>
+                <span style={{ color: '#C45CFF' }}>{ticket.buyer_name.split(' ')[0]}</span>
+                {ticket.buyer_name.includes(' ') && <span className="text-white"> {ticket.buyer_name.split(' ').slice(1).join(' ')}</span>}
+              </p>
+              <p className="text-white/45 leading-relaxed mb-3" style={{ fontSize: '12px' }}>
+                ¡Ya estás dentro! Muestra este QR en la entrada del evento.
+              </p>
+              <p className="font-mono tracking-[2px] uppercase" style={{ fontSize: '10px', color: 'rgba(139,60,247,0.7)' }}>
+                ◆ {shortId}
+              </p>
+            </div>
           </div>
 
-          <div className="h-2" style={{ background: 'linear-gradient(90deg, rgba(139,60,247,0.6), rgba(196,82,0,0.4), transparent)' }} />
+          <div className="h-[3px]" style={{ background: 'linear-gradient(90deg, rgba(139,60,247,0.8), rgba(196,82,0,0.5), transparent)' }} />
         </div>
         </div>{/* /wrapper con estela */}
 
@@ -731,166 +756,135 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
         style={{
           width: '360px',
           height: '640px',
-          background: 'linear-gradient(180deg, #070508 0%, #110a1c 50%, #070508 100%)',
+          background: '#070508',
           color: 'white',
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
-          padding: '34px 24px 28px',
           boxSizing: 'border-box',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
           pointerEvents: 'none',
           overflow: 'hidden',
           position: 'relative',
         }}
       >
-        {/* Aura morada de fondo */}
+        {/* Foto teatro full-bleed */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/theater-bg.jpg"
+          alt=""
+          style={{
+            position: 'absolute', inset: 0, width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center 62%', opacity: 0.32,
+          }}
+        />
+        {/* Overlay oscuro top/bottom */}
         <div style={{
-          position: 'absolute',
-          top: '20%',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          width: '120%',
-          height: '40%',
-          background: 'radial-gradient(ellipse at center, rgba(167,80,255,0.55) 0%, rgba(139,60,247,0.30) 30%, transparent 65%)',
-          filter: 'blur(50px)',
+          position: 'absolute', inset: 0,
+          background: 'linear-gradient(to bottom, rgba(7,5,8,0.80) 0%, rgba(7,5,8,0.15) 35%, rgba(7,5,8,0.15) 55%, rgba(7,5,8,0.88) 100%)',
         }} />
-        {/* Aura naranja inferior */}
+        {/* Aura morada central */}
         <div style={{
-          position: 'absolute',
-          bottom: '15%',
-          left: '50%',
+          position: 'absolute', top: '28%', left: '50%',
           transform: 'translateX(-50%)',
-          width: '90%',
-          height: '25%',
-          background: 'radial-gradient(ellipse at center, rgba(255,130,50,0.40) 0%, rgba(196,82,0,0.20) 30%, transparent 65%)',
-          filter: 'blur(40px)',
+          width: '320px', height: '220px', borderRadius: '50%',
+          background: 'radial-gradient(ellipse, rgba(139,60,247,0.45) 0%, transparent 70%)',
+          filter: 'blur(55px)',
         }} />
 
-        {/* Contenido sobre las auras */}
-        <div style={{ position: 'relative', zIndex: 1, width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* Contenido */}
+        <div style={{
+          position: 'absolute', inset: 0,
+          display: 'flex', flexDirection: 'column',
+          alignItems: 'center', justifyContent: 'space-between',
+          padding: '38px 24px 30px',
+        }}>
 
           {/* Logo arriba */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/logo-header-v2.png"
             alt="Pipe Santos"
-            style={{ height: '46px', width: 'auto', objectFit: 'contain' }}
+            style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
           />
 
-          {/* Ticket design */}
+          {/* Mini ticket card */}
           <div style={{
             width: '100%',
-            aspectRatio: '16 / 6',
-            position: 'relative',
-            borderRadius: '10px',
+            borderRadius: '18px',
             overflow: 'hidden',
-            marginTop: '22px',
-            boxShadow: '0 14px 36px rgba(0,0,0,0.6), 0 0 22px rgba(139,60,247,0.35)',
+            border: '1px solid rgba(139,60,247,0.38)',
+            background: 'linear-gradient(145deg, rgba(13,10,20,0.94), rgba(20,14,32,0.94))',
+            boxShadow: '0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(139,60,247,0.18)',
           }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/ticket-design.jpg"
-              alt=""
-              style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-            <div
-              style={{
-                position: 'absolute',
-                top: '24.4%', bottom: '68.9%', left: '78.6%', right: '6.3%',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontFamily: 'ui-monospace, "Courier New", monospace',
-                fontWeight: 700,
-                color: '#000',
-                fontSize: '8px',
-                letterSpacing: '0.3px',
-              }}
-            >
-              {shortId}
+            {/* Art header */}
+            <div style={{ position: 'relative', height: '96px', overflow: 'hidden' }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/theater-bg.jpg" alt="" style={{
+                position: 'absolute', inset: 0, width: '100%', height: '100%',
+                objectFit: 'cover', objectPosition: 'center 62%', opacity: 0.65,
+              }} />
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to bottom, rgba(10,6,20,0.1), rgba(10,6,20,0.88))',
+              }} />
+              <div style={{ position: 'absolute', bottom: '12px', left: '16px' }}>
+                <p style={{
+                  fontFamily: 'ui-monospace, monospace', fontSize: '8px',
+                  letterSpacing: '3px', textTransform: 'uppercase',
+                  color: 'rgba(220,195,255,0.7)', margin: '0 0 3px 0',
+                }}>◆ Pipe Santos · Show en vivo</p>
+                <p style={{
+                  fontFamily: 'Georgia, serif', fontSize: '20px',
+                  fontWeight: 300, color: 'white', lineHeight: 1.1, margin: 0,
+                }}>La vida es <em style={{ color: '#C45CFF' }}>cule viaje</em></p>
+              </div>
+              <div style={{
+                position: 'absolute', top: '12px', right: '12px',
+                background: 'rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.5)',
+                borderRadius: '5px', padding: '3px 8px',
+                fontFamily: 'ui-monospace, monospace', fontSize: '8px',
+                letterSpacing: '2px', textTransform: 'uppercase',
+                color: 'rgba(220,195,255,0.95)',
+              }}>Entrada general</div>
             </div>
+
+            {/* Metadata */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
+              {[
+                { label: 'Asistente', value: firstName, hl: false },
+                { label: 'Ciudad', value: 'Bquilla', hl: false },
+                { label: 'Boleto', value: shortId.slice(0, -3) + '***', hl: true },
+              ].map((item, i) => (
+                <div key={i} style={{
+                  padding: '10px 14px',
+                  borderRight: i < 2 ? '1px dashed rgba(255,255,255,0.08)' : 'none',
+                }}>
+                  <p style={{ fontFamily: 'ui-monospace, monospace', fontSize: '7px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', margin: '0 0 2px 0' }}>{item.label}</p>
+                  <p style={{ fontSize: '11px', fontWeight: 500, color: item.hl ? '#C45CFF' : 'rgba(255,255,255,0.9)', margin: 0 }}>{item.value}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Badge VOY A IR */}
+            <div style={{ padding: '18px 16px', textAlign: 'center' }}>
+              <div style={{ fontSize: '26px', lineHeight: 1, marginBottom: '6px' }}>⚡🧡</div>
+              <p style={{
+                fontSize: '24px', fontWeight: 300, letterSpacing: '1px',
+                color: 'white', margin: '0 0 5px 0',
+              }}>¡VOY A IR!</p>
+              <p style={{
+                fontFamily: 'ui-monospace, monospace', fontSize: '8px',
+                letterSpacing: '2.5px', textTransform: 'uppercase',
+                color: 'rgba(220,195,255,0.75)', margin: 0,
+              }}>Entrada confirmada · 22 ago</p>
+            </div>
+
+            <div style={{ height: '3px', background: 'linear-gradient(90deg, rgba(139,60,247,0.8), rgba(196,82,0,0.5), transparent)' }} />
           </div>
 
-          {/* Mensaje de bienvenida completo */}
+          {/* URL footer */}
           <p style={{
-            textAlign: 'center',
-            fontSize: '14px',
-            lineHeight: 1.5,
-            color: 'white',
-            fontWeight: 300,
-            margin: '16px 0 0 0',
-            padding: 0,
-          }}>
-            ¡Felicidades <span style={{ color: '#C45CFF', fontWeight: 500 }}>{firstName}</span>, ya estás dentro!
-            <br />
-            Nos vemos este <span style={{ color: 'white', fontWeight: 500 }}>22 de agosto</span>
-            <br />
-            con la mejor energía ⚡🧡
-          </p>
-
-          {/* Sello "¡VOY A IR!" */}
-          <div
-            style={{
-              marginTop: '16px',
-              width: '200px',
-              padding: '14px 12px',
-              borderRadius: '14px',
-              background: 'linear-gradient(135deg, rgba(139,60,247,0.28), rgba(196,82,235,0.18))',
-              border: '2px solid rgba(139,60,247,0.55)',
-              boxShadow: '0 0 28px rgba(139,60,247,0.45)',
-              textAlign: 'center',
-            }}
-          >
-            <div style={{ fontSize: '28px', lineHeight: 1, marginBottom: '6px' }}>⚡🧡</div>
-            <p style={{
-              fontSize: '20px',
-              fontWeight: 300,
-              lineHeight: 1,
-              margin: '0 0 5px 0',
-              color: 'white',
-              letterSpacing: '0.8px',
-            }}>¡VOY A IR!</p>
-            <p style={{
-              fontFamily: 'ui-monospace, "Courier New", monospace',
-              fontSize: '7px',
-              letterSpacing: '2px',
-              textTransform: 'uppercase',
-              color: 'rgba(220,195,255,0.95)',
-              margin: 0,
-            }}>Entrada confirmada</p>
-          </div>
-
-          {/* Asistente */}
-          <p style={{
-            fontSize: '15px',
-            color: 'white',
-            fontWeight: 300,
-            textAlign: 'center',
-            margin: '14px 0 3px 0',
-          }}>
-            {buyerName}
-          </p>
-          <p style={{
-            fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '8px',
-            color: 'rgba(139,60,247,0.85)',
-            letterSpacing: '2px',
-            margin: 0,
-          }}>
-            Boleto · {shortId}
-          </p>
-        </div>
-
-        {/* Footer fijo */}
-        <div style={{ position: 'absolute', bottom: '18px', left: 0, right: 0, textAlign: 'center', zIndex: 1 }}>
-          <p style={{
-            fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '10px',
-            color: 'rgba(196,82,235,0.85)',
-            letterSpacing: '2.5px',
-            margin: 0,
-          }}>
-            pipesantos.com
-          </p>
+            fontFamily: 'ui-monospace, monospace', fontSize: '10px',
+            letterSpacing: '2.5px', color: 'rgba(196,82,235,0.8)', margin: 0,
+          }}>pipesantos.com</p>
         </div>
       </div>
     )

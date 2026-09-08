@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { supabaseAdmin } from '@/lib/supabase'
 import EventClient from './EventClient'
 
 interface Props {
@@ -7,7 +7,8 @@ interface Props {
 }
 
 export default async function EventPage({ params }: Props) {
-  const { data: event } = await supabase
+  const db = supabaseAdmin()
+  const { data: event } = await db
     .from('events')
     .select('*')
     .eq('slug', params.slug)
@@ -16,7 +17,7 @@ export default async function EventPage({ params }: Props) {
 
   if (!event) notFound()
 
-  const { data: tiers } = await supabase
+  const { data: tiers } = await db
     .from('ticket_tiers')
     .select('*')
     .eq('event_id', event.id)
@@ -27,7 +28,7 @@ export default async function EventPage({ params }: Props) {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const { data: event } = await supabase
+  const { data: event } = await supabaseAdmin()
     .from('events')
     .select('name, tagline, cover_image')
     .eq('slug', params.slug)

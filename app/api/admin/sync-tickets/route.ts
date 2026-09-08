@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { requireAdmin } from '@/lib/auth'
+import { requireValidator } from '@/lib/auth'
 
 /**
  * Devuelve TODOS los tickets válidos (activos o ya usados) para que el
@@ -10,7 +10,7 @@ import { requireAdmin } from '@/lib/auth'
  * correos ni cédulas para minimizar exposición de PII en el cliente.
  */
 export async function GET(req: NextRequest) {
-  const denied = requireAdmin(req)
+  const denied = requireValidator(req)
   if (denied) return denied
 
   const db = supabaseAdmin()

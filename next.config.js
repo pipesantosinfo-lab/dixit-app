@@ -76,6 +76,15 @@ const nextConfig = {
       },
     ]
   },
+  // El sitio vivia en /preview y la raiz redirigia alli, asi que esa
+  // direccion quedaba a la vista en la barra del navegador. Ahora el
+  // contenido esta en la raiz; este redirect mantiene funcionando los
+  // enlaces antiguos que todavia apunten a /preview.
+  async redirects() {
+    return [
+      { source: '/preview', destination: '/', permanent: true },
+    ]
+  },
 }
 
 module.exports = nextConfig
