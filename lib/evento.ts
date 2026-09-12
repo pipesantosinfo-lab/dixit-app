@@ -58,13 +58,13 @@ export const EVENTO = {
   aforo: 115,
 
   /** Ruta en /public. Con sufijo de versión por la caché de un día. */
-  flyer: '/flyer-cartagena-oct26-v2.webp',
+  flyer: '/flyer-cartagena-oct26-v3.webp',
   /**
    * El mismo flyer en JPG y a 600 px, para el correo de confirmacion. WebP
    * no abre en todos los clientes de correo. Se genera con sharp desde el
    * PNG original (ver scripts o el historial del 11/09/2026).
    */
-  flyerCorreo: '/email/flyer-cartagena-oct26-v2.jpg',
+  flyerCorreo: '/email/flyer-cartagena-oct26-v3.jpg',
 } as const
 
 /** Ciudad en mayúsculas para los mensajes de urgencia. */
