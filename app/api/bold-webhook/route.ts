@@ -90,13 +90,25 @@ export async function POST(req: NextRequest) {
   const db = supabaseAdmin()
 
   // Find all tickets for this order (usamos safeOrderId para prevenir wildcards SQL)
-  const { data: tickets } = await db
+  // Una vez (12/09/2026) la busqueda devolvio vacio para una entrada que si
+  // existia y al minuto siguiente la encontro. Ante un vacio se reintenta
+  // una vez; si sigue vacio se responde 404 y Bold reintenta el aviso.
+  let { data: tickets, error: lookupError } = await db
     .from('lavida_tickets')
     .select('*')
     .like('ticket_number', `${safeOrderId}-%`)
 
   if (!tickets || tickets.length === 0) {
-    console.error('Tickets not found for order:', safeOrderId)
+    console.warn('Bold webhook: entrada no encontrada al primer intento', safeOrderId, lookupError?.message ?? '')
+    await new Promise(r => setTimeout(r, 1500))
+    ;({ data: tickets, error: lookupError } = await db
+      .from('lavida_tickets')
+      .select('*')
+      .like('ticket_number', `${safeOrderId}-%`))
+  }
+
+  if (!tickets || tickets.length === 0) {
+    console.error('Tickets not found for order:', safeOrderId, lookupError ? `(error: ${lookupError.message})` : '')
     return NextResponse.json({ error: 'Tickets not found' }, { status: 404 })
   }
 
