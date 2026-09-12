@@ -12,6 +12,7 @@ import CompraModal from '@/components/CompraModal'
 const FOTOS = [
   { src: '/landing/asi-se-vive-16-v6.webp', alt: 'Una asistente haciendo un corazón con las manos' },
   { src: '/landing/asi-se-vive-15-v6.webp', alt: 'Público riéndose durante el show' },
+  { src: '/landing/asi-se-vive-17-v6.webp', alt: 'Pipe Santos riéndose con un asistente' },
   { src: '/landing/asi-se-vive-02-v6.webp', alt: 'Selfie desde las sillas antes de empezar' },
   { src: '/landing/asi-se-vive-03-v6.webp', alt: 'Risas en primera fila' },
   { src: '/landing/asi-se-vive-04-v6.webp', alt: 'Una fila entera riéndose a carcajadas' },
