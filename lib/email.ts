@@ -44,7 +44,7 @@ export function renderTicketEmail(params: TicketEmailParams): { html: string; su
   const base = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.pipesantos.com').replace(/\/$/, '')
   const flyerSrc = base + EVENTO.flyerCorreo
   // ?v= cambia cuando cambia el diseño: Gmail guarda la imagen por URL.
-  const tarjetaSrc = `${base}/api/tarjeta/${encodeURIComponent(params.ticketId)}?v=1`
+  const tarjetaSrc = `${base}/api/tarjeta/${encodeURIComponent(params.ticketId)}?v=2`
 
   /* Gmail en iPhone y Android "invierte" los correos oscuros y los vuelve
    * blancos. Dos defensas:

@@ -675,7 +675,7 @@ function InstallInstructionsModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-[200] flex flex-col"
-      style={{ background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(16px)' }}
+      style={{ background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
       onClick={onClose}
     >
       {/* Header con título y botón cerrar */}

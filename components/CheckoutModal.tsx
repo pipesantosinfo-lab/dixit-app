@@ -61,7 +61,7 @@ export default function CheckoutModal({ tier, eventId, eventName, onClose }: Che
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-      style={{ background: 'rgba(3,3,5,0.85)', backdropFilter: 'blur(10px)' }}
+      style={{ background: 'rgba(3,3,5,0.85)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
       <div

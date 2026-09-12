@@ -88,7 +88,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
   return (
     <div
       className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-      style={{ background: 'rgba(7,5,8,0.9)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'rgba(7,5,8,0.9)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
       onClick={e => e.target === e.currentTarget && onClose()}
     >
       <div
@@ -268,7 +268,7 @@ export default function EventoPage() {
 
       {/* ── NAV ── */}
       <nav className="fixed top-0 left-0 right-0 z-40 flex justify-center md:justify-between items-center px-4 md:px-12 py-1 md:py-4"
-        style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)' }}>
+        style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)' }}>
         <Image src="/logo.png" alt="Pipe Santos" width={110} height={40} className="opacity-90" />
         <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="btn-primary text-sm hidden md:block">
           <span>Atento al lanzamiento</span>

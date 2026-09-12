@@ -442,7 +442,7 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
-      style={{ background: 'rgba(7,5,8,0.9)', backdropFilter: 'blur(12px)' }}
+      style={{ background: 'rgba(7,5,8,0.9)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
       onClick={e => e.target === e.currentTarget && onClose()}>
       <div className="w-full max-w-md rounded-3xl p-8 animate-fade-up"
         style={{ background: 'linear-gradient(145deg,#0d0a14,#140e20)', border: '1px solid rgba(139,60,247,0.3)',
@@ -649,7 +649,7 @@ function Lightbox({ photos, index, onClose, onPrev, onNext }: {
   return (
     <div
       className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(16px)' }}
+      style={{ background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
       onClick={onClose}
     >
       {/* Prev */}
@@ -721,7 +721,7 @@ function ReaderGalleryModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-[200] flex flex-col"
-      style={{ background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(20px)' }}
+      style={{ background: 'rgba(7,5,8,0.97)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}
       onClick={() => { if (selectedIdx !== null) setSelectedIdx(null) }}
     >
       {/* Header */}
@@ -1339,7 +1339,7 @@ function ScrollHint({ onLight = false }: { onLight?: boolean }) {
             stroke={`rgba(${ink},0.5)`} strokeWidth="1.3" />
           {/* Wheel dot animado */}
           <motion.circle
-            cx="10" r="1.8"
+            cx="10" cy="7" r="1.8"
             fill="rgba(139,60,247,1)"
             animate={{ cy: [7, 12, 7], opacity: [1, 0.3, 1] }}
             transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
@@ -2177,7 +2177,7 @@ function ComingSoonModal({ onClose }: { onClose: () => void }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      style={{ background: 'rgba(7,5,8,0.92)', backdropFilter: 'blur(14px)' }}
+      style={{ background: 'rgba(7,5,8,0.92)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)' }}
       onClick={e => e.target === e.currentTarget && onClose()}
     >
       <div
@@ -2555,7 +2555,7 @@ export default function PreviewPage() {
       {showFlyer && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4"
-          style={{ background: 'rgba(7,5,8,0.92)', backdropFilter: 'blur(12px)' }}
+          style={{ background: 'rgba(7,5,8,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
           onClick={() => setShowFlyer(false)}
         >
           <div className="relative max-h-[90vh] max-w-sm w-full" onClick={e => e.stopPropagation()}>
@@ -2580,7 +2580,7 @@ export default function PreviewPage() {
         {showVoiceNote && (
           <motion.div
             className="fixed inset-0 z-50 flex items-center justify-center p-6"
-            style={{ background: 'rgba(7,5,8,0.88)', backdropFilter: 'blur(16px)' }}
+            style={{ background: 'rgba(7,5,8,0.88)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
             onClick={() => setShowVoiceNote(false)}
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
           >
@@ -2636,7 +2636,7 @@ export default function PreviewPage() {
           background: overLightHero
             ? 'linear-gradient(to bottom, rgba(243,237,225,0.95), transparent)'
             : 'linear-gradient(to bottom, rgba(7,5,8,0.95), transparent)',
-          backdropFilter: 'blur(10px)',
+          backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
           transition: 'background 0.35s ease',
         }}>
         <Image src="/logo-header-v2.png" alt="Pipe Santos" width={300} height={130} className="h-11 md:h-16 w-auto opacity-90" priority
@@ -2710,7 +2710,7 @@ export default function PreviewPage() {
                 className="w-12 h-12 rounded-full flex items-center justify-center"
                 style={{
                   background: 'rgba(139,60,247,0.18)',
-                  backdropFilter: 'blur(14px)',
+                  backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)',
                   border: '1px solid rgba(196,82,255,0.55)',
                   boxShadow: '0 0 24px rgba(139,60,247,0.55), inset 0 0 12px rgba(196,82,255,0.18)',
                 }}

@@ -111,7 +111,7 @@ export default function BorisCharacter() {
               maxWidth: 200,
               background: 'rgba(139,60,247,0.18)',
               border: '1px solid rgba(139,60,247,0.55)',
-              backdropFilter: 'blur(12px)',
+              backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)',
               boxShadow: '0 4px 24px rgba(139,60,247,0.28)',
               lineHeight: 1.4,
               textAlign: 'center',

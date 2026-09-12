@@ -335,7 +335,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           onClick={cerrarCompartir}
           style={{
             position: 'fixed', inset: 0, zIndex: 9999,
-            background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(8px)',
+            background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)',
             display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
             padding: '16px', gap: '14px',
           }}
@@ -782,7 +782,7 @@ function EventGallerySection({ ticketNumber, buyerName }: { ticketNumber: string
         return (
           <div
             className="fixed inset-0 z-[200] flex items-center justify-center"
-            style={{ background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(16px)' }}
+            style={{ background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)' }}
             onClick={() => setLightboxIdx(null)}
           >
             <button

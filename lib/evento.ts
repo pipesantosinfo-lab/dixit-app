@@ -31,7 +31,7 @@ export const EVENTO = {
 
   ciudad: 'Cartagena',
   /** Lo que ve el comprador en el correo y en la entrada como "Lugar". */
-  lugar: 'Auditorio Deonicio Vélez, Unitecnar',
+  lugar: 'Auditorio Dionisio Vélez, Unitecnar',
   direccion: 'Av. Pedro de Heredia, Calle 49A #31-45',
 
   /** Instante real del evento, con zona horaria de Colombia. */
