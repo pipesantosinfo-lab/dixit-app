@@ -270,14 +270,46 @@
   gap: 32px;
   align-items: center;
 }
+/* Poster recto y centrado, con estela morada/naranja detras que respira */
 .landing-poster {
+  position: relative;
+  isolation: isolate; /* la estela (z-index -1) queda dentro del poster, no detras de la pagina */
   width: min(320px, 78vw);
   margin: 0 auto;
-  transform: rotate(-3deg);
   border-radius: 18px;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08), 0 0 70px rgba(139,60,247,0.25);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.10);
 }
-.landing-poster img { display: block; width: 100%; height: auto; border-radius: 18px; }
+.landing-poster::before {
+  content: '';
+  position: absolute;
+  inset: -22%;
+  z-index: -1;
+  border-radius: 50%;
+  background:
+    radial-gradient(ellipse at 35% 30%, rgba(139,60,247,0.55), transparent 58%),
+    radial-gradient(ellipse at 70% 80%, rgba(255,154,60,0.38), transparent 58%);
+  filter: blur(42px);
+  animation: landing-estela 6s ease-in-out infinite;
+}
+.landing-poster::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: 19px;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(201,167,255,0.55), rgba(255,154,60,0.35) 50%, rgba(201,167,255,0.55));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  padding: 1.5px;
+}
+.landing-poster img { display: block; width: 100%; height: auto; border-radius: 18px; position: relative; }
+@keyframes landing-estela {
+  0%, 100% { opacity: 0.85; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+@media (prefers-reduced-motion: reduce) { .landing-poster::before { animation: none; } }
 .landing-strip {
   display: flex;
   gap: 12px;
@@ -443,7 +475,7 @@
   .landing-section, .landing-final { padding-left: 40px; padding-right: 40px; }
   .landing-cards { grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .landing-poster-row { grid-template-columns: 340px 1fr; gap: 56px; }
-  .landing-poster { margin: 0; }
+  .landing-poster { margin: 0 auto; }
   .landing-strip { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; }
   .landing-strip figure { flex: none; }
   .landing-grid { grid-template-columns: 1fr 1fr; }
