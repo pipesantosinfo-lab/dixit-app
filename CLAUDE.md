@@ -68,6 +68,45 @@ sirve). Los originales `.mov` NO — están en el historial, en los commits del
 19/08/2026, y se recuperan con
 `git show 7b59c70:public/showreel/preconf-1.mov > salida.mov`.
 
+## Evento en vivo (venta de entradas)
+
+**Todos los datos del evento viven en `lib/evento.ts`.** Nombre, ciudad,
+lugar, fecha, precio, aforo y flyer. Nada de eso se escribe en ningún otro
+sitio: la portada, el modal de compra, la barra flotante, Bold, el correo,
+la entrada digital y la página de éxito leen de ahí. Antes el precio estaba
+en cinco archivos distintos.
+
+**Dos interruptores, y no son el mismo:**
+- `EVENTO.activo` (en el código) muestra u oculta la sección, el botón del
+  hero, la barra móvil y el enlace del menú.
+- `sales.json` en Supabase (desde `/admin` → toggle-sales) abre o cierra la
+  venta. Lo consultan tanto la pantalla como `/api/create-order`.
+Con la sección visible y ventas cerradas, el botón abre el modal de
+"¡Las entradas abren muy pronto!" con la cuenta regresiva.
+
+**Para un evento nuevo:** editar `lib/evento.ts`, poner el flyer en
+`/public` con nombre nuevo (caché), vaciar `lavida_tickets` y `event_photos`
+(y el bucket `event-photos`) de la base de datos, desplegar con ventas
+cerradas, correr la prueba de compra, y solo entonces abrir ventas.
+
+**El aforo no se comunica.** El dueño no quiere el número en la página; los
+mensajes de urgencia escalan por porcentaje sin decirlo.
+
+**Prueba de compra sin pagar:** `/api/bold-webhook` acepta cualquier aviso
+firmado con HMAC-SHA256 del cuerpo usando `BOLD_SECRET_KEY` (cabecera
+`x-bold-signature`). Con eso se recorre orden → activación → QR → correo al
+comprador → Excel al dueño → validador, sin tocar Bold. Lo que esa prueba
+NO cubre: que Bold tenga registrado el webhook apuntando a
+`https://www.pipesantos.com/api/bold-webhook`. Eso solo se ve en el panel de
+Bold, y sin ello la gente paga y no recibe la entrada.
+
+**`/api/validate-qr` espera `ticketNumber`** (camelCase). El validador de la
+puerta usa `VALIDATOR_SECRET`; el segundo escaneo de una entrada devuelve
+`status: 'already_used'`.
+
+**El correo lleva el logo por URL absoluta**, no adjunto por `cid:`. Gmail
+mostraba el adjunto como imagen rota.
+
 ## Seguridad
 
 Auditoría completa contra producción, repetible:
