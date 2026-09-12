@@ -322,7 +322,7 @@
 }
 .landing-strip::-webkit-scrollbar { display: none; }
 .landing-strip figure {
-  flex: 0 0 72%;
+  flex: 0 0 78%;
   margin: 0;
   scroll-snap-align: start;
   border-radius: 16px;
@@ -476,7 +476,7 @@
   .landing-cards { grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .landing-poster-row { grid-template-columns: 340px 1fr; gap: 56px; }
   .landing-poster { margin: 0 auto; }
-  .landing-strip { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; }
+  .landing-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; overflow: visible; }
   .landing-strip figure { flex: none; }
   .landing-grid { grid-template-columns: 1fr 1fr; }
   .landing-cta--wide { width: auto; min-width: 360px; }

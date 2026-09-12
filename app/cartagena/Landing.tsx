@@ -10,12 +10,20 @@ import CompraModal from '@/components/CompraModal'
  */
 
 const FOTOS = [
-  { src: '/gallery/thumb/IMG_0298-2.webp', alt: 'Auditorio lleno en un show de Pipe Santos' },
-  { src: '/gallery/thumb/IMG_0271-2.webp', alt: 'Pipe Santos en escenario frente al público' },
-  { src: '/gallery/thumb/_MG_8655.webp', alt: 'Pipe Santos abrazando a asistentes' },
-  { src: '/gallery/thumb/DSC04719.webp', alt: 'Selfie con el público' },
-  { src: '/gallery/thumb/IMG_7200.webp', alt: 'Foto grupal al final del show' },
-  { src: '/gallery/thumb/_MG_0108_CR2.webp', alt: 'Público de un show al aire libre' },
+  { src: '/landing/asi-se-vive-01-v1.webp', alt: 'Público en la entrada, con sus boletas en mano' },
+  { src: '/landing/asi-se-vive-02-v1.webp', alt: 'Selfie desde las sillas antes de empezar' },
+  { src: '/landing/asi-se-vive-03-v1.webp', alt: 'Risas en primera fila' },
+  { src: '/landing/asi-se-vive-04-v1.webp', alt: 'Una fila entera riéndose a carcajadas' },
+  { src: '/landing/asi-se-vive-05-v1.webp', alt: 'Público riendo durante el show' },
+  { src: '/landing/asi-se-vive-06-v1.webp', alt: 'Una asistente escuchando con atención' },
+  { src: '/landing/asi-se-vive-07-v1.webp', alt: 'Amigas riéndose en el auditorio' },
+  { src: '/landing/asi-se-vive-08-v1.webp', alt: 'Una pareja disfrutando el show' },
+  { src: '/landing/asi-se-vive-09-v1.webp', alt: 'Risa nerviosa en el público' },
+  { src: '/landing/asi-se-vive-10-v1.webp', alt: 'Pipe Santos con una asistente en el escenario' },
+  { src: '/landing/asi-se-vive-11-v1.webp', alt: 'Choque de manos en el escenario' },
+  { src: '/landing/asi-se-vive-12-v1.webp', alt: 'Un asistente participando con el micrófono' },
+  { src: '/landing/asi-se-vive-13-v1.webp', alt: 'Todo el auditorio con las luces del celular encendidas' },
+  { src: '/landing/asi-se-vive-14-v1.webp', alt: 'Selfie con Pipe Santos al final del show' },
 ]
 
 const QUE_ES = [
