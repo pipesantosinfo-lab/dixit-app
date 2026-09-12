@@ -1363,3 +1363,58 @@ html {
   }
   .btn-podcast__flecha { width: 15px; height: 15px; }
 }
+
+/* ── Poster oficial junto a la entrada digital ─────────────────────
+ * En el celular el poster va arriba, inclinado, y la entrada se le
+ * monta encima (margen negativo). En computador quedan lado a lado. */
+.poster-oficial {
+  width: 230px;
+  margin: 14px auto -34px;
+  position: relative;
+}
+.poster-oficial-marco {
+  position: relative;
+  border-radius: 16px;
+  transform: rotate(-4deg);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08), 0 0 60px rgba(139,60,247,0.3);
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.poster-oficial-marco img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 16px;
+}
+.poster-oficial-marco::before {
+  content: '';
+  position: absolute;
+  inset: -40px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 30% 20%, rgba(139,60,247,0.45), transparent 60%),
+              radial-gradient(ellipse at 80% 90%, rgba(255,140,40,0.25), transparent 60%);
+  filter: blur(40px);
+  z-index: -1;
+}
+.poster-oficial-sello {
+  position: absolute;
+  top: -12px;
+  right: -22px;
+  transform: rotate(7deg);
+  padding: 8px 12px;
+  border: 2px solid #ff9a3c;
+  border-radius: 8px;
+  background: rgba(7,5,8,0.92);
+  color: #ff9a3c;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+}
+@media (min-width: 768px) {
+  .poster-oficial { width: 300px; margin: 0; }
+  .poster-oficial-marco { transform: rotate(-5deg); }
+  .poster-oficial-marco:hover { transform: rotate(-2deg) translateY(-6px); }
+}

@@ -181,7 +181,22 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           style={{ background: 'radial-gradient(ellipse, rgba(139,60,247,0.12) 0%, transparent 70%)', filter: 'blur(60px)' }} />
       </div>
 
-      <div className="relative z-10 w-full max-w-sm">
+      {/* Poster oficial + entrada. En computador van lado a lado; en el
+          celular el poster queda arriba, inclinado, y la entrada se le
+          monta encima como un boleto apoyado sobre el afiche. */}
+      <div className="relative z-10 w-full max-w-sm md:max-w-4xl md:flex md:items-center md:justify-center md:gap-12">
+
+        <div className="poster-oficial md:flex-shrink-0" style={{ zIndex: 1 }}>
+          <div className="poster-oficial-marco">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={EVENTO.flyer} alt={`Poster oficial — ${EVENTO.nombre}`} draggable={false} />
+            <div className="poster-oficial-sello">
+              <span>◆ Entrada confirmada</span>
+            </div>
+          </div>
+        </div>
+
+      <div className="relative z-10 w-full max-w-sm md:flex-shrink-0">
         {isUsed && (
           <div className="mb-4 rounded-xl px-4 py-3 text-center font-mono text-xs tracking-widest uppercase"
             style={{ background: 'rgba(255,80,80,0.08)', border: '1px solid rgba(255,80,80,0.2)', color: 'rgba(255,100,100,0.8)' }}>
@@ -327,6 +342,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           <Image src="/logo.png" alt="Pipe Santos" width={80} height={30} className="opacity-20" />
         </div>
       </div>
+      </div>{/* /poster + entrada */}
 
       {/* ── Vista previa para compartir: la tarjeta 9:16 se queda en pantalla
           con sus botones. Se cierra solo cuando la persona quiere. ── */}
@@ -844,6 +860,8 @@ function EventGallerySection({ ticketNumber, buyerName }: { ticketNumber: string
 const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: string }>(
   function ShareView({ buyerName, shortId }, ref) {
     const firstName = buyerName.split(' ')[0]
+    const restName = buyerName.split(' ').slice(1).join(' ')
+    const mono = 'ui-monospace, "SF Mono", Menlo, monospace'
     return (
       <div
         ref={ref}
@@ -859,127 +877,101 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
           position: 'relative',
         }}
       >
-        {/* Foto teatro full-bleed */}
+        {/* Foto del teatro de fondo, muy tenue */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/theater-bg.jpg"
           alt=""
           style={{
             position: 'absolute', inset: 0, width: '100%', height: '100%',
-            objectFit: 'cover', objectPosition: 'center 62%', opacity: 0.32,
+            objectFit: 'cover', objectPosition: 'center 62%', opacity: 0.28,
           }}
         />
-        {/* Overlay oscuro top/bottom */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(7,5,8,0.80) 0%, rgba(7,5,8,0.15) 35%, rgba(7,5,8,0.15) 55%, rgba(7,5,8,0.88) 100%)',
+          background: 'linear-gradient(to bottom, rgba(7,5,8,0.55) 0%, rgba(7,5,8,0.25) 30%, rgba(7,5,8,0.55) 60%, rgba(7,5,8,0.97) 100%)',
         }} />
-        {/* Aura morada central */}
+        {/* Aura morada detras del poster y naranja abajo */}
         <div style={{
-          position: 'absolute', top: '28%', left: '50%',
-          transform: 'translateX(-50%)',
-          width: '320px', height: '220px', borderRadius: '50%',
-          background: 'radial-gradient(ellipse, rgba(139,60,247,0.45) 0%, transparent 70%)',
-          filter: 'blur(55px)',
+          position: 'absolute', top: '6%', left: '50%', transform: 'translateX(-50%)',
+          width: '340px', height: '300px', borderRadius: '50%',
+          background: 'radial-gradient(ellipse, rgba(139,60,247,0.55) 0%, transparent 70%)',
+          filter: 'blur(50px)',
+        }} />
+        <div style={{
+          position: 'absolute', bottom: '-6%', right: '-20%',
+          width: '280px', height: '220px', borderRadius: '50%',
+          background: 'radial-gradient(ellipse, rgba(255,140,40,0.35) 0%, transparent 70%)',
+          filter: 'blur(50px)',
         }} />
 
-        {/* Contenido */}
+        {/* Logo arriba */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/logo-header-v2.png"
+          alt="Pipe Santos"
+          style={{ position: 'absolute', top: '22px', left: '50%', transform: 'translateX(-50%)', height: '30px', width: 'auto', objectFit: 'contain' }}
+        />
+
+        {/* Poster oficial, inclinado, con sello */}
         <div style={{
-          position: 'absolute', inset: 0,
-          display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'space-between',
-          padding: '38px 24px 30px',
+          position: 'absolute', top: '66px', left: '50%',
+          width: '212px',
+          transform: 'translateX(-50%) rotate(-4deg)',
+          borderRadius: '14px',
+          boxShadow: '0 30px 60px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.10), 0 0 50px rgba(139,60,247,0.35)',
         }}>
-
-          {/* Logo arriba */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/logo-header-v2.png"
-            alt="Pipe Santos"
-            style={{ height: '40px', width: 'auto', objectFit: 'contain' }}
-          />
-
-          {/* Mini ticket card */}
+          <img src={EVENTO.flyer} alt="" style={{ display: 'block', width: '100%', height: 'auto', borderRadius: '14px' }} />
           <div style={{
-            width: '100%',
-            borderRadius: '18px',
-            overflow: 'hidden',
-            border: '1px solid rgba(139,60,247,0.38)',
-            background: 'linear-gradient(145deg, rgba(13,10,20,0.94), rgba(20,14,32,0.94))',
-            boxShadow: '0 24px 60px rgba(0,0,0,0.75), 0 0 40px rgba(139,60,247,0.18)',
-          }}>
-            {/* Art header */}
-            <div style={{ position: 'relative', height: '96px', overflow: 'hidden' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/theater-bg.jpg" alt="" style={{
-                position: 'absolute', inset: 0, width: '100%', height: '100%',
-                objectFit: 'cover', objectPosition: 'center 62%', opacity: 0.65,
-              }} />
-              <div style={{
-                position: 'absolute', inset: 0,
-                background: 'linear-gradient(to bottom, rgba(10,6,20,0.1), rgba(10,6,20,0.88))',
-              }} />
-              <div style={{ position: 'absolute', bottom: '12px', left: '16px' }}>
-                <p style={{
-                  fontFamily: 'ui-monospace, monospace', fontSize: '8px',
-                  letterSpacing: '3px', textTransform: 'uppercase',
-                  color: 'rgba(220,195,255,0.7)', margin: '0 0 3px 0',
-                }}>◆ Pipe Santos · Show en vivo</p>
-                <p style={{
-                  fontFamily: 'Georgia, serif', fontSize: '20px',
-                  fontWeight: 300, color: 'white', lineHeight: 1.1, margin: 0,
-                }}>{EVENTO.nombre.split(' ')[0]} <em style={{ color: '#C45CFF' }}>{EVENTO.nombre.split(' ').slice(1).join(' ')}</em></p>
-              </div>
-              <div style={{
-                position: 'absolute', top: '12px', right: '12px',
-                background: 'rgba(139,60,247,0.25)', border: '1px solid rgba(139,60,247,0.5)',
-                borderRadius: '5px', padding: '3px 8px',
-                fontFamily: 'ui-monospace, monospace', fontSize: '8px',
-                letterSpacing: '2px', textTransform: 'uppercase',
-                color: 'rgba(220,195,255,0.95)',
-              }}>Entrada general</div>
-            </div>
-
-            {/* Metadata */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
-              {[
-                { label: 'Asistente', value: firstName, hl: false },
-                { label: 'Ciudad', value: EVENTO.ciudad, hl: false },
-                { label: 'Boleto', value: shortId.slice(0, -3) + '***', hl: true },
-              ].map((item, i) => (
-                <div key={i} style={{
-                  padding: '10px 14px',
-                  borderRight: i < 2 ? '1px dashed rgba(255,255,255,0.08)' : 'none',
-                }}>
-                  <p style={{ fontFamily: 'ui-monospace, monospace', fontSize: '7px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)', margin: '0 0 2px 0' }}>{item.label}</p>
-                  <p style={{ fontSize: '11px', fontWeight: 500, color: item.hl ? '#C45CFF' : 'rgba(255,255,255,0.9)', margin: 0 }}>{item.value}</p>
-                </div>
-              ))}
-            </div>
-
-            {/* Badge VOY A IR */}
-            <div style={{ padding: '18px 16px', textAlign: 'center' }}>
-              <div style={{ fontSize: '26px', lineHeight: 1, marginBottom: '6px' }}>⚡🧡</div>
-              <p style={{
-                fontSize: '24px', fontWeight: 300, letterSpacing: '1px',
-                color: 'white', margin: '0 0 5px 0',
-              }}>¡VOY A IR!</p>
-              <p style={{
-                fontFamily: 'ui-monospace, monospace', fontSize: '8px',
-                letterSpacing: '2.5px', textTransform: 'uppercase',
-                color: 'rgba(220,195,255,0.75)', margin: 0,
-              }}>Entrada confirmada · {EVENTO.fechaCorta}</p>
-            </div>
-
-            <div style={{ height: '3px', background: 'linear-gradient(90deg, rgba(139,60,247,0.8), rgba(196,82,0,0.5), transparent)' }} />
-          </div>
-
-          {/* URL footer */}
-          <p style={{
-            fontFamily: 'ui-monospace, monospace', fontSize: '10px',
-            letterSpacing: '2.5px', color: 'rgba(196,82,235,0.8)', margin: 0,
-          }}>pipesantos.com</p>
+            position: 'absolute', top: '-12px', right: '-26px',
+            transform: 'rotate(8deg)',
+            padding: '7px 11px',
+            border: '2px solid #ff9a3c', borderRadius: '8px',
+            background: 'rgba(7,5,8,0.92)',
+            fontFamily: mono, fontSize: '8.5px', letterSpacing: '2.5px', textTransform: 'uppercase',
+            color: '#ff9a3c', fontWeight: 700, whiteSpace: 'nowrap',
+            boxShadow: '0 8px 20px rgba(0,0,0,0.6)',
+          }}>◆ Confirmada</div>
         </div>
+
+        {/* Tarjeta de confirmacion abajo */}
+        <div style={{
+          position: 'absolute', left: '22px', right: '22px', bottom: '46px',
+          borderRadius: '18px', padding: '18px 18px 16px',
+          border: '1px solid rgba(139,60,247,0.45)',
+          background: 'linear-gradient(160deg, rgba(24,14,42,0.96), rgba(12,8,20,0.96))',
+          boxShadow: '0 24px 60px rgba(0,0,0,0.8), 0 0 40px rgba(139,60,247,0.2)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <span style={{ width: '6px', height: '6px', background: '#ff9a3c', transform: 'rotate(45deg)', display: 'inline-block' }} />
+            <span style={{ fontFamily: mono, fontSize: '8.5px', letterSpacing: '3px', textTransform: 'uppercase', color: '#ff9a3c' }}>Entrada confirmada</span>
+          </div>
+          <p style={{ margin: '0 0 2px', fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '30px', fontWeight: 700, lineHeight: 1, letterSpacing: '-0.5px', color: 'white' }}>
+            ¡VOY A IR!
+          </p>
+          <p style={{ margin: '0 0 12px', fontFamily: 'Georgia, "Times New Roman", serif', fontSize: '15px', fontStyle: 'italic', color: '#d9c4ff', lineHeight: 1.2 }}>
+            {EVENTO.nombre} · {EVENTO.ciudad}
+          </p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed rgba(255,255,255,0.12)', paddingTop: '10px' }}>
+            <div>
+              <p style={{ margin: '0 0 2px', fontFamily: mono, fontSize: '7px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>Asistente</p>
+              <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: 'white' }}>
+                <span style={{ color: '#C45CFF' }}>{firstName}</span>{restName ? ' ' + restName : ''}
+              </p>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <p style={{ margin: '0 0 2px', fontFamily: mono, fontSize: '7px', letterSpacing: '2px', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)' }}>{EVENTO.fechaCorta} · {EVENTO.horaTexto}</p>
+              <p style={{ margin: 0, fontFamily: mono, fontSize: '10px', letterSpacing: '2px', color: '#ff9a3c' }}>N° {shortId.slice(0, -3)}***</p>
+            </div>
+          </div>
+        </div>
+
+        {/* URL */}
+        <p style={{
+          position: 'absolute', bottom: '18px', left: 0, right: 0, textAlign: 'center',
+          fontFamily: mono, fontSize: '10px', letterSpacing: '3px', color: 'rgba(196,140,255,0.8)', margin: 0,
+        }}>pipesantos.com</p>
       </div>
     )
   }
