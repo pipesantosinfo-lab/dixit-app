@@ -10,6 +10,8 @@ import CompraModal from '@/components/CompraModal'
  */
 
 const FOTOS = [
+  { src: '/landing/asi-se-vive-16-v6.webp', alt: 'Una asistente haciendo un corazón con las manos' },
+  { src: '/landing/asi-se-vive-15-v6.webp', alt: 'Público riéndose durante el show' },
   { src: '/landing/asi-se-vive-02-v6.webp', alt: 'Selfie desde las sillas antes de empezar' },
   { src: '/landing/asi-se-vive-03-v6.webp', alt: 'Risas en primera fila' },
   { src: '/landing/asi-se-vive-04-v6.webp', alt: 'Una fila entera riéndose a carcajadas' },
@@ -22,8 +24,6 @@ const FOTOS = [
   { src: '/landing/asi-se-vive-12-v6.webp', alt: 'Un asistente participando con el micrófono' },
   { src: '/landing/asi-se-vive-13-v6.webp', alt: 'Todo el auditorio con las luces del celular encendidas' },
   { src: '/landing/asi-se-vive-14-v6.webp', alt: 'Selfie con Pipe Santos al final del show' },
-  { src: '/landing/asi-se-vive-15-v6.webp', alt: 'Público riéndose durante el show' },
-  { src: '/landing/asi-se-vive-16-v6.webp', alt: 'Una asistente haciendo un corazón con las manos' },
 ]
 
 const QUE_ES = [
