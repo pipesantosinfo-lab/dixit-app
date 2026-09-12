@@ -10,20 +10,20 @@ import CompraModal from '@/components/CompraModal'
  */
 
 const FOTOS = [
-  { src: '/landing/asi-se-vive-01-v3.webp', alt: 'Público en la entrada, con sus boletas en mano' },
-  { src: '/landing/asi-se-vive-02-v3.webp', alt: 'Selfie desde las sillas antes de empezar' },
-  { src: '/landing/asi-se-vive-03-v3.webp', alt: 'Risas en primera fila' },
-  { src: '/landing/asi-se-vive-04-v3.webp', alt: 'Una fila entera riéndose a carcajadas' },
-  { src: '/landing/asi-se-vive-05-v3.webp', alt: 'Público riendo durante el show' },
-  { src: '/landing/asi-se-vive-06-v3.webp', alt: 'Una asistente escuchando con atención' },
-  { src: '/landing/asi-se-vive-07-v3.webp', alt: 'Amigas riéndose en el auditorio' },
-  { src: '/landing/asi-se-vive-08-v3.webp', alt: 'Una pareja disfrutando el show' },
-  { src: '/landing/asi-se-vive-09-v3.webp', alt: 'Risa nerviosa en el público' },
-  { src: '/landing/asi-se-vive-10-v3.webp', alt: 'Pipe Santos con una asistente en el escenario' },
-  { src: '/landing/asi-se-vive-11-v3.webp', alt: 'Choque de manos en el escenario' },
-  { src: '/landing/asi-se-vive-12-v3.webp', alt: 'Un asistente participando con el micrófono' },
-  { src: '/landing/asi-se-vive-13-v3.webp', alt: 'Todo el auditorio con las luces del celular encendidas' },
-  { src: '/landing/asi-se-vive-14-v3.webp', alt: 'Selfie con Pipe Santos al final del show' },
+  { src: '/landing/asi-se-vive-01-v4.webp', alt: 'Público en la entrada, con sus boletas en mano' },
+  { src: '/landing/asi-se-vive-02-v4.webp', alt: 'Selfie desde las sillas antes de empezar' },
+  { src: '/landing/asi-se-vive-03-v4.webp', alt: 'Risas en primera fila' },
+  { src: '/landing/asi-se-vive-04-v4.webp', alt: 'Una fila entera riéndose a carcajadas' },
+  { src: '/landing/asi-se-vive-05-v4.webp', alt: 'Público riendo durante el show' },
+  { src: '/landing/asi-se-vive-06-v4.webp', alt: 'Una asistente escuchando con atención' },
+  { src: '/landing/asi-se-vive-07-v4.webp', alt: 'Amigas riéndose en el auditorio' },
+  { src: '/landing/asi-se-vive-08-v4.webp', alt: 'Una pareja disfrutando el show' },
+  { src: '/landing/asi-se-vive-09-v4.webp', alt: 'Risa nerviosa en el público' },
+  { src: '/landing/asi-se-vive-10-v4.webp', alt: 'Pipe Santos con una asistente en el escenario' },
+  { src: '/landing/asi-se-vive-11-v4.webp', alt: 'Choque de manos en el escenario' },
+  { src: '/landing/asi-se-vive-12-v4.webp', alt: 'Un asistente participando con el micrófono' },
+  { src: '/landing/asi-se-vive-13-v4.webp', alt: 'Todo el auditorio con las luces del celular encendidas' },
+  { src: '/landing/asi-se-vive-14-v4.webp', alt: 'Selfie con Pipe Santos al final del show' },
 ]
 
 const QUE_ES = [
