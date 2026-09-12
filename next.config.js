@@ -28,6 +28,12 @@ const securityHeaders = [
 ]
 
 const nextConfig = {
+  // /api/tarjeta dibuja la tarjeta del correo con las fuentes de lib/fonts,
+  // leidas con fs. Vercel solo empaqueta lo que rastrea en el codigo; esto
+  // garantiza que los .ttf viajen con la funcion.
+  experimental: {
+    outputFileTracingIncludes: { '/api/tarjeta/[number]': ['./lib/fonts/*.ttf'] },
+  },
   // Compresión de respuestas (gzip/brotli) automática
   compress: true,
   // Remueve la cabecera X-Powered-By: Next.js (pequeña reducción + seguridad)

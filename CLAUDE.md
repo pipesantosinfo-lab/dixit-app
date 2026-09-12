@@ -107,6 +107,18 @@ puerta usa `VALIDATOR_SECRET`; el segundo escaneo de una entrada devuelve
 **El correo lleva el logo por URL absoluta**, no adjunto por `cid:`. Gmail
 mostraba el adjunto como imagen rota.
 
+**La tarjeta de datos del correo es una IMAGEN** (`/api/tarjeta/[number]`,
+dibujada con `next/og` en `lib/tarjeta-correo.tsx`). Gmail en iPhone invierte
+el texto blanco de los correos oscuros y el título desaparecía; una imagen no
+se puede invertir. Si cambia el diseño, subir el `?v=` en `lib/email.ts`
+(Gmail guarda la imagen por URL). Las fuentes viven en `lib/fonts/` y van
+declaradas en `outputFileTracingIncludes` para que Vercel las empaquete.
+En Windows `next/og` falla en local (`Invalid URL`, bug de rutas con
+espacios); en Vercel (Linux) funciona. Para probar en local hay que parchear
+`node_modules/next/dist/compiled/@vercel/og/index.node.js`:
+`fileURLToPath(join(import.meta.url, ...))` → `join(fileURLToPath(import.meta.url), ...)`
+y reiniciar el servidor.
+
 ## Seguridad
 
 Auditoría completa contra producción, repetible:
