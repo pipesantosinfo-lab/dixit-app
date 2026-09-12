@@ -24,13 +24,20 @@ export async function GET(_req: Request, { params }: { params: { number: string 
   if (!ticket || ticket.status === 'pending') return NextResponse.json({ error: 'No encontrada' }, { status: 404 })
 
   const codigo = ticket.ticket_number.split('-')[0].toUpperCase()
-  return new ImageResponse(
+  const imagen = new ImageResponse(
     <TarjetaCorreo nombre={ticket.buyer_name} codigo={codigo} />,
-    {
-      width: TARJETA.ancho * TARJETA.escala,
-      height: TARJETA.alto * TARJETA.escala,
-      fonts: fuentesTarjeta(),
-      headers: { 'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800' },
-    },
+    { width: TARJETA.ancho * TARJETA.escala, height: TARJETA.alto * TARJETA.escala, fonts: fuentesTarjeta() },
   )
+  // ImageResponse envia el PNG por partes (sin Content-Length) y añade su
+  // propia cabecera de cache. El proxy de imagenes de Gmail quiere una
+  // respuesta completa y limpia: se entrega el PNG entero con su tamaño.
+  const png = Buffer.from(await imagen.arrayBuffer())
+  return new NextResponse(png, {
+    status: 200,
+    headers: {
+      'Content-Type': 'image/png',
+      'Content-Length': String(png.length),
+      'Cache-Control': 'public, max-age=86400, stale-while-revalidate=604800',
+    },
+  })
 }
