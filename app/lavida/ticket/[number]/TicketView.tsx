@@ -39,7 +39,9 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
     setShareMsg('')
     setShareFile(null)
     // Que la tarjeta de 360x640 quepa en la pantalla junto con los botones.
-    setEscala(Math.min(1, (window.innerHeight - 150) / 640, (window.innerWidth - 32) / 360))
+    // 200 px reservados para los botones, el mensaje y la barra del navegador
+    // del celular, que en Safari ocupa buena parte de la pantalla.
+    setEscala(Math.min(1, (window.innerHeight - 200) / 640, (window.innerWidth - 32) / 360))
     setShowCaptureView(true)
     setPreparing(true)
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
