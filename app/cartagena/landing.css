@@ -1,0 +1,395 @@
+/* ── Landing /cartagena ──────────────────────────────────────────────
+ * Una sola columna, un solo objetivo. Mismas fuentes y colores del sitio
+ * (Playfair / DM Sans / DM Mono, morado #8B3CF7, naranja #ff9a3c), pero
+ * con el ritmo limpio de una landing: portada, tres bloques, datos, cierre,
+ * y una barra fija abajo con el boton de compra. */
+
+.landing {
+  --tinta: #f4eeff;
+  --tinta-2: rgba(244,238,255,0.62);
+  --tinta-3: rgba(244,238,255,0.38);
+  --fondo: #070508;
+  --panel: #120c1e;
+  --linea: rgba(201,167,255,0.14);
+  --morado: #8B3CF7;
+  --lavanda: #C9A7FF;
+  --naranja: #ff9a3c;
+  background: var(--fondo);
+  color: var(--tinta);
+  padding-bottom: 92px; /* barra fija */
+  overflow-x: hidden;
+}
+
+/* Tipografia */
+.landing-eyebrow {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--lavanda);
+  margin: 0 0 14px;
+}
+.landing-eyebrow--orange { color: var(--naranja); }
+
+.landing-title {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  margin: 0 0 20px;
+  font-size: clamp(56px, 15vw, 128px);
+  display: flex;
+  flex-direction: column;
+}
+.landing-title em {
+  font-style: italic;
+  color: var(--lavanda);
+}
+.landing-h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(32px, 6vw, 52px);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0 0 28px;
+  text-wrap: balance;
+}
+.landing-h2 em { font-style: italic; color: var(--lavanda); }
+.landing-h2--big { font-size: clamp(40px, 8vw, 72px); margin-bottom: 14px; }
+
+.landing-lead {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: clamp(16px, 2.2vw, 20px);
+  line-height: 1.5;
+  color: var(--tinta-2);
+  max-width: 34ch;
+  margin: 0 0 22px;
+}
+.landing-p {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--tinta-2);
+  max-width: 52ch;
+  margin: 0 0 24px;
+}
+.landing-meta {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  color: var(--tinta);
+  margin: 0 0 28px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.landing-meta i { font-style: normal; color: var(--naranja); }
+
+/* Boton principal: solido, como en la referencia */
+.landing-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 30px;
+  border-radius: 999px;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: 0.02em;
+  color: #fff;
+  background: linear-gradient(135deg, #9a4cff 0%, #8B3CF7 55%, #c4520a 140%);
+  box-shadow: 0 10px 30px rgba(139,60,247,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.landing-cta:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(139,60,247,0.45), inset 0 1px 0 rgba(255,255,255,0.18); }
+.landing-cta:active { transform: translateY(0); filter: brightness(0.95); }
+.landing-cta:focus-visible { outline: 2px solid var(--lavanda); outline-offset: 3px; }
+.landing-cta--ghost {
+  background: rgba(139,60,247,0.12);
+  border: 1px solid rgba(201,167,255,0.35);
+  box-shadow: none;
+}
+.landing-cta--wide { width: 100%; margin-top: 28px; }
+.landing-cta--bar { padding: 14px 22px; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+.landing-link {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+  text-decoration: none;
+  padding: 18px 6px;
+}
+.landing-link:hover { color: var(--tinta); }
+
+/* Portada */
+.landing-hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+.landing-hero__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
+}
+.landing-hero__shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(7,5,8,0.55) 0%, rgba(7,5,8,0.05) 32%, rgba(7,5,8,0.55) 62%, rgba(7,5,8,0.97) 100%),
+    radial-gradient(ellipse at 20% 100%, rgba(139,60,247,0.35), transparent 55%);
+}
+.landing-hero__content {
+  position: relative;
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 120px 22px 110px; /* deja aire sobre la barra fija */
+}
+.landing-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+}
+
+/* Secciones */
+.landing-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 88px 22px 0;
+}
+.landing-section--tight { padding-top: 64px; }
+
+.landing-cards {
+  display: grid;
+  gap: 14px;
+}
+.landing-card {
+  position: relative;
+  padding: 26px 24px 24px;
+  border-radius: 20px;
+  background: linear-gradient(160deg, #17102a, #0f0a1a);
+  border: 1px solid var(--linea);
+}
+.landing-card__n {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--naranja);
+}
+.landing-card h3 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  font-size: 24px;
+  margin: 10px 0 8px;
+  color: var(--tinta);
+}
+.landing-card p {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--tinta-2);
+  margin: 0;
+}
+
+/* Poster + fotos */
+.landing-poster-row {
+  display: grid;
+  gap: 32px;
+  align-items: center;
+}
+.landing-poster {
+  width: min(320px, 78vw);
+  margin: 0 auto;
+  transform: rotate(-3deg);
+  border-radius: 18px;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.08), 0 0 70px rgba(139,60,247,0.25);
+}
+.landing-poster img { display: block; width: 100%; height: auto; border-radius: 18px; }
+.landing-strip {
+  display: flex;
+  gap: 12px;
+  margin-top: 40px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.landing-strip::-webkit-scrollbar { display: none; }
+.landing-strip figure {
+  flex: 0 0 72%;
+  margin: 0;
+  scroll-snap-align: start;
+  border-radius: 16px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--panel);
+}
+.landing-strip img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* Datos */
+.landing-grid {
+  display: grid;
+  gap: 1px;
+  background: var(--linea);
+  border: 1px solid var(--linea);
+  border-radius: 20px;
+  overflow: hidden;
+}
+.landing-grid > div {
+  background: var(--panel);
+  padding: 22px 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.landing-grid small {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--naranja);
+}
+.landing-grid strong {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  font-size: 22px;
+  line-height: 1.2;
+  color: var(--tinta);
+}
+.landing-grid span {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 14px;
+  color: var(--tinta-2);
+  line-height: 1.5;
+}
+
+/* Preguntas */
+.landing-faq { display: grid; gap: 8px; }
+.landing-faq details {
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  background: var(--panel);
+  padding: 0 20px;
+}
+.landing-faq summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 18px 0;
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--tinta);
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+.landing-faq summary::-webkit-details-marker { display: none; }
+.landing-faq summary::after {
+  content: '+';
+  color: var(--lavanda);
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.landing-faq details[open] summary::after { content: '−'; }
+.landing-faq p {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--tinta-2);
+  margin: 0 0 18px;
+}
+
+/* Cierre */
+.landing-final {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 96px 22px 40px;
+  text-align: center;
+}
+.landing-final .landing-p { margin-left: auto; margin-right: auto; }
+.landing-footer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  margin-top: 56px;
+}
+.landing-footer a {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+  text-decoration: none;
+}
+.landing-footer a:hover { color: var(--tinta); }
+
+/* Barra fija */
+.landing-bar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(14,9,24,0.82);
+  border-top: 1px solid rgba(201,167,255,0.16);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+.landing-bar__text { display: flex; flex-direction: column; min-width: 0; }
+.landing-bar__text strong {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--tinta);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.landing-bar__text span {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--tinta-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Escritorio */
+@media (min-width: 768px) {
+  .landing-hero__content { padding: 160px 40px 72px; }
+  .landing-hero__img { object-position: 50% 35%; }
+  .landing-section, .landing-final { padding-left: 40px; padding-right: 40px; }
+  .landing-cards { grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .landing-poster-row { grid-template-columns: 340px 1fr; gap: 56px; }
+  .landing-poster { margin: 0; }
+  .landing-strip { display: grid; grid-template-columns: repeat(3, 1fr); overflow: visible; }
+  .landing-strip figure { flex: none; }
+  .landing-grid { grid-template-columns: 1fr 1fr; }
+  .landing-cta--wide { width: auto; min-width: 360px; }
+  .landing-bar { padding-left: 40px; padding-right: 40px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .landing-cta { transition: none; }
+}

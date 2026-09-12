@@ -1,0 +1,178 @@
+'use client'
+import { useEffect, useState } from 'react'
+import { EVENTO } from '@/lib/evento'
+import CompraModal from '@/components/CompraModal'
+
+/**
+ * Landing de una sola pagina para vender la entrada. Es el enlace que va en
+ * la bio de Instagram y en WhatsApp: un objetivo (comprar), un boton fijo
+ * abajo, cero distracciones. Usa la misma compra que la portada.
+ */
+
+const FOTOS = [
+  { src: '/gallery/thumb/IMG_0298-2.webp', alt: 'Auditorio lleno en un show de Pipe Santos' },
+  { src: '/gallery/thumb/IMG_0271-2.webp', alt: 'Pipe Santos en escenario frente al público' },
+  { src: '/gallery/thumb/_MG_8655.webp', alt: 'Pipe Santos abrazando a asistentes' },
+  { src: '/gallery/thumb/DSC04719.webp', alt: 'Selfie con el público' },
+  { src: '/gallery/thumb/IMG_7200.webp', alt: 'Foto grupal al final del show' },
+  { src: '/gallery/thumb/_MG_0108_CR2.webp', alt: 'Público de un show al aire libre' },
+]
+
+const QUE_ES = [
+  { n: '01', t: 'Historias reales', d: 'Las que no caben en un reel: las que cambiaron la vida de Pipe, contadas sin filtro y sin libreto.' },
+  { n: '02', t: 'Más de dos horas en vivo', d: 'Risas, silencios incómodos y una energía colectiva que solo pasa cuando estamos en la misma sala.' },
+  { n: '03', t: 'Foto y firma de libros', d: 'Al final, espacio para la foto y para firmar tu libro (o comprarlo ahí mismo).' },
+]
+
+const FAQ = [
+  { q: '¿Cómo recibo mi entrada?', a: 'Al pagar te llega un correo con tu entrada y un código QR. Ese QR es lo que muestras en la puerta; puedes guardarlo como captura de pantalla.' },
+  { q: 'Pagué por PSE y no me ha llegado nada', a: 'Con PSE el banco puede tardar unos minutos en confirmar. Apenas confirme, tu entrada sale sola al correo. Si pasan 15 minutos, entra a pipesantos.com/mi-entrada y te la reenviamos.' },
+  { q: '¿Puedo comprar varias entradas?', a: 'Sí, hasta 10 en una sola compra. Llega un correo por cada entrada, cada una con su propio QR.' },
+  { q: '¿Hay restricción de edad?', a: 'Sí: es para mayores de 18 años. Te pedirán el documento de identidad al ingresar.' },
+  { q: '¿Dónde es exactamente?', a: `${EVENTO.lugar}. ${EVENTO.direccion}, ${EVENTO.ciudad}. Pregunta por Unitecnar; el auditorio queda dentro de la universidad.` },
+]
+
+export default function Landing() {
+  const [abierto, setAbierto] = useState(false)
+  const [ventas, setVentas] = useState<boolean | null>(null)
+  const [vendidas, setVendidas] = useState(0)
+
+  useEffect(() => {
+    fetch('/api/sales-status').then(r => r.json()).then(d => setVentas(!!d.open)).catch(() => setVentas(false))
+    fetch('/api/ticket-count').then(r => r.json()).then(d => setVendidas(d.count ?? 0)).catch(() => {})
+  }, [])
+
+  const agotado = vendidas >= EVENTO.aforo
+  const pocas = !agotado && vendidas >= EVENTO.aforo * 0.8
+  const comprar = () => setAbierto(true)
+
+  return (
+    <main className="landing">
+      {/* ── Portada ─────────────────────────────────────────────────── */}
+      <section className="landing-hero">
+        <picture>
+          <source media="(min-width: 768px)" srcSet="/landing-hero-wide-v1.webp" />
+          <img src="/landing-hero-v1.webp" alt="" className="landing-hero__img" fetchPriority="high" />
+        </picture>
+        <div className="landing-hero__shade" />
+        <div className="landing-hero__content">
+          <p className="landing-eyebrow">Pipe Santos · Show en vivo</p>
+          <h1 className="landing-title">
+            <span>Historias</span>
+            <em>sin libreto</em>
+          </h1>
+          <p className="landing-lead">
+            Las historias que cambiaron la vida de Pipe, contadas en vivo, sin filtro y sin libreto. Más de dos horas que no vas a olvidar.
+          </p>
+          <p className="landing-meta">
+            <span>{EVENTO.fechaCorta.toUpperCase()}</span><i>·</i><span>{EVENTO.ciudad.toUpperCase()}</span><i>·</i><span>{EVENTO.horaTexto}</span>
+          </p>
+          <div className="landing-hero__actions">
+            <button onClick={comprar} className="landing-cta">
+              {agotado ? 'Lista de espera' : `Comprar entrada · ${EVENTO.precioTexto}`}
+            </button>
+            <a href="#detalles" className="landing-link">Ver detalles ↓</a>
+          </div>
+        </div>
+      </section>
+
+      {/* ── De qué se trata ──────────────────────────────────────────── */}
+      <section className="landing-section">
+        <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
+        <h2 className="landing-h2">Una tarde que <em>no olvidarás</em></h2>
+        <div className="landing-cards">
+          {QUE_ES.map(x => (
+            <article key={x.n} className="landing-card">
+              <span className="landing-card__n">{x.n}</span>
+              <h3>{x.t}</h3>
+              <p>{x.d}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Poster + fotos ───────────────────────────────────────────── */}
+      <section className="landing-section landing-section--tight">
+        <div className="landing-poster-row">
+          <div className="landing-poster">
+            <img src={EVENTO.flyer} alt={`Poster oficial — ${EVENTO.nombre}`} loading="lazy" />
+          </div>
+          <div className="landing-poster-text">
+            <p className="landing-eyebrow landing-eyebrow--orange">◆ Así se vive</p>
+            <h2 className="landing-h2">Lo que pasa cuando <em>estamos en la misma sala</em></h2>
+            <p className="landing-p">Cada show ha sido distinto, y en todos pasó lo mismo: nadie quería que terminara.</p>
+            <button onClick={comprar} className="landing-cta landing-cta--ghost">Quiero mi entrada →</button>
+          </div>
+        </div>
+        <div className="landing-strip" aria-label="Fotos de shows anteriores">
+          {FOTOS.map(f => (
+            <figure key={f.src}><img src={f.src} alt={f.alt} loading="lazy" /></figure>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Detalles ─────────────────────────────────────────────────── */}
+      <section id="detalles" className="landing-section">
+        <p className="landing-eyebrow landing-eyebrow--orange">◆ Los datos</p>
+        <div className="landing-grid">
+          <div><small>Dónde</small><strong>{EVENTO.lugar}</strong><span>{EVENTO.direccion}, {EVENTO.ciudad}</span></div>
+          <div><small>Cuándo</small><strong>{EVENTO.fechaTexto.split(' · ')[0]}</strong><span>{EVENTO.horaTexto} · Llega con tiempo: el show empieza puntual</span></div>
+          <div><small>Entrada general</small><strong>{EVENTO.precioTexto}</strong><span>{pocas ? 'Últimas entradas' : 'Cupos limitados'} · Mayores de 18</span></div>
+          <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Al instante con tarjeta; con PSE apenas confirme tu banco</span></div>
+        </div>
+        <button onClick={comprar} className="landing-cta landing-cta--wide">
+          {agotado ? 'Anotarme en lista de espera' : `Comprar entrada · ${EVENTO.precioTexto}`}
+        </button>
+      </section>
+
+      {/* ── Preguntas ─────────────────────────────────────────────────── */}
+      <section className="landing-section landing-section--tight">
+        <p className="landing-eyebrow landing-eyebrow--orange">◆ Preguntas frecuentes</p>
+        <div className="landing-faq">
+          {FAQ.map(f => (
+            <details key={f.q}>
+              <summary>{f.q}</summary>
+              <p>{f.a}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Cierre ───────────────────────────────────────────────────── */}
+      <section className="landing-final">
+        <h2 className="landing-h2 landing-h2--big">Nos vemos en <em>Cartagena</em>.</h2>
+        <p className="landing-p">{EVENTO.fechaTexto} · {EVENTO.lugar}</p>
+        <button onClick={comprar} className="landing-cta">Comprar entrada · {EVENTO.precioTexto}</button>
+        <footer className="landing-footer">
+          <a href="https://www.pipesantos.com">pipesantos.com</a>
+          <a href="/mi-entrada">Reenviar mi entrada</a>
+          <a href="/privacidad">Privacidad</a>
+        </footer>
+      </section>
+
+      {/* ── Barra fija ────────────────────────────────────────────────── */}
+      <div className="landing-bar">
+        <div className="landing-bar__text">
+          <strong>{EVENTO.nombre} · {EVENTO.precioTexto}</strong>
+          <span>{EVENTO.fechaCorta} · {EVENTO.ciudad} · {pocas ? 'Últimas entradas' : 'Cupos limitados'}</span>
+        </div>
+        <button onClick={comprar} className="landing-cta landing-cta--bar">{agotado ? 'Lista de espera' : 'Comprar'}</button>
+      </div>
+
+      {abierto && (ventas === false || agotado ? (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" style={{ background: 'rgba(7,5,8,0.9)' }} onClick={() => setAbierto(false)}>
+          <div className="max-w-sm w-full rounded-3xl p-8 text-center" style={{ background: 'linear-gradient(145deg,#0d0a14,#140e20)', border: '1px solid rgba(139,60,247,0.3)' }} onClick={e => e.stopPropagation()}>
+            <p className="landing-eyebrow landing-eyebrow--orange">◆ {agotado ? 'Agotadas' : 'Muy pronto'}</p>
+            <h3 className="font-display text-2xl text-white mb-3">{agotado ? 'Se vendieron todas' : 'Las entradas abren muy pronto'}</h3>
+            <p className="font-body text-white/50 text-sm leading-relaxed mb-6">
+              {agotado ? 'Escríbenos a pipesantosinfo@gmail.com y te avisamos si se libera un cupo.' : 'Síguenos en Instagram: ahí avisamos el momento exacto.'}
+            </p>
+            <button onClick={() => setAbierto(false)} className="landing-cta landing-cta--ghost">Entendido</button>
+          </div>
+        </div>
+      ) : (
+        <CompraModal onClose={() => setAbierto(false)} vendidas={vendidas} />
+      ))}
+    </main>
+  )
+}
