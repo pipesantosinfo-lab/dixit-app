@@ -28,6 +28,9 @@ export async function createBoldPaymentLink({
       amount: { currency: 'COP', total_amount: UNIT_PRICE * quantity },
       description: DESCRIPCION_PAGO,
       reference: orderId,
+      // Vence a los 45 min: un link viejo no debe poder pagarse cuando la
+      // orden ya libero su cupo (create-order cuenta pendientes de 30 min).
+      expiration_date: (Date.now() + 45 * 60_000) * 1_000_000, // Bold lo pide en nanosegundos
       callback_url: `${APP_URL}/pago-exitoso?order=${orderId}`,
       payer_email: buyerEmail,
     }),

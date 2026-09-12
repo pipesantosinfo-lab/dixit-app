@@ -52,7 +52,8 @@ export async function activarOrden(orderId: string, paymentMethod = 'Bold'): Pro
   const buyer = tickets[0]
   const now = new Date().toISOString()
 
-  for (const ticket of tickets) {
+  const ordenadas = [...tickets].sort((a, b) => String(a.ticket_number).localeCompare(String(b.ticket_number)))
+  for (const [i, ticket] of ordenadas.entries()) {
     if (ticket.status === 'active') continue
     const ticketUrl = `${APP_URL}/lavida/ticket/${ticket.ticket_number}`
 
@@ -73,6 +74,7 @@ export async function activarOrden(orderId: string, paymentMethod = 'Bold'): Pro
         tierName: 'Entrada General',
         ticketId: ticket.ticket_number,
         ticketPageUrl: ticketUrl,
+        posicion: { indice: i + 1, total: ordenadas.length },
       })
     } catch (err) {
       console.error('Email error for', ticket.ticket_number, err)

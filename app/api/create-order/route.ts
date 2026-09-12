@@ -48,8 +48,8 @@ export async function POST(req: NextRequest) {
   if (buyerCedula && (buyerCedula.length < 6 || buyerCedula.length > 10)) {
     return NextResponse.json({ error: 'Cédula inválida.' }, { status: 400 })
   }
-  // Rate limit por email (3/h) y por IP (10/h — más permisivo para familias en mismo wifi)
-  if (isRateLimited('email:' + buyerEmail, 3)) {
+  // Rate limit por email (6/h: un pago rechazado y varios intentos no deben bloquear) y por IP (10/h)
+  if (isRateLimited('email:' + buyerEmail, 6)) {
     return NextResponse.json({ error: 'Demasiadas solicitudes. Intenta en una hora.' }, { status: 429 })
   }
   if (isRateLimited('ip:' + ip, 10)) {

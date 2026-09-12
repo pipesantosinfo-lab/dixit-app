@@ -545,6 +545,7 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
           <span>{loading ? 'Redirigiendo a pago seguro...' : `Continuar al pago — $${total.toLocaleString('es-CO')} →`}</span>
         </button>
         <p className="font-mono text-xs text-white/20 text-center mt-4">Pago seguro con Bold · Con tarjeta tu QR llega al instante · Con PSE, apenas tu banco confirme (pocos minutos)</p>
+        <p className="font-mono text-xs text-center mt-2"><a href="/mi-entrada" className="text-white/30 hover:text-white/60 transition-colors underline underline-offset-4">¿Ya compraste y no te llegó el correo?</a></p>
       </div>
     </div>
   )

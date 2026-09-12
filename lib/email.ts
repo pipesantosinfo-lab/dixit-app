@@ -20,6 +20,8 @@ interface TicketEmailParams {
   tierName: string
   ticketId: string
   ticketPageUrl: string
+  /** Cuando una orden trae varias entradas: "2 de 3". */
+  posicion?: { indice: number; total: number }
 }
 
 /** Arma el HTML del correo. Separado del envio para poder previsualizarlo. */
@@ -121,7 +123,8 @@ export function renderTicketEmail(params: TicketEmailParams): { html: string; su
 </body>
 </html>`
 
-  return { html, subject: `Tu entrada para ${safeEvent} ✦` }
+  const cual = params.posicion && params.posicion.total > 1 ? ` (${params.posicion.indice} de ${params.posicion.total})` : ''
+  return { html, subject: `Tu entrada${cual} para ${safeEvent} ✦` }
 }
 
 export async function sendTicketEmail(params: TicketEmailParams) {

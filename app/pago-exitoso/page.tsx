@@ -194,6 +194,9 @@ function Content() {
           <a href="/#evento" className="font-mono text-xs text-white/25 hover:text-white/50 transition-colors tracking-widest uppercase">
             ← Volver al evento
           </a>
+          <p className="mt-4">
+            <a href="/mi-entrada" className="font-mono text-xs text-white/25 hover:text-white/50 transition-colors underline underline-offset-4">¿No te llegó el correo? Reenviar mi entrada</a>
+          </p>
         </div>
 
         <Image src="/logo.png" alt="Pipe Santos" width={90} height={34} className="opacity-20 mx-auto mt-8" />

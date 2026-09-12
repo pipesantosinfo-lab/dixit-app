@@ -232,6 +232,12 @@ async function revisarCredenciales() {
     const rv = await fetch(SITIO + ruta, { headers: { Authorization: `Bearer ${V}` } })
     if (rv.status !== 200) filtrados.push(`${ruta} deberia aceptar el PIN del validador (HTTP ${rv.status})`)
   }
+  // Los crons solo abren con CRON_SECRET: sin token y con el PIN del validador deben dar 401.
+  for (const ruta of ['/api/cron/reconciliar-pagos', '/api/cron/cleanup-pending', '/api/cron/weekly-report']) {
+    const r0 = await fetch(SITIO + ruta)
+    const rv = await fetch(SITIO + ruta, { headers: { Authorization: `Bearer ${V}` } })
+    if (r0.status !== 401 || rv.status !== 401) filtrados.push(`${ruta} abierto sin CRON_SECRET (HTTP ${r0.status}/${rv.status})`)
+  }
   const mal = await fetch(SITIO + '/api/admin/sync-tickets', { headers: { Authorization: 'Bearer noesnada' } })
   if (mal.status !== 401) filtrados.push(`un secreto inválido devuelve HTTP ${mal.status} en vez de 401`)
 
