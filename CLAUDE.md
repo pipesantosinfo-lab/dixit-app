@@ -92,13 +92,26 @@ cerradas, correr la prueba de compra, y solo entonces abrir ventas.
 **El aforo no se comunica.** El dueño no quiere el número en la página; los
 mensajes de urgencia escalan por porcentaje sin decirlo.
 
-**Prueba de compra sin pagar:** `/api/bold-webhook` acepta cualquier aviso
-firmado con HMAC-SHA256 del cuerpo usando `BOLD_SECRET_KEY` (cabecera
-`x-bold-signature`). Con eso se recorre orden → activación → QR → correo al
-comprador → Excel al dueño → validador, sin tocar Bold. Lo que esa prueba
-NO cubre: que Bold tenga registrado el webhook apuntando a
-`https://www.pipesantos.com/api/bold-webhook`. Eso solo se ve en el panel de
-Bold, y sin ello la gente paga y no recibe la entrada.
+**Cómo se confirma un pago (dos caminos, y el segundo no depende de Bold):**
+1. Webhook `/api/bold-webhook`. Bold firma HMAC-SHA256 hex con
+   `BOLD_SECRET_KEY` sobre el cuerpo **en Base64** (no el cuerpo crudo), y
+   para links de pago manda como `data.metadata.reference` el id del link
+   (`LNK_...`), no nuestra referencia. Por eso `create-order` guarda el
+   `LNK_` en `bold_order_id`. El webhook debe estar registrado en el panel
+   de Bold (Integraciones → Webhooks); la primera compra real (12/09/2026)
+   no lo estaba y la entrada quedó pendiente.
+2. `/api/ticket-status`, que `/pago-exitoso` consulta cada 3 s: si la
+   entrada sigue pendiente le pregunta a Bold por el link
+   (`GET /online/link/v1/{LNK}`) y si dice `PAID` la activa ahí mismo.
+   Con esto el comprador recibe su entrada aunque el webhook no llegue.
+
+La activación (QR, correo, Excel al dueño) vive en `lib/activar-orden.ts`
+y es idempotente.
+
+**Prueba sin pagar:** mandar al webhook un `SALE_APPROVED` firmado (vale la
+firma sobre Base64 como Bold, o sobre el cuerpo crudo). Recorre orden →
+activación → correo → Excel → validador sin tocar Bold. Para activar a mano
+una compra real que quedó pendiente, es lo mismo con su `reference`.
 
 **`/api/validate-qr` espera `ticketNumber`** (camelCase). El validador de la
 puerta usa `VALIDATOR_SECRET`; el segundo escaneo de una entrada devuelve
