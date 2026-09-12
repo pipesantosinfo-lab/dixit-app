@@ -52,7 +52,8 @@ export async function POST(req: NextRequest) {
 
   if (!tickets || tickets.length === 0) return NextResponse.json(RESPUESTA)
 
-  for (const [i, t] of tickets.entries()) {
+  for (let i = 0; i < tickets.length; i++) {
+    const t = tickets[i]
     const url = `${APP_URL}/lavida/ticket/${t.ticket_number}`
     try {
       await sendTicketEmail({

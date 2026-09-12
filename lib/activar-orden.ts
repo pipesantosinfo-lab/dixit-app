@@ -53,7 +53,8 @@ export async function activarOrden(orderId: string, paymentMethod = 'Bold'): Pro
   const now = new Date().toISOString()
 
   const ordenadas = [...tickets].sort((a, b) => String(a.ticket_number).localeCompare(String(b.ticket_number)))
-  for (const [i, ticket] of ordenadas.entries()) {
+  for (let i = 0; i < ordenadas.length; i++) {
+    const ticket = ordenadas[i]
     if (ticket.status === 'active') continue
     const ticketUrl = `${APP_URL}/lavida/ticket/${ticket.ticket_number}`
 
