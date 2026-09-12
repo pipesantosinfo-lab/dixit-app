@@ -59,14 +59,38 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
     await new Promise(r => setTimeout(r, 400))
     try {
       if (!shareViewRef.current) throw new Error('sin vista')
+
+      /* Safari en iPhone no espera a que carguen las imagenes dentro de la
+       * captura: la foto del teatro salia en blanco. Se convierten a datos
+       * incrustados ANTES de capturar, asi no hay nada que descargar. */
+      const imagenes = Array.from(shareViewRef.current.querySelectorAll('img'))
+      await Promise.all(imagenes.map(async img => {
+        if (img.src.startsWith('data:')) return
+        try {
+          const resp = await fetch(img.src, { cache: 'force-cache' })
+          const b = await resp.blob()
+          const dataUrl = await new Promise<string>((res, rej) => {
+            const fr = new FileReader()
+            fr.onload = () => res(fr.result as string)
+            fr.onerror = rej
+            fr.readAsDataURL(b)
+          })
+          await new Promise<void>(res => { img.onload = () => res(); img.onerror = () => res(); img.src = dataUrl })
+        } catch { /* si falla, se captura con la url normal */ }
+      }))
+
       const { toBlob } = await import('html-to-image')
-      const blob = await toBlob(shareViewRef.current, {
+      const opciones = {
         pixelRatio: 3, // 360 x 3 = 1080 (ancho de stories) · 640 x 3 = 1920 (alto)
         backgroundColor: '#070508',
         cacheBust: false,
         width: 360,
         height: 640,
-      })
+      }
+      // Render de calentamiento: en Safari el primer intento suele salir sin
+      // fuentes o sin imagenes; el segundo ya lo tiene todo.
+      await toBlob(shareViewRef.current, opciones).catch(() => null)
+      const blob = await toBlob(shareViewRef.current, opciones)
       if (!blob) throw new Error('No se pudo generar la imagen')
       setShareFile(new File([blob], `entrada-pipesantos-${shortId}.png`, { type: 'image/png' }))
     } catch {

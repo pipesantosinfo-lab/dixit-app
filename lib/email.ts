@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { EVENTO } from '@/lib/evento'
 
 /** Escapa caracteres HTML especiales para evitar inyección en el cuerpo del email */
 function escapeHtml(str: string): string {
@@ -21,8 +22,8 @@ interface TicketEmailParams {
   ticketPageUrl: string
 }
 
-export async function sendTicketEmail(params: TicketEmailParams) {
-  const resend = new Resend(process.env.RESEND_API_KEY)
+/** Arma el HTML del correo. Separado del envio para poder previsualizarlo. */
+export function renderTicketEmail(params: TicketEmailParams): { html: string; subject: string } {
   const shortId = params.ticketId.split('-')[0].toUpperCase()
 
   // Escapar todos los campos que provienen del usuario para prevenir HTML injection
@@ -39,79 +40,98 @@ export async function sendTicketEmail(params: TicketEmailParams) {
   // dejaba un "logo.png" colgando como adjunto. Con URL absoluta Gmail lo
   // sirve por su proxy y se ve; si algun cliente bloquea imagenes remotas,
   // el alt "Pipe Santos" hace de respaldo.
-  const attachments: { filename: string; content: Buffer; content_id: string }[] = []
   const logoSrc = `${(process.env.NEXT_PUBLIC_APP_URL || 'https://www.pipesantos.com').replace(/\/$/, '')}/logo.png`
 
+  const base = (process.env.NEXT_PUBLIC_APP_URL || 'https://www.pipesantos.com').replace(/\/$/, '')
+  const flyerSrc = base + EVENTO.flyerCorreo
+
+  /* Gmail en iPhone y Android "invierte" los correos oscuros y los vuelve
+   * blancos. Dos defensas:
+   *  - Cada fondo oscuro lleva ADEMAS un background-image con un gradiente
+   *    del mismo color: Gmail no sabe invertir gradientes y deja el bloque
+   *    (y su texto) tal cual.
+   *  - El flyer va como imagen. Una imagen nunca se invierte, asi que el
+   *    correo siempre abre con el poster del evento en su color real.
+   * Las metas color-scheme sirven para Apple Mail y Outlook. */
+  const oscuro = (color: string) => `background-color:${color};background-image:linear-gradient(${color},${color});`
+
   const html = `<!DOCTYPE html>
-<html lang="es">
+<html lang="es" style="${oscuro('#070508')}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="supported-color-schemes" content="dark">
   <title>Tu entrada — ${safeEvent}</title>
+  <style>
+    :root { color-scheme: dark; supported-color-schemes: dark; }
+    body, table, td { ${oscuro('#070508')} }
+  </style>
 </head>
-<body style="margin:0;padding:0;background:#070508;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#070508;min-height:100vh;">
-  <tr><td align="center" style="padding:40px 16px;">
-  <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+<body bgcolor="#070508" style="margin:0;padding:0;${oscuro('#070508')}">
+<table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#070508" style="${oscuro('#070508')}">
+  <tr><td align="center" style="padding:36px 12px 40px;${oscuro('#070508')}">
+  <table width="560" cellpadding="0" cellspacing="0" border="0" style="max-width:560px;width:100%;${oscuro('#070508')}">
 
-    <!-- Top line -->
-    <tr><td style="height:3px;background-color:#8B3CF7;border-radius:2px 2px 0 0;"></td></tr>
-
-    <!-- Header -->
-    <tr><td style="background-color:#0d0a14;padding:32px 36px 28px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);text-align:center;">
-      ${logoSrc ? `<img src="${logoSrc}" width="110" height="auto" alt="Pipe Santos" style="display:inline-block;opacity:0.9;margin-bottom:24px;">` : `<p style="margin:0 0 24px;color:#ffffff;font-size:18px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.15em;">PIPE SANTOS</p>`}
-      <p style="margin:0 0 6px;color:rgba(196,82,0,0.85);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;font-family:monospace;">◆ Entrada confirmada</p>
-      <p style="margin:0;color:#ffffff;font-size:30px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.02em;line-height:1.2;">${safeEvent}</p>
+    <!-- Marca -->
+    <tr><td align="center" style="padding:0 0 22px;${oscuro('#070508')}">
+      <img src="${logoSrc}" width="96" alt="Pipe Santos" style="display:inline-block;width:96px;height:auto;opacity:0.92;border:0;">
     </td></tr>
 
-    <!-- Divider -->
-    <tr><td style="background-color:#0a0812;height:1px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);"></td></tr>
-
-    <!-- Ticket info -->
-    <tr><td style="background-color:#0a0812;padding:0 36px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-          <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;width:45%;">Asistente</td>
-          <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:#ffffff;font-size:14px;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;">${safeName}</td>
-        </tr>
-        <tr>
-          <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;">Fecha</td>
-          <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:#8B3CF7;font-size:13px;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;">${safeDate}</td>
-        </tr>
-        <tr>
-          <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;">Lugar</td>
-          <td style="padding:14px 0;border-bottom:1px solid rgba(255,255,255,0.05);color:rgba(255,255,255,0.65);font-size:14px;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;">${safeLocation}</td>
-        </tr>
-        <tr>
-          <td style="padding:14px 0;color:rgba(255,255,255,0.3);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:monospace;">Tipo</td>
-          <td style="padding:14px 0;color:rgba(196,82,0,0.9);font-size:14px;font-weight:600;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;">${safeTier}</td>
-        </tr>
-      </table>
+    <!-- Poster del evento: una imagen no se puede invertir -->
+    <tr><td align="center" style="padding:0 0 26px;${oscuro('#070508')}">
+      <a href="${safeUrl}" style="text-decoration:none;">
+        <img src="${flyerSrc}" width="300" alt="${safeEvent} — ${escapeHtml(EVENTO.ciudad)}, ${escapeHtml(EVENTO.fechaCorta)}"
+          style="display:block;width:300px;max-width:100%;height:auto;border:0;border-radius:16px;">
+      </a>
     </td></tr>
 
-    <!-- CTA block -->
-    <tr><td style="background-color:#0d0a14;padding:32px 36px 36px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);">
-      <p style="margin:0 0 6px;color:rgba(255,255,255,0.35);font-size:12px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center;">Tu código QR está en tu entrada digital.</p>
-      <p style="margin:0 0 24px;color:rgba(255,255,255,0.45);font-size:12px;font-family:'Helvetica Neue',Arial,sans-serif;text-align:center;">Ábrela y guarda una captura de pantalla antes del evento.</p>
-      <table cellpadding="0" cellspacing="0" width="100%">
-        <tr><td align="center">
-          <a href="${safeUrl}"
-            style="display:inline-block;background-color:#8B3CF7;color:#ffffff;text-decoration:none;font-size:13px;font-weight:500;letter-spacing:0.18em;text-transform:uppercase;padding:16px 52px;border-radius:5px;font-family:'Helvetica Neue',Arial,sans-serif;">
-            Ver mi entrada digital 💛
-          </a>
+    <!-- Tarjeta -->
+    <tr><td style="${oscuro('#070508')}">
+      <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#120c1e"
+        style="${oscuro('#120c1e')}border:1px solid #4a2a8a;border-radius:18px;">
+
+        <tr><td align="center" style="padding:28px 28px 10px;${oscuro('#120c1e')}">
+          <p style="margin:0 0 10px;color:#ff9a3c;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;font-family:'Courier New',Courier,monospace;">◆ Entrada confirmada</p>
+          <p style="margin:0 0 6px;color:#ffffff;font-size:28px;line-height:1.2;font-weight:300;letter-spacing:0.01em;font-family:Georgia,'Times New Roman',serif;">${safeEvent}</p>
+          <p style="margin:0;color:#c9a7ff;font-size:13px;font-family:'Helvetica Neue',Arial,sans-serif;">${safeDate}</p>
         </td></tr>
+
+        <tr><td style="padding:14px 28px 0;${oscuro('#120c1e')}">
+          <table width="100%" cellpadding="0" cellspacing="0" border="0" style="${oscuro('#120c1e')}">
+            <tr>
+              <td style="padding:13px 0;border-top:1px solid #2a1c44;color:#8f80a8;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:'Courier New',Courier,monospace;width:38%;${oscuro('#120c1e')}">Asistente</td>
+              <td style="padding:13px 0;border-top:1px solid #2a1c44;color:#ffffff;font-size:15px;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;${oscuro('#120c1e')}">${safeName}</td>
+            </tr>
+            <tr>
+              <td style="padding:13px 0;border-top:1px solid #2a1c44;color:#8f80a8;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:'Courier New',Courier,monospace;${oscuro('#120c1e')}">Lugar</td>
+              <td style="padding:13px 0;border-top:1px solid #2a1c44;color:#e6dcf7;font-size:14px;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;${oscuro('#120c1e')}">${safeLocation}</td>
+            </tr>
+            <tr>
+              <td style="padding:13px 0;border-top:1px solid #2a1c44;color:#8f80a8;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;font-family:'Courier New',Courier,monospace;${oscuro('#120c1e')}">Tipo</td>
+              <td style="padding:13px 0;border-top:1px solid #2a1c44;color:#ff9a3c;font-size:14px;font-weight:600;text-align:right;font-family:'Helvetica Neue',Arial,sans-serif;${oscuro('#120c1e')}">${safeTier}</td>
+            </tr>
+          </table>
+        </td></tr>
+
+        <tr><td align="center" style="padding:26px 28px 30px;${oscuro('#120c1e')}">
+          <p style="margin:0 0 18px;color:#b8a9d4;font-size:13px;line-height:1.6;font-family:'Helvetica Neue',Arial,sans-serif;">Tu código QR está en tu entrada digital.<br>Ábrela y guarda una captura antes del evento.</p>
+          <table cellpadding="0" cellspacing="0" border="0" align="center"><tr>
+            <td bgcolor="#8B3CF7" style="${oscuro('#8B3CF7')}border-radius:8px;">
+              <a href="${safeUrl}" style="display:inline-block;padding:17px 44px;color:#ffffff;text-decoration:none;font-size:13px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;font-family:'Helvetica Neue',Arial,sans-serif;">Ver mi entrada digital 💛</a>
+            </td>
+          </tr></table>
+          <p style="margin:18px 0 0;color:#5e4f7a;font-size:10px;letter-spacing:0.3em;font-family:'Courier New',Courier,monospace;">${shortId}</p>
+        </td></tr>
+
       </table>
-      <p style="margin:20px 0 0;color:rgba(255,255,255,0.15);font-size:10px;letter-spacing:0.25em;text-align:center;font-family:monospace;">${shortId}</p>
     </td></tr>
 
-    <!-- Bottom line -->
-    <tr><td style="height:3px;background-color:#8B3CF7;border-radius:0 0 2px 2px;"></td></tr>
-
-    <!-- Footer -->
-    <tr><td style="padding:24px 0;text-align:center;">
-      <p style="margin:0;color:rgba(255,255,255,0.15);font-size:11px;line-height:1.8;font-family:monospace;">
+    <!-- Pie -->
+    <tr><td align="center" style="padding:26px 0 0;${oscuro('#070508')}">
+      <p style="margin:0;color:#6b5c86;font-size:11px;line-height:1.9;font-family:'Courier New',Courier,monospace;">
         Muestra el QR en la entrada &middot; V&aacute;lido para una persona<br>
-        <span style="color:rgba(139,60,247,0.35);">Pipe Santos &middot; pipesantos.com</span>
+        <a href="${base}" style="color:#a67cff;text-decoration:none;">pipesantos.com</a>
       </p>
     </td></tr>
 
@@ -121,12 +141,17 @@ export async function sendTicketEmail(params: TicketEmailParams) {
 </body>
 </html>`
 
+  return { html, subject: `Tu entrada para ${safeEvent} ✦` }
+}
+
+export async function sendTicketEmail(params: TicketEmailParams) {
+  const resend = new Resend(process.env.RESEND_API_KEY)
+  const { html, subject } = renderTicketEmail(params)
   await resend.emails.send({
     from: 'Pipe Santos <entradas@pipesantos.com>',
     replyTo: 'pipesantos93@gmail.com',
     to: params.to,
-    subject: `Tu entrada para ${safeEvent} ✦`,
+    subject,
     html,
-    attachments,
   })
 }
