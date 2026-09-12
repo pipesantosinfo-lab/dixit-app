@@ -20,7 +20,6 @@ const FOTOS = [
   { src: '/landing/asi-se-vive-08-v6.webp', alt: 'Una pareja disfrutando el show' },
   { src: '/landing/asi-se-vive-09-v6.webp', alt: 'Risa nerviosa en el público' },
   { src: '/landing/asi-se-vive-10-v6.webp', alt: 'Pipe Santos con una asistente en el escenario' },
-  { src: '/landing/asi-se-vive-11-v6.webp', alt: 'Choque de manos en el escenario' },
   { src: '/landing/asi-se-vive-12-v6.webp', alt: 'Un asistente participando con el micrófono' },
   { src: '/landing/asi-se-vive-13-v6.webp', alt: 'Todo el auditorio con las luces del celular encendidas' },
   { src: '/landing/asi-se-vive-14-v6.webp', alt: 'Selfie con Pipe Santos al final del show' },
