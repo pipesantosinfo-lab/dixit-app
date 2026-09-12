@@ -380,7 +380,7 @@ export default function EventoPage() {
                 <span className="italic" style={{ color: 'rgba(139,60,247,0.85)' }}>no olvidarás</span>
               </h2>
               <p className="font-body text-white/50 text-lg leading-relaxed mb-5">
-                Cuatro horas en las que Pipe Santos te llevará a través de las historias que cambiaron su vida, con un mensaje que transformará la tuya.
+                Más de dos horas en las que Pipe Santos te llevará a través de las historias que cambiaron su vida, con un mensaje que transformará la tuya.
               </p>
               <p className="font-body text-white/50 text-lg leading-relaxed">
                 Risas, reflexiones y una energía colectiva que solo se vive en vivo. Si seguiste a Pipe en redes, este es el lugar donde sus historias cobran vida.
@@ -388,7 +388,7 @@ export default function EventoPage() {
             </div>
             <div className="glass rounded-3xl p-8 space-y-6" style={{ border: '1px solid rgba(139,60,247,0.15)' }}>
               {[
-                { icon: '🎭', title: 'Conferencia en vivo', desc: 'Pipe Santos en escenario durante 4 horas' },
+                { icon: '🎭', title: 'Conferencia en vivo', desc: 'Pipe Santos en escenario por más de 2 horas' },
                 { icon: '📸', title: 'Espacio de fotos', desc: 'Lleva el recuerdo a casa' },
                 { icon: '✍️', title: 'Firma de libros', desc: 'Trae tu libro o compra uno en el lugar' },
                 { icon: '🤝', title: 'Networking', desc: 'Conoce a la comunidad en persona' },
