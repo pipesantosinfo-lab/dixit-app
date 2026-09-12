@@ -1,44 +1,41 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
-import { sendTicketEmail } from '@/lib/email'
-import { generateLavidaExcel } from '@/lib/analytics'
-import { Resend } from 'resend'
 import { createHmac, timingSafeEqual } from 'crypto'
-import { EVENTO } from '@/lib/evento'
+import { activarOrden } from '@/lib/activar-orden'
 
-const OWNER_EMAIL = 'pipesantos93@gmail.com'
-
-// Lo que va en el correo de confirmacion. Todo sale de lib/evento.ts.
-const EVENT = {
-  name: EVENTO.nombre,
-  date: EVENTO.fechaTexto,
-  location: `${EVENTO.lugar} · ${EVENTO.ciudad}`,
-}
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://pipesantos.com'
+/**
+ * Aviso de pago de Bold. Documentacion: https://developers.bold.co/webhook
+ *
+ * Bold firma con HMAC-SHA256 (hex) usando la llave secreta... pero NO sobre
+ * el cuerpo crudo: sobre el cuerpo convertido a Base64. Se aceptan las dos
+ * variantes (Base64 como manda Bold, y cruda, que usan las pruebas propias);
+ * ambas exigen conocer la llave secreta, asi que la seguridad es la misma.
+ *
+ * Para links de pago, data.metadata.reference trae el id del link (LNK_...),
+ * no la referencia nuestra. create-order guarda ese id en bold_order_id.
+ */
 
 function verifyBoldSignature(rawBody: string, signature: string | null): boolean {
   if (!signature) return false
   const secret = process.env.BOLD_SECRET_KEY
   if (!secret) return false
-  // Normalizar ambas firmas a minúsculas hex para comparación consistente
   const normalized = signature.trim().toLowerCase().replace(/^sha256=/, '')
-  const expected = createHmac('sha256', secret).update(rawBody).digest('hex')
-  try {
-    const a = Buffer.from(normalized, 'hex')
-    const b = Buffer.from(expected, 'hex')
-    if (a.length !== b.length || a.length === 0) return false
-    return timingSafeEqual(a, b)
-  } catch {
-    return false
-  }
+  let recibida: Buffer
+  try { recibida = Buffer.from(normalized, 'hex') } catch { return false }
+  if (recibida.length === 0) return false
+
+  const candidatas = [
+    Buffer.from(rawBody, 'utf8').toString('base64'),   // como firma Bold
+    rawBody,                                            // pruebas internas
+  ]
+  return candidatas.some(base => {
+    const esperada = Buffer.from(createHmac('sha256', secret).update(base).digest('hex'), 'hex')
+    return esperada.length === recibida.length && timingSafeEqual(esperada, recibida)
+  })
 }
 
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;').replace(/'/g, '&#39;')
-}
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+const LNK_RE = /^LNK_[A-Z0-9]{4,32}$/i
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text()
@@ -56,155 +53,67 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid body' }, { status: 400 })
   }
 
-  // Bold sends the reference inside data.metadata.reference, status as body.type
   const data = body.data as Record<string, unknown> | undefined
   const metadata = data?.metadata as Record<string, unknown> | undefined
 
-  const orderId = (metadata?.reference as string) ||
+  const referencia = String(
+    (metadata?.reference as string) ||
     (data?.reference as string) ||
     (body.reference as string) ||
-    (body.order_id as string)
+    (body.order_id as string) || '',
+  ).trim()
 
   const eventType = (body.type as string) || (body.status as string) || (body.event as string)
+  const isAccepted = ['SALE_APPROVED', 'ACCEPTED', 'APPROVED', 'payment_accepted'].includes(eventType)
+  if (!isAccepted) {
+    console.log('Bold webhook: ignoring event', eventType, referencia)
+    return NextResponse.json({ received: true })
+  }
+
+  // ── Resolver la orden: referencia nuestra (uuid) o id del link (LNK_) ──
+  let orderId: string | null = null
+  if (UUID_RE.test(referencia)) {
+    orderId = referencia.toLowerCase()
+  } else if (LNK_RE.test(referencia)) {
+    const db = supabaseAdmin()
+    const { data: t } = await db
+      .from('lavida_tickets')
+      .select('ticket_number')
+      .eq('bold_order_id', referencia.toUpperCase())
+      .limit(1)
+      .maybeSingle()
+    if (t?.ticket_number) orderId = t.ticket_number.replace(/-\d+$/, '')
+  }
 
   if (!orderId) {
-    console.warn('Bold webhook: no orderId found', body)
-    return NextResponse.json({ received: true })
-  }
-
-  // Sanitizar y validar formato UUID estricto — previene wildcards SQL y referencias inválidas
-  const safeOrderId = orderId.replace(/[^0-9a-f-]/gi, '')
-  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-  if (!safeOrderId || !UUID_RE.test(safeOrderId)) {
-    console.warn('Bold webhook: orderId no tiene formato UUID válido:', safeOrderId)
-    return NextResponse.json({ received: true })
-  }
-
-  const isAccepted = ['SALE_APPROVED', 'ACCEPTED', 'APPROVED', 'payment_accepted'].includes(eventType)
-
-  if (!isAccepted) {
-    console.log('Bold webhook: ignoring event', eventType)
-    return NextResponse.json({ received: true })
-  }
-
-  const db = supabaseAdmin()
-
-  // Find all tickets for this order (usamos safeOrderId para prevenir wildcards SQL)
-  // Una vez (12/09/2026) la busqueda devolvio vacio para una entrada que si
-  // existia y al minuto siguiente la encontro. Ante un vacio se reintenta
-  // una vez; si sigue vacio se responde 404 y Bold reintenta el aviso.
-  let { data: tickets, error: lookupError } = await db
-    .from('lavida_tickets')
-    .select('*')
-    .like('ticket_number', `${safeOrderId}-%`)
-
-  if (!tickets || tickets.length === 0) {
-    console.warn('Bold webhook: entrada no encontrada al primer intento', safeOrderId, lookupError?.message ?? '')
-    await new Promise(r => setTimeout(r, 1500))
-    ;({ data: tickets, error: lookupError } = await db
-      .from('lavida_tickets')
-      .select('*')
-      .like('ticket_number', `${safeOrderId}-%`))
-  }
-
-  if (!tickets || tickets.length === 0) {
-    console.error('Tickets not found for order:', safeOrderId, lookupError ? `(error: ${lookupError.message})` : '')
+    console.error('Bold webhook: no pude resolver la orden. referencia =', referencia)
+    // 404 hace que Bold reintente (15 min, 1 h, 4 h, 8 h, 24 h)
     return NextResponse.json({ error: 'Tickets not found' }, { status: 404 })
   }
 
-  if (tickets[0].status === 'active') {
-    console.log('Already processed:', safeOrderId)
-    return NextResponse.json({ received: true })
-  }
-
-  const buyer = tickets[0]
-  const now = new Date().toISOString()
-
-  // Extraer medio de pago del payload de Bold (varios campos posibles según versión de la API)
+  // Medio de pago, en los distintos nombres que ha usado Bold
   const payment = data?.payment as Record<string, unknown> | undefined
   const paymentMethod: string =
+    (data?.payment_method as string) ||
     (payment?.payment_type as string) ||
     (payment?.payment_method as string) ||
     (payment?.method as string) ||
-    (data?.payment_method as string) ||
     (body.payment_method as string) ||
     'Bold'
 
-  // Activate all tickets and generate QR for each
-  for (const ticket of tickets) {
-    const ticketUrl = `${APP_URL}/lavida/ticket/${ticket.ticket_number}`
-
-    await db.from('lavida_tickets').update({
-      status: 'active',
-      qr_data: ticketUrl,
-      paid_at: now,
-      payment_method: paymentMethod,
-    }).eq('ticket_number', ticket.ticket_number)
-
-    // Send individual email per ticket
-    try {
-      await sendTicketEmail({
-        to: buyer.buyer_email,
-        name: buyer.buyer_name,
-        eventName: EVENT.name,
-        eventDate: EVENT.date,
-        eventLocation: EVENT.location,
-        tierName: 'Entrada General',
-        ticketId: ticket.ticket_number,
-        ticketPageUrl: ticketUrl,
-      })
-    } catch (err) {
-      console.error('Email error for', ticket.ticket_number, err)
-    }
+  // Una vez (12/09/2026) la busqueda devolvio vacio para una entrada que si
+  // existia y al minuto siguiente la encontro. Ante un vacio se reintenta
+  // una vez; si sigue vacio se responde 404 y Bold reintenta el aviso.
+  let resultado = await activarOrden(orderId, paymentMethod)
+  if (!resultado.ok && resultado.motivo === 'no_encontrada') {
+    await new Promise(r => setTimeout(r, 1500))
+    resultado = await activarOrden(orderId, paymentMethod)
   }
 
-  console.log(`✓ ${tickets.length} ticket(s) confirmed: ${safeOrderId} for ${buyer.buyer_email}`)
-
-  // ── Enviar Excel actualizado al dueño del evento ──────────────────────────
-  try {
-    const { buffer, filename, totalBuyers } = await generateLavidaExcel()
-    const resend = new Resend(process.env.RESEND_API_KEY)
-
-    // Escapar todos los campos del usuario antes de embeber en HTML
-    const buyerInfo = [
-      `<b>Nombre:</b> ${escapeHtml(buyer.buyer_name)}`,
-      `<b>Correo:</b> ${escapeHtml(buyer.buyer_email)}`,
-      `<b>Cédula:</b> ${escapeHtml(buyer.buyer_cedula ?? '-')}`,
-      `<b>Teléfono:</b> ${escapeHtml(buyer.buyer_phone ?? '-')}`,
-      `<b>Entradas:</b> ${tickets.length}`,
-      `<b>Medio de pago:</b> ${escapeHtml(paymentMethod)}`,
-    ].join('<br>')
-
-    // Subject es plain text — sin escapar pero sin HTML
-    const safeSubjectName = buyer.buyer_name.replace(/[\r\n<>]/g, '').slice(0, 80)
-
-    await resend.emails.send({
-      from: 'Pipe Santos Entradas <entradas@pipesantos.com>',
-      to: OWNER_EMAIL,
-      subject: `💰 Nueva venta — ${safeSubjectName} · ${tickets.length} entrada${tickets.length > 1 ? 's' : ''}`,
-      html: `
-        <div style="font-family:sans-serif;color:#1a1a1a;max-width:480px">
-          <h2 style="color:#8B3CF7;margin:0 0 16px">✅ Pago confirmado</h2>
-          <div style="background:#f8f5ff;border-radius:8px;padding:16px;margin-bottom:16px;line-height:1.8">
-            ${buyerInfo}
-          </div>
-          <p style="color:#666;font-size:13px;margin:0">
-            Total acumulado: <b>${totalBuyers} comprador${totalBuyers !== 1 ? 'es' : ''}</b> ·
-            El Excel completo va adjunto.
-          </p>
-        </div>
-      `,
-      attachments: [{
-        filename,
-        content: buffer.toString('base64'),
-      }],
-    })
-
-    console.log(`📊 Excel enviado a ${OWNER_EMAIL} (${totalBuyers} compradores)`)
-  } catch (analyticsErr) {
-    // No fallar el webhook si el email de analytics falla
-    console.error('Analytics email error:', analyticsErr)
+  if (!resultado.ok) {
+    console.error('Tickets not found for order:', orderId)
+    return NextResponse.json({ error: 'Tickets not found' }, { status: 404 })
   }
-
+  if (resultado.yaEstaba) console.log('Already processed:', orderId)
   return NextResponse.json({ received: true })
 }

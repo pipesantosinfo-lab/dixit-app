@@ -144,7 +144,13 @@ export async function POST(req: NextRequest) {
 
   // Create Bold payment link for the full amount
   try {
-    const boldUrl = await createBoldPaymentLink({ orderId, buyerEmail: buyerEmail.trim(), quantity })
+    const { url: boldUrl, paymentLink } = await createBoldPaymentLink({ orderId, buyerEmail: buyerEmail.trim(), quantity })
+    // El id del link (LNK_...) queda en la primera entrada de la orden: es
+    // la referencia que Bold manda en el webhook y la llave para preguntarle
+    // a Bold si ya se pago (ver /api/ticket-status).
+    if (paymentLink) {
+      await db.from('lavida_tickets').update({ bold_order_id: paymentLink }).eq('ticket_number', `${orderId}-1`)
+    }
     return NextResponse.json({ url: boldUrl })
   } catch (err) {
     console.error('Bold error:', err)

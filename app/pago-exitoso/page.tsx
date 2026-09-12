@@ -8,7 +8,7 @@ import { EVENTO } from '@/lib/evento'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
-type TicketStatus = 'pending' | 'active' | 'not_found' | 'unknown'
+type TicketStatus = 'pending' | 'active' | 'rejected' | 'not_found' | 'unknown'
 
 function useTicketStatus(order: string | null): TicketStatus {
   const [status, setStatus] = useState<TicketStatus>('unknown')
@@ -27,7 +27,7 @@ function useTicketStatus(order: string | null): TicketStatus {
         if (!cancelled && res.ok) {
           const json = await res.json()
           setStatus(json.status ?? 'unknown')
-          if (json.status !== 'active') {
+          if (json.status !== 'active' && json.status !== 'rejected') {
             // Reintentar con back-off leve: 3 s las primeras 5 veces, luego 5 s
             setTimeout(poll, attempts < 5 ? 3_000 : 5_000)
           }
@@ -165,7 +165,13 @@ function Content() {
             ))}
           </div>
 
-          {order && (
+          {order && ticketStatus === 'rejected' && (
+            <div className="w-full mb-4 py-3 px-4 rounded-2xl font-body text-sm leading-relaxed"
+              style={{ background: 'rgba(255,80,80,0.08)', border: '1px solid rgba(255,80,80,0.2)', color: 'rgba(255,140,140,0.9)' }}>
+              Bold reporta que el pago no se completó. No se hizo ningún cobro; puedes intentarlo de nuevo desde el evento.
+            </div>
+          )}
+          {order && ticketStatus !== 'rejected' && (
             isActive ? (
               <a href={`/lavida/ticket/${order}-1`}
                 className="btn-primary w-full inline-block text-center mb-4">
