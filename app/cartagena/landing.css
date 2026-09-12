@@ -1,38 +1,99 @@
 /* ── Landing /cartagena ──────────────────────────────────────────────
- * Una sola columna, un solo objetivo. Mismas fuentes y colores del sitio
- * (Playfair / DM Sans / DM Mono, morado #8B3CF7, naranja #ff9a3c), pero
- * con el ritmo limpio de una landing: portada, tres bloques, datos, cierre,
- * y una barra fija abajo con el boton de compra. */
+ * Una sola columna, un solo objetivo, y bandas de color bien delimitadas
+ * (como una landing editorial): portada oscura → crema → naranja → lila →
+ * morado → amarillo. Cada banda define sus propios tokens (--bg, --ink,
+ * --ink-2, --ink-3, --acento, --panel, --linea) y todos los componentes
+ * leen de ahí, así que un mismo bloque se ve bien en cualquier banda. */
 
 .landing {
-  --tinta: #f4eeff;
-  --tinta-2: rgba(244,238,255,0.62);
-  --tinta-3: rgba(244,238,255,0.38);
-  --fondo: #070508;
-  --panel: #120c1e;
-  --linea: rgba(201,167,255,0.14);
   --morado: #8B3CF7;
   --lavanda: #C9A7FF;
   --naranja: #ff9a3c;
-  background: var(--fondo);
-  color: var(--tinta);
+  --amarillo: #ffcf3d;
+  --oscuro: #070508;
+
+  /* tokens por defecto = banda oscura */
+  --bg: #070508;
+  --ink: #f4eeff;
+  --ink-2: rgba(244,238,255,0.66);
+  --ink-3: rgba(244,238,255,0.42);
+  --acento: var(--naranja);
+  --acento-2: var(--lavanda);
+  --panel: #120c1e;
+  --linea: rgba(201,167,255,0.16);
+
+  background: var(--oscuro);
+  color: var(--ink);
   padding-bottom: 92px; /* barra fija */
   overflow-x: hidden;
 }
 
-/* Tipografia */
+/* ── Bandas ─────────────────────────────────────────────────────────── */
+.landing-band { background: var(--bg); color: var(--ink); padding: 84px 0; }
+
+.landing-band--crema {
+  --bg: #f6efe6;
+  --ink: #17102a;
+  --ink-2: rgba(23,16,42,0.72);
+  --ink-3: rgba(23,16,42,0.5);
+  --acento: #d9541d;
+  --acento-2: #6a2fd1;
+  --panel: #fffaf3;
+  --linea: rgba(23,16,42,0.12);
+}
+.landing-band--naranja {
+  --bg: #ff8a3c;
+  --ink: #1a0a04;
+  --ink-2: rgba(26,10,4,0.78);
+  --ink-3: rgba(26,10,4,0.55);
+  --acento: #1a0a04;
+  --acento-2: #6a2fd1;
+  --panel: #fff4e8;
+  --linea: rgba(26,10,4,0.14);
+}
+.landing-band--lila {
+  --bg: #ece3ff;
+  --ink: #1a0f33;
+  --ink-2: rgba(26,15,51,0.72);
+  --ink-3: rgba(26,15,51,0.5);
+  --acento: #d9541d;
+  --acento-2: #6a2fd1;
+  --panel: #ffffff;
+  --linea: rgba(26,15,51,0.12);
+}
+.landing-band--morado {
+  --bg: #1d1038;
+  --ink: #f4eeff;
+  --ink-2: rgba(244,238,255,0.7);
+  --ink-3: rgba(244,238,255,0.45);
+  --acento: var(--naranja);
+  --acento-2: var(--lavanda);
+  --panel: #2a1850;
+  --linea: rgba(201,167,255,0.2);
+}
+.landing-band--amarillo {
+  --bg: #ffcf3d;
+  --ink: #1a0f33;
+  --ink-2: rgba(26,15,51,0.75);
+  --ink-3: rgba(26,15,51,0.5);
+  --acento: #6a2fd1;
+  --acento-2: #6a2fd1;
+  --panel: #fff6d6;
+  --linea: rgba(26,15,51,0.14);
+}
+
+/* ── Tipografía ─────────────────────────────────────────────────────── */
 .landing-eyebrow {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--lavanda);
+  color: var(--acento);
   margin: 0 0 14px;
 }
-.landing-eyebrow--orange { color: var(--naranja); }
+.landing-eyebrow--orange { color: var(--acento); }
+.landing-hero .landing-eyebrow { color: var(--lavanda); }
 
-/* Titulo con el mismo contraste del poster: "HISTORIAS" en sans pesada,
- * "sin libreto" en itálica. Sombra y contorno para que no se pierda con la foto. */
 .landing-title {
   margin: 0 0 18px;
   display: flex;
@@ -67,9 +128,10 @@
   line-height: 1.05;
   letter-spacing: -0.01em;
   margin: 0 0 28px;
+  color: var(--ink);
   text-wrap: balance;
 }
-.landing-h2 em { font-style: italic; color: var(--lavanda); }
+.landing-h2 em { font-style: italic; color: var(--acento-2); }
 .landing-h2--big { font-size: clamp(40px, 8vw, 72px); margin-bottom: 14px; }
 
 .landing-lead {
@@ -85,7 +147,7 @@
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  color: var(--tinta-2);
+  color: var(--ink-2);
   max-width: 52ch;
   margin: 0 0 24px;
 }
@@ -93,7 +155,7 @@
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
   letter-spacing: 0.22em;
-  color: var(--tinta);
+  color: #fff;
   margin: 0 0 28px;
   display: flex;
   flex-wrap: wrap;
@@ -102,7 +164,7 @@
 }
 .landing-meta i { font-style: normal; color: var(--naranja); }
 
-/* Boton principal: solido, como en la referencia */
+/* ── Botones ─────────────────────────────────────────────────────────── */
 .landing-cta {
   display: inline-flex;
   align-items: center;
@@ -125,31 +187,51 @@
 .landing-cta:hover { transform: translateY(-2px); box-shadow: 0 16px 40px rgba(139,60,247,0.45), inset 0 1px 0 rgba(255,255,255,0.18); }
 .landing-cta:active { transform: translateY(0); filter: brightness(0.95); }
 .landing-cta:focus-visible { outline: 2px solid var(--lavanda); outline-offset: 3px; }
+/* En bandas claras el boton principal va oscuro (contraste), como en la referencia */
+.landing-band--crema .landing-cta,
+.landing-band--lila .landing-cta,
+.landing-band--amarillo .landing-cta,
+.landing-band--naranja .landing-cta {
+  background: #1a0f33;
+  box-shadow: 0 10px 30px rgba(26,15,51,0.3);
+  color: #fff;
+}
+.landing-band--crema .landing-cta:hover,
+.landing-band--lila .landing-cta:hover,
+.landing-band--amarillo .landing-cta:hover,
+.landing-band--naranja .landing-cta:hover { box-shadow: 0 16px 40px rgba(26,15,51,0.4); }
 .landing-cta--ghost {
-  background: rgba(139,60,247,0.12);
-  border: 1px solid rgba(201,167,255,0.35);
+  background: transparent;
+  border: 1.5px solid var(--ink);
+  color: var(--ink);
   box-shadow: none;
 }
+.landing-band--crema .landing-cta--ghost,
+.landing-band--lila .landing-cta--ghost,
+.landing-band--amarillo .landing-cta--ghost,
+.landing-band--naranja .landing-cta--ghost { background: transparent; color: var(--ink); box-shadow: none; }
 .landing-cta--wide { width: 100%; margin-top: 28px; }
 .landing-cta--bar { padding: 14px 22px; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
+.landing-cta--hero { width: 100%; padding: 19px 30px; font-size: 16px; }
 .landing-link {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--tinta-3);
+  color: rgba(244,238,255,0.5);
   text-decoration: none;
   padding: 18px 6px;
 }
-.landing-link:hover { color: var(--tinta); }
+.landing-link:hover { color: #fff; }
 
-/* Portada */
+/* ── Portada ─────────────────────────────────────────────────────────── */
 .landing-hero {
   position: relative;
   min-height: 100svh;
   display: flex;
   align-items: flex-end;
   overflow: hidden;
+  background: var(--oscuro);
 }
 .landing-hero__img {
   position: absolute;
@@ -166,7 +248,6 @@
     linear-gradient(180deg, rgba(7,5,8,0.45) 0%, rgba(7,5,8,0.05) 28%, rgba(7,5,8,0.30) 46%, rgba(7,5,8,0.86) 66%, rgba(7,5,8,0.99) 100%),
     radial-gradient(ellipse at 15% 95%, rgba(139,60,247,0.40), transparent 55%);
 }
-/* Sello de fecha (mes / dia / hora) */
 .landing-hero__fecha {
   position: absolute;
   top: max(18px, env(safe-area-inset-top));
@@ -204,18 +285,12 @@
   letter-spacing: 0.08em;
   color: var(--lavanda);
 }
-.landing-cta--hero { width: 100%; padding: 19px 30px; font-size: 16px; }
-@media (min-width: 768px) {
-  .landing-cta--hero { width: auto; }
-  .landing-hero__fecha { top: 28px; right: 40px; padding: 14px 18px 16px; }
-  .landing-hero__fecha strong { font-size: 44px; }
-}
 .landing-hero__content {
   position: relative;
   width: 100%;
   max-width: 1080px;
   margin: 0 auto;
-  padding: 120px 22px 110px; /* deja aire sobre la barra fija */
+  padding: 120px 22px 110px;
 }
 .landing-hero__actions {
   display: flex;
@@ -224,60 +299,53 @@
   gap: 10px 22px;
 }
 
-/* Secciones */
+/* ── Contenedor interior ─────────────────────────────────────────────── */
 .landing-section {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 88px 22px 0;
+  padding: 0 22px;
 }
-.landing-section--tight { padding-top: 64px; }
 
-.landing-cards {
-  display: grid;
-  gap: 14px;
-}
+/* ── Tarjetas "de qué se trata" ──────────────────────────────────────── */
+.landing-cards { display: grid; gap: 14px; }
 .landing-card {
   position: relative;
   padding: 26px 24px 24px;
   border-radius: 20px;
-  background: linear-gradient(160deg, #17102a, #0f0a1a);
+  background: var(--panel);
   border: 1px solid var(--linea);
+  box-shadow: 0 14px 40px rgba(26,10,4,0.10);
 }
 .landing-card__n {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 11px;
   letter-spacing: 0.3em;
-  color: var(--naranja);
+  color: var(--acento-2);
 }
 .landing-card h3 {
   font-family: var(--font-display), Georgia, serif;
   font-weight: 400;
   font-size: 24px;
   margin: 10px 0 8px;
-  color: var(--tinta);
+  color: var(--ink);
 }
 .landing-card p {
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.55;
-  color: var(--tinta-2);
+  color: var(--ink-2);
   margin: 0;
 }
 
-/* Poster + fotos */
-.landing-poster-row {
-  display: grid;
-  gap: 32px;
-  align-items: center;
-}
-/* Poster recto y centrado, con estela morada/naranja detras que respira */
+/* ── Poster + fotos ──────────────────────────────────────────────────── */
+.landing-poster-row { display: grid; gap: 32px; align-items: center; }
 .landing-poster {
   position: relative;
-  isolation: isolate; /* la estela (z-index -1) queda dentro del poster, no detras de la pagina */
+  isolation: isolate;
   width: min(320px, 78vw);
   margin: 0 auto;
   border-radius: 18px;
-  box-shadow: 0 30px 70px rgba(0,0,0,0.75), 0 0 0 1px rgba(255,255,255,0.10);
+  box-shadow: 0 30px 70px rgba(23,16,42,0.35), 0 0 0 1px rgba(255,255,255,0.4);
 }
 .landing-poster::before {
   content: '';
@@ -286,8 +354,8 @@
   z-index: -1;
   border-radius: 50%;
   background:
-    radial-gradient(ellipse at 35% 30%, rgba(139,60,247,0.55), transparent 58%),
-    radial-gradient(ellipse at 70% 80%, rgba(255,154,60,0.38), transparent 58%);
+    radial-gradient(ellipse at 35% 30%, rgba(139,60,247,0.45), transparent 58%),
+    radial-gradient(ellipse at 70% 80%, rgba(255,154,60,0.40), transparent 58%);
   filter: blur(42px);
   animation: landing-estela 6s ease-in-out infinite;
 }
@@ -297,7 +365,7 @@
   inset: -1px;
   border-radius: 19px;
   pointer-events: none;
-  background: linear-gradient(135deg, rgba(201,167,255,0.55), rgba(255,154,60,0.35) 50%, rgba(201,167,255,0.55));
+  background: linear-gradient(135deg, rgba(139,60,247,0.6), rgba(255,154,60,0.5) 50%, rgba(139,60,247,0.6));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite: xor;
@@ -309,7 +377,6 @@
   0%, 100% { opacity: 0.85; transform: scale(1); }
   50% { opacity: 1; transform: scale(1.06); }
 }
-@media (prefers-reduced-motion: reduce) { .landing-poster::before { animation: none; } }
 .landing-strip {
   display: flex;
   gap: 12px;
@@ -329,10 +396,11 @@
   overflow: hidden;
   aspect-ratio: 4 / 3;
   background: var(--panel);
+  box-shadow: 0 10px 30px rgba(23,16,42,0.18);
 }
 .landing-strip img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-/* Datos */
+/* ── Datos ───────────────────────────────────────────────────────────── */
 .landing-grid {
   display: grid;
   gap: 1px;
@@ -340,6 +408,7 @@
   border: 1px solid var(--linea);
   border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 14px 40px rgba(26,15,51,0.10);
 }
 .landing-grid > div {
   background: var(--panel);
@@ -353,23 +422,23 @@
   font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--naranja);
+  color: var(--acento);
 }
 .landing-grid strong {
   font-family: var(--font-display), Georgia, serif;
   font-weight: 400;
   font-size: 22px;
   line-height: 1.2;
-  color: var(--tinta);
+  color: var(--ink);
 }
 .landing-grid span {
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: 14px;
-  color: var(--tinta-2);
+  color: var(--ink-2);
   line-height: 1.5;
 }
 
-/* Preguntas */
+/* ── Preguntas ───────────────────────────────────────────────────────── */
 .landing-faq { display: grid; gap: 8px; }
 .landing-faq details {
   border: 1px solid var(--linea);
@@ -382,38 +451,27 @@
   list-style: none;
   padding: 18px 0;
   font-family: var(--font-body), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 15px;
-  color: var(--tinta);
+  color: var(--ink);
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
 }
 .landing-faq summary::-webkit-details-marker { display: none; }
-.landing-faq summary::after {
-  content: '+';
-  color: var(--lavanda);
-  font-size: 20px;
-  line-height: 1;
-  flex-shrink: 0;
-}
+.landing-faq summary::after { content: '+'; color: var(--acento); font-size: 20px; line-height: 1; flex-shrink: 0; }
 .landing-faq details[open] summary::after { content: '−'; }
 .landing-faq p {
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: 15px;
   line-height: 1.6;
-  color: var(--tinta-2);
+  color: var(--ink-2);
   margin: 0 0 18px;
 }
 
-/* Cierre */
-.landing-final {
-  max-width: 1080px;
-  margin: 0 auto;
-  padding: 96px 22px 40px;
-  text-align: center;
-}
+/* ── Cierre ──────────────────────────────────────────────────────────── */
+.landing-final { text-align: center; }
 .landing-final .landing-p { margin-left: auto; margin-right: auto; }
 .landing-footer {
   display: flex;
@@ -427,12 +485,12 @@
   font-size: 11px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--tinta-3);
+  color: var(--ink-3);
   text-decoration: none;
 }
-.landing-footer a:hover { color: var(--tinta); }
+.landing-footer a:hover { color: var(--ink); }
 
-/* Barra fija */
+/* ── Barra fija ──────────────────────────────────────────────────────── */
 .landing-bar {
   position: fixed;
   left: 0; right: 0; bottom: 0;
@@ -442,7 +500,7 @@
   justify-content: space-between;
   gap: 14px;
   padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
-  background: rgba(14,9,24,0.82);
+  background: rgba(14,9,24,0.9);
   border-top: 1px solid rgba(201,167,255,0.16);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
@@ -450,9 +508,9 @@
 .landing-bar__text { display: flex; flex-direction: column; min-width: 0; }
 .landing-bar__text strong {
   font-family: var(--font-body), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 14px;
-  color: var(--tinta);
+  color: #f4eeff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -462,17 +520,21 @@
   font-size: 10px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--tinta-3);
+  color: rgba(244,238,255,0.45);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Escritorio */
+/* ── Escritorio ──────────────────────────────────────────────────────── */
 @media (min-width: 768px) {
+  .landing-band { padding: 104px 0; }
   .landing-hero__content { padding: 160px 40px 72px; }
   .landing-hero__img { object-position: 50% 35%; }
-  .landing-section, .landing-final { padding-left: 40px; padding-right: 40px; }
+  .landing-hero__fecha { top: 28px; right: 40px; padding: 14px 18px 16px; }
+  .landing-hero__fecha strong { font-size: 44px; }
+  .landing-cta--hero { width: auto; }
+  .landing-section { padding-left: 40px; padding-right: 40px; }
   .landing-cards { grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .landing-poster-row { grid-template-columns: 340px 1fr; gap: 56px; }
   .landing-poster { margin: 0 auto; }
@@ -484,4 +546,5 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .landing-cta { transition: none; }
+  .landing-poster::before { animation: none; }
 }

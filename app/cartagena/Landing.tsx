@@ -94,7 +94,8 @@ export default function Landing() {
       </section>
 
       {/* ── Poster + fotos ───────────────────────────────────────────── */}
-      <section className="landing-section">
+      <section className="landing-band landing-band--crema">
+      <div className="landing-section">
         <div className="landing-poster-row">
           <div className="landing-poster">
             <img src={EVENTO.flyer} alt={`Poster oficial — ${EVENTO.nombre}`} loading="lazy" />
@@ -111,10 +112,12 @@ export default function Landing() {
             <figure key={f.src}><img src={f.src} alt={f.alt} loading="lazy" /></figure>
           ))}
         </div>
+      </div>
       </section>
 
       {/* ── De qué se trata ──────────────────────────────────────────── */}
-      <section className="landing-section landing-section--tight">
+      <section className="landing-band landing-band--naranja">
+      <div className="landing-section">
         <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
         <h2 className="landing-h2">Vienes a reírte. <em>Te vas pensando.</em></h2>
         <div className="landing-cards">
@@ -126,10 +129,12 @@ export default function Landing() {
             </article>
           ))}
         </div>
+      </div>
       </section>
 
       {/* ── Detalles ─────────────────────────────────────────────────── */}
-      <section id="detalles" className="landing-section">
+      <section id="detalles" className="landing-band landing-band--lila">
+      <div className="landing-section">
         <p className="landing-eyebrow landing-eyebrow--orange">◆ Los datos</p>
         <div className="landing-grid">
           <div><small>Dónde</small><strong>{EVENTO.lugar}</strong><span>{EVENTO.direccion}, {EVENTO.ciudad}</span></div>
@@ -140,10 +145,12 @@ export default function Landing() {
         <button onClick={comprar} className="landing-cta landing-cta--wide">
           {agotado ? 'Anotarme en lista de espera' : `Comprar entrada · ${EVENTO.precioTexto}`}
         </button>
+      </div>
       </section>
 
       {/* ── Preguntas ─────────────────────────────────────────────────── */}
-      <section className="landing-section landing-section--tight">
+      <section className="landing-band landing-band--morado">
+      <div className="landing-section">
         <p className="landing-eyebrow landing-eyebrow--orange">◆ Preguntas frecuentes</p>
         <div className="landing-faq">
           {FAQ.map(f => (
@@ -153,10 +160,12 @@ export default function Landing() {
             </details>
           ))}
         </div>
+      </div>
       </section>
 
       {/* ── Cierre ───────────────────────────────────────────────────── */}
-      <section className="landing-final">
+      <section className="landing-band landing-band--amarillo landing-final">
+      <div className="landing-section">
         <h2 className="landing-h2 landing-h2--big">Nos vemos en <em>Cartagena</em>.</h2>
         <p className="landing-p">{EVENTO.fechaTexto} · {EVENTO.lugar}</p>
         <button onClick={comprar} className="landing-cta">Comprar entrada · {EVENTO.precioTexto}</button>
@@ -165,6 +174,7 @@ export default function Landing() {
           <a href="/mi-entrada">Reenviar mi entrada</a>
           <a href="/privacidad">Privacidad</a>
         </footer>
+      </div>
       </section>
 
       {/* ── Barra fija ────────────────────────────────────────────────── */}
