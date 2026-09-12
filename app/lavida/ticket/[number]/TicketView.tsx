@@ -316,6 +316,19 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
             padding: '16px', gap: '14px',
           }}
         >
+          {/* X para salir de la vista previa */}
+          <button
+            onClick={cerrarCompartir}
+            aria-label="Cerrar"
+            style={{
+              position: 'absolute', top: 'max(14px, env(safe-area-inset-top))', right: '16px',
+              width: 40, height: 40, borderRadius: '50%',
+              background: 'rgba(255,255,255,0.08)', border: '1px solid rgba(255,255,255,0.18)',
+              color: 'white', fontSize: '22px', lineHeight: 1, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >×</button>
+
           {/* El envoltorio se escala para que quepa; la tarjeta de adentro
               conserva sus 360x640 reales, que es lo que se captura. */}
           <div
@@ -338,9 +351,17 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
               </p>
             ) : (
               <>
+                {/* Abre el menu de compartir del celular con la imagen lista:
+                    la persona toca Instagram y elige Historia. Meterla en la
+                    historia directamente solo lo puede hacer una app nativa;
+                    una web no tiene permiso. Solo aparece donde el navegador
+                    sabe compartir archivos (celulares). */}
                 {puedeCompartir && (
-                  <button onClick={compartirAhora} className="social-pill" style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem' }}>
-                    <span>Compartir</span>
+                  <button onClick={compartirAhora} className="social-pill" style={{ paddingLeft: '1.2rem', paddingRight: '1.4rem', gap: '8px' }}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+                    </svg>
+                    <span>Compartir en Instagram</span>
                   </button>
                 )}
                 {shareFile && (
@@ -348,9 +369,6 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
                     <span>Guardar imagen</span>
                   </button>
                 )}
-                <button onClick={cerrarCompartir} className="social-pill" style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem', opacity: 0.7 }}>
-                  <span>Cerrar</span>
-                </button>
               </>
             )}
           </div>
