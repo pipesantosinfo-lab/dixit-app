@@ -1,7 +1,7 @@
 /* ── Landing /cartagena ──────────────────────────────────────────────
  * Una sola columna, un solo objetivo, y bandas de color bien delimitadas
- * (como una landing editorial): portada oscura → crema → naranja → lila →
- * morado → amarillo. Cada banda define sus propios tokens (--bg, --ink,
+ * (como una landing editorial): portada oscura → violeta → magenta → dorado →
+ * morado → púrpura, con grano y patrón. Cada banda define sus propios tokens (--bg, --ink,
  * --ink-2, --ink-3, --acento, --panel, --linea) y todos los componentes
  * leen de ahí, así que un mismo bloque se ve bien en cualquier banda. */
 
@@ -29,57 +29,114 @@
 }
 
 /* ── Bandas ─────────────────────────────────────────────────────────── */
-.landing-band { background: var(--bg); color: var(--ink); padding: 84px 0; }
+.landing-band {
+  position: relative;
+  isolation: isolate;
+  background: var(--bg);
+  color: var(--ink);
+  padding: 84px 0;
+  overflow: hidden;
+}
+/* Textura: grano fino en todas las bandas + un patron propio por banda */
+.landing-band::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: var(--grano, 0.16);
+  mix-blend-mode: soft-light;
+}
+.landing-band::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--patron, none);
+  background-size: var(--patron-size, 28px 28px);
+  opacity: var(--patron-op, 0.35);
+}
 
-.landing-band--crema {
-  --bg: #f6efe6;
-  --ink: #17102a;
-  --ink-2: rgba(23,16,42,0.72);
-  --ink-3: rgba(23,16,42,0.5);
-  --acento: #d9541d;
-  --acento-2: #6a2fd1;
-  --panel: #fffaf3;
-  --linea: rgba(23,16,42,0.12);
+/* Violeta profundo: el poster y las fotos brillan encima; lineas diagonales finas */
+.landing-band--violeta {
+  --bg: #2b1458;
+  --ink: #f4eeff;
+  --ink-2: rgba(244,238,255,0.72);
+  --ink-3: rgba(244,238,255,0.48);
+  --acento: var(--naranja);
+  --acento-2: #e2c8ff;
+  --panel: #3a1f70;
+  --linea: rgba(226,200,255,0.22);
+  --grano: 0.22;
+  --patron: repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 14px);
+  --patron-size: auto;
+  --patron-op: 1;
+  background-image: radial-gradient(ellipse at 20% 0%, rgba(139,60,247,0.55), transparent 55%), radial-gradient(ellipse at 100% 100%, rgba(255,154,60,0.22), transparent 50%);
 }
-.landing-band--naranja {
-  --bg: #ff8a3c;
-  --ink: #1a0a04;
-  --ink-2: rgba(26,10,4,0.78);
-  --ink-3: rgba(26,10,4,0.55);
-  --acento: #1a0a04;
-  --acento-2: #6a2fd1;
-  --panel: #fff4e8;
-  --linea: rgba(26,10,4,0.14);
+/* Magenta (el del poster): puntos, como el patron rosa de la referencia */
+.landing-band--magenta {
+  --bg: #b3175f;
+  --ink: #fff3f8;
+  --ink-2: rgba(255,243,248,0.8);
+  --ink-3: rgba(255,243,248,0.55);
+  --acento: #ffd166;
+  --acento-2: #ffd166;
+  --panel: #2a0a2e;
+  --linea: rgba(255,255,255,0.14);
+  --grano: 0.2;
+  --patron: radial-gradient(rgba(255,255,255,0.16) 1.4px, transparent 1.6px);
+  --patron-size: 22px 22px;
+  --patron-op: 1;
+  background-image: linear-gradient(160deg, #c81e6b 0%, #a3125a 60%, #8e0e52 100%);
 }
-.landing-band--lila {
-  --bg: #ece3ff;
-  --ink: #1a0f33;
-  --ink-2: rgba(26,15,51,0.72);
-  --ink-3: rgba(26,15,51,0.5);
-  --acento: #d9541d;
-  --acento-2: #6a2fd1;
-  --panel: #ffffff;
-  --linea: rgba(26,15,51,0.12);
+/* Dorado: los datos, con textura de papel */
+.landing-band--dorado {
+  --bg: #e9b53a;
+  --ink: #1e0f2e;
+  --ink-2: rgba(30,15,46,0.78);
+  --ink-3: rgba(30,15,46,0.55);
+  --acento: #8B3CF7;
+  --acento-2: #8B3CF7;
+  --panel: #1e0f2e;
+  --linea: rgba(30,15,46,0.18);
+  --grano: 0.28;
+  --patron: none;
+  background-image: linear-gradient(180deg, #f1c24a 0%, #e4ad2f 100%);
 }
+.landing-band--dorado .landing-grid strong { color: #fff3d6; }
+.landing-band--dorado .landing-grid span { color: rgba(255,243,214,0.72); }
+.landing-band--dorado .landing-grid small { color: #ffb86b; }
+/* Morado oscuro: preguntas */
 .landing-band--morado {
-  --bg: #1d1038;
+  --bg: #170c2e;
   --ink: #f4eeff;
   --ink-2: rgba(244,238,255,0.7);
   --ink-3: rgba(244,238,255,0.45);
   --acento: var(--naranja);
   --acento-2: var(--lavanda);
-  --panel: #2a1850;
+  --panel: #241442;
   --linea: rgba(201,167,255,0.2);
+  --grano: 0.18;
+  --patron: none;
+  background-image: radial-gradient(ellipse at 80% 20%, rgba(139,60,247,0.35), transparent 55%);
 }
-.landing-band--amarillo {
-  --bg: #ffcf3d;
-  --ink: #1a0f33;
-  --ink-2: rgba(26,15,51,0.75);
-  --ink-3: rgba(26,15,51,0.5);
-  --acento: #6a2fd1;
-  --acento-2: #6a2fd1;
-  --panel: #fff6d6;
-  --linea: rgba(26,15,51,0.14);
+/* Purpura de marca: cierre */
+.landing-band--purpura {
+  --bg: #6d2be0;
+  --ink: #ffffff;
+  --ink-2: rgba(255,255,255,0.82);
+  --ink-3: rgba(255,255,255,0.6);
+  --acento: #ffd166;
+  --acento-2: #ffd166;
+  --panel: #2a0f5c;
+  --linea: rgba(255,255,255,0.18);
+  --grano: 0.22;
+  --patron: repeating-linear-gradient(45deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 16px);
+  --patron-size: auto;
+  --patron-op: 1;
+  background-image: linear-gradient(160deg, #7e3cf0 0%, #6423d6 55%, #4d15b8 100%);
 }
 
 /* ── Tipografía ─────────────────────────────────────────────────────── */
@@ -188,28 +245,24 @@
 .landing-cta:active { transform: translateY(0); filter: brightness(0.95); }
 .landing-cta:focus-visible { outline: 2px solid var(--lavanda); outline-offset: 3px; }
 /* En bandas claras el boton principal va oscuro (contraste), como en la referencia */
-.landing-band--crema .landing-cta,
-.landing-band--lila .landing-cta,
-.landing-band--amarillo .landing-cta,
-.landing-band--naranja .landing-cta {
-  background: #1a0f33;
-  box-shadow: 0 10px 30px rgba(26,15,51,0.3);
+.landing-band--dorado .landing-cta {
+  background: #1e0f2e;
+  box-shadow: 0 10px 30px rgba(30,15,46,0.3);
   color: #fff;
 }
-.landing-band--crema .landing-cta:hover,
-.landing-band--lila .landing-cta:hover,
-.landing-band--amarillo .landing-cta:hover,
-.landing-band--naranja .landing-cta:hover { box-shadow: 0 16px 40px rgba(26,15,51,0.4); }
+.landing-band--magenta .landing-cta,
+.landing-band--purpura .landing-cta {
+  background: #ffd166;
+  color: #1e0f2e;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
 .landing-cta--ghost {
   background: transparent;
   border: 1.5px solid var(--ink);
   color: var(--ink);
   box-shadow: none;
 }
-.landing-band--crema .landing-cta--ghost,
-.landing-band--lila .landing-cta--ghost,
-.landing-band--amarillo .landing-cta--ghost,
-.landing-band--naranja .landing-cta--ghost { background: transparent; color: var(--ink); box-shadow: none; }
+.landing-band .landing-cta--ghost { background: transparent; color: var(--ink); box-shadow: none; }
 .landing-cta--wide { width: 100%; margin-top: 28px; }
 .landing-cta--bar { padding: 14px 22px; font-size: 14px; white-space: nowrap; flex-shrink: 0; }
 .landing-cta--hero { width: 100%; padding: 19px 30px; font-size: 16px; }
@@ -314,7 +367,7 @@
   border-radius: 20px;
   background: var(--panel);
   border: 1px solid var(--linea);
-  box-shadow: 0 14px 40px rgba(26,10,4,0.10);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.25);
 }
 .landing-card__n {
   font-family: var(--font-mono), ui-monospace, monospace;
@@ -345,7 +398,7 @@
   width: min(320px, 78vw);
   margin: 0 auto;
   border-radius: 18px;
-  box-shadow: 0 30px 70px rgba(23,16,42,0.35), 0 0 0 1px rgba(255,255,255,0.4);
+  box-shadow: 0 30px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.18);
 }
 .landing-poster::before {
   content: '';
@@ -396,7 +449,7 @@
   overflow: hidden;
   aspect-ratio: 4 / 3;
   background: var(--panel);
-  box-shadow: 0 10px 30px rgba(23,16,42,0.18);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
 }
 .landing-strip img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
@@ -408,7 +461,7 @@
   border: 1px solid var(--linea);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 14px 40px rgba(26,15,51,0.10);
+  box-shadow: 0 14px 40px rgba(0,0,0,0.18);
 }
 .landing-grid > div {
   background: var(--panel);

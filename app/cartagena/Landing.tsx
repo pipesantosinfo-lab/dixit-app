@@ -94,7 +94,7 @@ export default function Landing() {
       </section>
 
       {/* ── Poster + fotos ───────────────────────────────────────────── */}
-      <section className="landing-band landing-band--crema">
+      <section className="landing-band landing-band--violeta">
       <div className="landing-section">
         <div className="landing-poster-row">
           <div className="landing-poster">
@@ -116,7 +116,7 @@ export default function Landing() {
       </section>
 
       {/* ── De qué se trata ──────────────────────────────────────────── */}
-      <section className="landing-band landing-band--naranja">
+      <section className="landing-band landing-band--magenta">
       <div className="landing-section">
         <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
         <h2 className="landing-h2">Vienes a reírte. <em>Te vas pensando.</em></h2>
@@ -133,7 +133,7 @@ export default function Landing() {
       </section>
 
       {/* ── Detalles ─────────────────────────────────────────────────── */}
-      <section id="detalles" className="landing-band landing-band--lila">
+      <section id="detalles" className="landing-band landing-band--dorado">
       <div className="landing-section">
         <p className="landing-eyebrow landing-eyebrow--orange">◆ Los datos</p>
         <div className="landing-grid">
@@ -164,7 +164,7 @@ export default function Landing() {
       </section>
 
       {/* ── Cierre ───────────────────────────────────────────────────── */}
-      <section className="landing-band landing-band--amarillo landing-final">
+      <section className="landing-band landing-band--purpura landing-final">
       <div className="landing-section">
         <h2 className="landing-h2 landing-h2--big">Nos vemos en <em>Cartagena</em>.</h2>
         <p className="landing-p">{EVENTO.fechaTexto} · {EVENTO.lugar}</p>
