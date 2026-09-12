@@ -19,18 +19,30 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
   const [sharing, setSharing] = useState(false)
   const [shareMsg, setShareMsg] = useState('')
   const [showCaptureView, setShowCaptureView] = useState(false)
+  // La imagen se genera UNA vez al abrir la vista previa y se guarda aqui.
+  // Asi, cuando la persona toca "Compartir", navigator.share() se llama en
+  // el mismo instante del toque, sin esperas: iOS lo exige y si no, rechaza.
+  const [shareFile, setShareFile] = useState<File | null>(null)
+  const [preparing, setPreparing] = useState(false)
+  const [escala, setEscala] = useState(1)
   const shareViewRef = useRef<HTMLDivElement>(null)
   const isUsed = ticket.status === 'used'
   const shortId = ticket.ticket_number.split('-')[0].toUpperCase()
 
-  async function shareTicket() {
+  /* Abre la vista previa 9:16 y genera la imagen en segundo plano.
+   * Antes esta misma vista se montaba solo para "fotografiarla" y se
+   * desmontaba al instante — ese era el parpadeo que se veia al tocar el
+   * boton. Ahora se queda abierta hasta que la persona cierra. */
+  async function abrirCompartir() {
     if (sharing) return
     setSharing(true)
     setShareMsg('')
-    setShowCaptureView(true) // monta el ShareView visible
-    // Esperar 2 frames para que React lo monte
+    setShareFile(null)
+    // Que la tarjeta de 360x640 quepa en la pantalla junto con los botones.
+    setEscala(Math.min(1, (window.innerHeight - 150) / 640, (window.innerWidth - 32) / 360))
+    setShowCaptureView(true)
+    setPreparing(true)
     await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)))
-    // Esperar a que TODAS las imágenes carguen completamente
     if (shareViewRef.current) {
       const imgs = Array.from(shareViewRef.current.querySelectorAll('img'))
       await Promise.all(imgs.map(img => {
@@ -38,59 +50,75 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         return new Promise<void>(resolve => {
           img.onload = () => resolve()
           img.onerror = () => resolve()
-          // Failsafe timeout 3s
           setTimeout(resolve, 3000)
         })
       }))
     }
-    // Margen extra para renderizado de gradientes/fuentes
     await new Promise(r => setTimeout(r, 400))
-    if (!shareViewRef.current) { setSharing(false); setShowCaptureView(false); return }
     try {
+      if (!shareViewRef.current) throw new Error('sin vista')
       const { toBlob } = await import('html-to-image')
       const blob = await toBlob(shareViewRef.current, {
-        pixelRatio: 3, // 360 × 3 = 1080 (ancho de stories) · 640 × 3 = 1920 (alto)
+        pixelRatio: 3, // 360 x 3 = 1080 (ancho de stories) · 640 x 3 = 1920 (alto)
         backgroundColor: '#070508',
         cacheBust: false,
         width: 360,
         height: 640,
       })
       if (!blob) throw new Error('No se pudo generar la imagen')
-
-      const file = new File([blob], `entrada-pipesantos-${shortId}.png`, { type: 'image/png' })
-      const shareData = {
-        files: [file],
-        title: '¡Voy a ver a Pipe Santos!',
-        text: `¡Ya tengo mi entrada para ${EVENTO.nombre}! ${EVENTO.fechaCorta} · ${EVENTO.ciudad} ⚡🧡`,
-      }
-
-      // navigator.canShare con files es la forma moderna y compatible
-      if (navigator.canShare && navigator.canShare(shareData)) {
-        await navigator.share(shareData)
-        setShareMsg('✓ ¡Listo para compartir!')
-      } else {
-        // Fallback: descargar la imagen
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `entrada-pipesantos-${shortId}.png`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-        setShareMsg('✓ Imagen descargada · ábrela en Instagram para compartir')
-      }
-    } catch (err) {
-      const e = err as { name?: string }
-      if (e?.name !== 'AbortError') {
-        setShareMsg('No se pudo compartir. Intenta de nuevo.')
-      }
+      setShareFile(new File([blob], `entrada-pipesantos-${shortId}.png`, { type: 'image/png' }))
+    } catch {
+      setShareMsg('No se pudo generar la imagen. Toma una captura de pantalla.')
     } finally {
-      setShowCaptureView(false)
+      setPreparing(false)
       setSharing(false)
-      setTimeout(() => setShareMsg(''), 4000)
     }
   }
+
+  function cerrarCompartir() {
+    setShowCaptureView(false)
+    setShareFile(null)
+    setShareMsg('')
+  }
+
+  /* Se llama directamente desde el toque del boton, sin ningun await antes
+   * de navigator.share: es la unica forma en que iOS abre la hoja de
+   * compartir con un archivo. */
+  function compartirAhora() {
+    if (!shareFile) return
+    const datos = {
+      files: [shareFile],
+      title: '¡Voy a ver a Pipe Santos!',
+      text: `¡Ya tengo mi entrada para ${EVENTO.nombre}! ${EVENTO.fechaCorta} · ${EVENTO.ciudad} ⚡🧡`,
+    }
+    if (!(navigator.canShare && navigator.canShare(datos))) {
+      guardarImagen()
+      return
+    }
+    navigator.share(datos)
+      .then(() => setShareMsg('✓ ¡Listo!'))
+      .catch((err: { name?: string }) => {
+        if (err?.name !== 'AbortError') setShareMsg('No se pudo abrir el menú de compartir. Prueba "Guardar imagen".')
+      })
+  }
+
+  function guardarImagen() {
+    if (!shareFile) return
+    const url = URL.createObjectURL(shareFile)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = shareFile.name
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => URL.revokeObjectURL(url), 2000)
+    setShareMsg('✓ Imagen guardada · súbela a tu historia de Instagram')
+  }
+
+  /* Solo hay boton "Compartir" donde el navegador sabe compartir archivos
+   * (casi todos los celulares). En computador se ofrece "Guardar imagen". */
+  const puedeCompartir = typeof navigator !== 'undefined' && !!navigator.canShare
+    && !!shareFile && navigator.canShare({ files: [shareFile] })
 
   useEffect(() => {
     if (ticket.qr_data) generateQRDataURL(ticket.qr_data).then(url => {
@@ -244,19 +272,16 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         {/* Botón compartir en redes — fuera del card para que no salga en la captura */}
         <div className="mt-6 flex flex-col items-center">
           <button
-            onClick={shareTicket}
+            onClick={abrirCompartir}
             disabled={sharing || !qrUrl}
             className="social-pill disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem' }}
           >
-            <span>{sharing ? 'Generando imagen...' : 'Comparte con tus amigos'}</span>
+            <span>Comparte con tus amigos</span>
             <svg className="social-pill-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
           </button>
-          {shareMsg && (
-            <p className="mt-3 text-xs font-mono text-white/60 text-center">{shareMsg}</p>
-          )}
         </div>
 
         <p className="text-center font-body text-white/20 text-xs mt-6 leading-relaxed">
@@ -277,38 +302,62 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
         </div>
       </div>
 
-      {/* ── Modal de captura: muestra la vista 9:16 mientras se genera la imagen ── */}
+      {/* ── Vista previa para compartir: la tarjeta 9:16 se queda en pantalla
+          con sus botones. Se cierra solo cuando la persona quiere. ── */}
       {showCaptureView && (
         <div
+          onClick={cerrarCompartir}
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(7,5,8,0.95)',
-            backdropFilter: 'blur(8px)',
-            zIndex: 9999,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '20px',
+            position: 'fixed', inset: 0, zIndex: 9999,
+            background: 'rgba(7,5,8,0.96)', backdropFilter: 'blur(8px)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            padding: '16px', gap: '14px',
           }}
         >
-          <ShareView
-            ref={shareViewRef}
-            buyerName={ticket.buyer_name}
-            shortId={shortId}
-          />
-          <p style={{
-            position: 'absolute',
-            bottom: '30px',
-            color: 'rgba(255,255,255,0.7)',
-            fontFamily: 'ui-monospace, "Courier New", monospace',
-            fontSize: '11px',
-            letterSpacing: '3px',
-            textTransform: 'uppercase',
-          }}>
-            Generando imagen...
-          </p>
+          {/* El envoltorio se escala para que quepa; la tarjeta de adentro
+              conserva sus 360x640 reales, que es lo que se captura. */}
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              width: 360 * escala, height: 640 * escala, flexShrink: 0,
+              borderRadius: '14px', overflow: 'hidden',
+              boxShadow: '0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(139,60,247,0.18)',
+            }}
+          >
+            <div style={{ transform: `scale(${escala})`, transformOrigin: 'top left', width: 360, height: 640 }}>
+              <ShareView ref={shareViewRef} buyerName={ticket.buyer_name} shortId={shortId} />
+            </div>
+          </div>
+
+          <div onClick={e => e.stopPropagation()} style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
+            {preparing ? (
+              <p style={{ color: 'rgba(255,255,255,0.6)', fontFamily: 'ui-monospace, monospace', fontSize: '11px', letterSpacing: '3px', textTransform: 'uppercase', padding: '12px 0' }}>
+                Preparando imagen…
+              </p>
+            ) : (
+              <>
+                {puedeCompartir && (
+                  <button onClick={compartirAhora} className="social-pill" style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem' }}>
+                    <span>Compartir</span>
+                  </button>
+                )}
+                {shareFile && (
+                  <button onClick={guardarImagen} className="social-pill" style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem' }}>
+                    <span>Guardar imagen</span>
+                  </button>
+                )}
+                <button onClick={cerrarCompartir} className="social-pill" style={{ paddingLeft: '1.4rem', paddingRight: '1.4rem', opacity: 0.7 }}>
+                  <span>Cerrar</span>
+                </button>
+              </>
+            )}
+          </div>
+
+          {shareMsg && (
+            <p onClick={e => e.stopPropagation()} style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'ui-monospace, monospace', fontSize: '12px', textAlign: 'center', maxWidth: '320px', margin: 0 }}>
+              {shareMsg}
+            </p>
+          )}
         </div>
       )}
     </main>
@@ -875,7 +924,7 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
                 fontFamily: 'ui-monospace, monospace', fontSize: '8px',
                 letterSpacing: '2.5px', textTransform: 'uppercase',
                 color: 'rgba(220,195,255,0.75)', margin: 0,
-              }}>Entrada confirmada · 22 ago</p>
+              }}>Entrada confirmada · {EVENTO.fechaCorta}</p>
             </div>
 
             <div style={{ height: '3px', background: 'linear-gradient(90deg, rgba(139,60,247,0.8), rgba(196,82,0,0.5), transparent)' }} />
