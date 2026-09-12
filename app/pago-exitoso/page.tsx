@@ -4,6 +4,7 @@ import { useSearchParams } from 'next/navigation'
 import { Suspense, useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Particles from '@/components/Particles'
+import { EVENTO } from '@/lib/evento'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -154,7 +155,7 @@ function Content() {
             style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
             {[
               { icon: '📧', text: 'Revisa tu bandeja de entrada (y la carpeta de spam)' },
-              { icon: '🙌', text: 'Te esperamos este 22 de agosto con la mejor energía' },
+              { icon: '🙌', text: `Te esperamos este ${EVENTO.fechaCorta} con la mejor energía` },
               { icon: '🎫', text: 'El QR es tu entrada — guárdalo bien' },
             ].map(item => (
               <div key={item.text} className="flex gap-3 items-start">
@@ -184,7 +185,7 @@ function Content() {
             )
           )}
 
-          <a href="/evento" className="font-mono text-xs text-white/25 hover:text-white/50 transition-colors tracking-widest uppercase">
+          <a href="/#evento" className="font-mono text-xs text-white/25 hover:text-white/50 transition-colors tracking-widest uppercase">
             ← Volver al evento
           </a>
         </div>

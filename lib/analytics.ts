@@ -1,5 +1,5 @@
 /**
- * Genera el Excel de asistentes de "La vida es cule viaje"
+ * Genera el Excel de asistentes del evento en vivo (lib/evento.ts)
  * Se usa en: bold-webhook (email automático) y /api/admin/export (descarga manual)
  */
 import * as XLSX from 'xlsx'

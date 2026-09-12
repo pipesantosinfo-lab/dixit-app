@@ -83,6 +83,9 @@ const nextConfig = {
   async redirects() {
     return [
       { source: '/preview', destination: '/', permanent: true },
+      // Pagina antigua del evento de Barranquilla, con los datos escritos a
+      // mano. La seccion #evento de la portada lee de lib/evento.ts.
+      { source: '/evento', destination: '/#evento', permanent: false },
     ]
   },
 }

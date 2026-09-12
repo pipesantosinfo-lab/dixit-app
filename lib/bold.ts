@@ -1,6 +1,9 @@
+import { EVENTO, DESCRIPCION_PAGO } from '@/lib/evento'
+
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://pipesantos.com'
 
-const UNIT_PRICE = 40000 // COP por entrada (no cambiar — la página muestra $40.000)
+// El mismo numero que muestra la pagina: ambos salen de lib/evento.ts.
+const UNIT_PRICE = EVENTO.precio
 
 export async function createBoldPaymentLink({
   orderId,
@@ -23,7 +26,7 @@ export async function createBoldPaymentLink({
     body: JSON.stringify({
       amount_type: 'CLOSE',
       amount: { currency: 'COP', total_amount: UNIT_PRICE * quantity },
-      description: 'Entrada — La vida es cule viaje',
+      description: DESCRIPCION_PAGO,
       reference: orderId,
       callback_url: `${APP_URL}/pago-exitoso?order=${orderId}`,
       payer_email: buyerEmail,

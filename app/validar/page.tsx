@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { EVENTO } from '@/lib/evento'
 import Image from 'next/image'
 
 /* ────────────────────────────────────────────────────────────────────
@@ -432,7 +433,7 @@ export default function ValidarPage() {
           <div className="text-center mb-8">
             <Image src="/logo-header-v2.png" alt="Pipe Santos" width={300} height={130} className="h-12 w-auto opacity-80 mx-auto mb-6" />
             <h1 className="font-display text-3xl text-white mb-2">Validador</h1>
-            <p className="font-mono text-xs text-white/30 tracking-widest uppercase">La vida es cule viaje · 22 ago 2026</p>
+            <p className="font-mono text-xs text-white/30 tracking-widest uppercase">{EVENTO.nombre}</p>
           </div>
 
           <div className="glass rounded-2xl p-8" style={{ border: '1px solid rgba(139,60,247,0.2)' }}>

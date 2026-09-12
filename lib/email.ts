@@ -63,8 +63,7 @@ export async function sendTicketEmail(params: TicketEmailParams) {
     <tr><td style="background-color:#0d0a14;padding:32px 36px 28px;border-left:1px solid rgba(139,60,247,0.2);border-right:1px solid rgba(139,60,247,0.2);text-align:center;">
       ${logoSrc ? `<img src="${logoSrc}" width="110" height="auto" alt="Pipe Santos" style="display:inline-block;opacity:0.9;margin-bottom:24px;">` : `<p style="margin:0 0 24px;color:#ffffff;font-size:18px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.15em;">PIPE SANTOS</p>`}
       <p style="margin:0 0 6px;color:rgba(196,82,0,0.85);font-size:10px;letter-spacing:0.35em;text-transform:uppercase;font-family:monospace;">◆ Entrada confirmada</p>
-      <p style="margin:0;color:#ffffff;font-size:30px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.02em;line-height:1.2;">La vida es</p>
-      <p style="margin:0;color:rgba(139,60,247,0.9);font-size:34px;font-style:italic;font-weight:300;font-family:Georgia,'Times New Roman',serif;letter-spacing:0.02em;">cule viaje</p>
+      <p style="margin:0;color:#ffffff;font-size:30px;font-weight:300;font-family:'Helvetica Neue',Arial,sans-serif;letter-spacing:0.02em;line-height:1.2;">${safeEvent}</p>
     </td></tr>
 
     <!-- Divider -->

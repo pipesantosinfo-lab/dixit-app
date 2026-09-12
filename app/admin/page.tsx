@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { EVENTO } from '@/lib/evento'
 
 interface Ticket {
   id: string
@@ -202,7 +203,7 @@ export default function AdminPage() {
         </div>
 
         {/* ── Stats La Vida ── */}
-        <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-3">◆ La vida es cule viaje · Estadísticas</p>
+        <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-3">◆ {EVENTO.nombre} · Estadísticas</p>
         <div className="grid grid-cols-3 gap-4 mb-8">
           {[
             { label: 'Entradas vendidas', value: lavidaStats.total,   color: '#8B3CF7' },

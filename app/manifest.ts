@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'Pipe Santos · Validador',
     short_name: 'Validador',
-    description: 'Validador de entradas para el evento La vida es cule viaje',
+    description: 'Validador de entradas para los eventos de Pipe Santos',
     start_url: '/validar',
     scope: '/validar',
     display: 'standalone',

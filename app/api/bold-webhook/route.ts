@@ -4,13 +4,15 @@ import { sendTicketEmail } from '@/lib/email'
 import { generateLavidaExcel } from '@/lib/analytics'
 import { Resend } from 'resend'
 import { createHmac, timingSafeEqual } from 'crypto'
+import { EVENTO } from '@/lib/evento'
 
 const OWNER_EMAIL = 'pipesantos93@gmail.com'
 
+// Lo que va en el correo de confirmacion. Todo sale de lib/evento.ts.
 const EVENT = {
-  name: 'La vida es cule viaje',
-  date: 'Sábado 22 de agosto de 2026 · 2:00 PM – 6:00 PM',
-  location: 'Barranquilla, Colombia',
+  name: EVENTO.nombre,
+  date: EVENTO.fechaTexto,
+  location: `${EVENTO.lugar} · ${EVENTO.ciudad}`,
 }
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://pipesantos.com'

@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { createBoldPaymentLink } from '@/lib/bold'
 import { v4 as uuidv4 } from 'uuid'
+import { EVENTO } from '@/lib/evento'
 
-const MAX_TICKETS = 340
+const MAX_TICKETS = EVENTO.aforo
 const EMAIL_RE = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/
 const PHONE_RE = /^[+]?[\d\s()-]{6,20}$/
 
@@ -56,6 +57,21 @@ export async function POST(req: NextRequest) {
   }
 
   const db = supabaseAdmin()
+
+  /* El interruptor de ventas (sales.json) solo se consultaba en la pantalla:
+   * el boton abria el modal de compra o el de "muy pronto". Pero la API
+   * aceptaba ordenes igual, asi que con ventas cerradas bastaba con llamar
+   * este endpoint directamente para comprar. Ahora se comprueba aqui, que es
+   * donde de verdad importa. */
+  try {
+    const { data: cfg } = await db.storage.from('config').download('sales.json')
+    const abierto = cfg ? !!JSON.parse(await cfg.text()).enabled : false
+    if (!abierto) {
+      return NextResponse.json({ error: 'Las ventas no están abiertas todavía.' }, { status: 403 })
+    }
+  } catch {
+    return NextResponse.json({ error: 'Las ventas no están abiertas todavía.' }, { status: 403 })
+  }
 
   /* Inventario:
    *  - 'active' / 'used'   → confirmados, siempre ocupan asiento

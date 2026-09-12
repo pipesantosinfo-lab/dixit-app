@@ -9,6 +9,7 @@ import IntroOverlay from '@/components/IntroOverlay'
 import BorisCharacter from '@/components/BorisCharacter'
 import EventoCharacter from '@/components/EventoCharacter'
 import { track } from '@/lib/track'
+import { EVENTO, CIUDAD_MAYUS } from '@/lib/evento'
 import SpinImage from './SpinImage'
 import CoverflowCarousel from './CoverflowCarousel'
 
@@ -318,9 +319,9 @@ function HeartParticles({ active }: { active: boolean }) {
 }
 
 /* ── Evento ─────────────────────────────────────── */
-const EVENT_DATE  = new Date('2026-08-22T14:00:00-05:00')
-const EVENT_MAX   = 340
-const EVENT_PRICE = 40000
+const EVENT_DATE  = EVENTO.fecha
+const EVENT_MAX   = EVENTO.aforo
+const EVENT_PRICE = EVENTO.precio
 const EVENT_IG    = 'https://www.instagram.com/pipesantos93/'
 
 /* ── Mensaje de urgencia dinámico ──────────────────────────────
@@ -342,14 +343,14 @@ function getUrgencyMessage(sold: number) {
 
   if (sold === 0) {
     return {
-      full: 'CUPOS LIMITADOS · ⚡ SHOW EN VIVO · 📍 BARRANQUILLA',
-      short: 'CUPOS LIMITADOS · ⚡ 📍 BARRANQUILLA',
+      full: `CUPOS LIMITADOS · ⚡ SHOW EN VIVO · 📍 ${CIUDAD_MAYUS}`,
+      short: `CUPOS LIMITADOS · ⚡ 📍 ${CIUDAD_MAYUS}`,
       level: 'normal' as const,
     }
   }
   if (ratio >= 1) {
     return {
-      full: 'AGOTADAS · LISTA DE ESPERA · 📍 BARRANQUILLA',
+      full: `AGOTADAS · LISTA DE ESPERA · 📍 ${CIUDAD_MAYUS}`,
       short: 'AGOTADAS · LISTA DE ESPERA',
       level: 'critical' as const,
     }
@@ -363,14 +364,14 @@ function getUrgencyMessage(sold: number) {
   }
   if (ratio >= 0.5) {
     return {
-      full: 'SOLD OUT PRONTO · ASEGURA TU LUGAR · 📍 BARRANQUILLA',
-      short: 'SOLD OUT PRONTO · 📍 BARRANQUILLA',
+      full: `SOLD OUT PRONTO · ASEGURA TU LUGAR · 📍 ${CIUDAD_MAYUS}`,
+      short: `SOLD OUT PRONTO · 📍 ${CIUDAD_MAYUS}`,
       level: 'high' as const,
     }
   }
   return {
-    full: 'CUPOS LIMITADOS · ⚡ SHOW EN VIVO · 📍 BARRANQUILLA',
-    short: 'CUPOS LIMITADOS · ⚡ 📍 BARRANQUILLA',
+    full: `CUPOS LIMITADOS · ⚡ SHOW EN VIVO · 📍 ${CIUDAD_MAYUS}`,
+    short: `CUPOS LIMITADOS · ⚡ 📍 ${CIUDAD_MAYUS}`,
     level: 'normal' as const,
   }
 }
@@ -449,8 +450,8 @@ function EventoModal({ onClose, sold }: { onClose: () => void; sold: number }) {
         <div className="flex items-start justify-between mb-6">
           <div>
             <p className="font-mono text-xs text-white/30 tracking-widest uppercase mb-1">Entrada General</p>
-            <h2 className="font-display text-2xl text-white">La vida es cule viaje</h2>
-            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>$40.000 COP</p>
+            <h2 className="font-display text-2xl text-white">{EVENTO.nombre}</h2>
+            <p className="font-display text-xl mt-1" style={{ color: '#8B3CF7' }}>{EVENTO.precioTexto} COP</p>
           </div>
           <button onClick={onClose} className="text-white/30 hover:text-white transition-colors text-3xl leading-none mt-1">×</button>
         </div>
@@ -1233,7 +1234,7 @@ const bookFeatures = [
   { title: 'Proyectos, sueños y metas', desc: 'Descubrirás formas, tips y métodos para escalar hacia tus objetivos más importantes.' },
 ]
 
-const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 🎟️', '¡Nos vemos en Barranquilla!', '¡Gracias por estar aquí! ✨']
+const pipeMessages = ['¡Hola! 👋', '¡Bienvenido!', '¿Ya tienes tu entrada? 🎟️', `¡Nos vemos en ${EVENTO.ciudad}!`, '¡Gracias por estar aquí! ✨']
 
 /* ── Hint de scroll en el hero ─────────────────────────────────────────
  * Aparece al fondo del hero con una pista visual ("Descubre más" + chevron
@@ -1275,10 +1276,10 @@ function StickyMobileCTA({ urgencyShort, level }: { urgencyShort: string; level:
           aria-label="Ir a comprar entrada"
         >
           <div className="sticky-cta__info">
-            <p className="sticky-cta__title">Compra tu entrada — 22 ago</p>
+            <p className="sticky-cta__title">Compra tu entrada — {EVENTO.fechaCorta}</p>
             <p className="sticky-cta__meta">
               <span className="sticky-cta__meta-dot" />
-              {urgencyShort} · $40.000
+              {urgencyShort} · {EVENTO.precioTexto}
             </p>
           </div>
           <span className="sticky-cta__btn">
@@ -2566,8 +2567,8 @@ export default function PreviewPage() {
             </button>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/flyer-barranquilla.png"
-              alt="La vida es cule viaje — Barranquilla 2026"
+              src={EVENTO.flyer}
+              alt={`${EVENTO.nombre} — ${EVENTO.ciudad}`}
               className="w-full h-auto rounded-2xl"
               style={{ boxShadow: '0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(196,82,0,0.2)' }}
             />
@@ -2641,7 +2642,7 @@ export default function PreviewPage() {
         <Image src="/logo-header-v2.png" alt="Pipe Santos" width={300} height={130} className="h-11 md:h-16 w-auto opacity-90" priority
           style={{ filter: overLightHero ? 'invert(1)' : 'none', transition: 'filter 0.35s ease' }} />
         <div className="hidden md:flex gap-8">
-          {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Mi libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ['#contacto', 'Contacto']].map(([href, label]) => (
+          {[['#sobre', 'Sobre mí'], ['#galeria', 'Galería'], ['#libro', 'Mi libro'], ['#podcast', 'Podcast'], ['#testimonios', 'Testimonios'], ...(EVENTO.activo ? [['#evento', 'Evento']] : []), ['#contacto', 'Contacto']].map(([href, label]) => (
             <a key={label} href={href}
               className={`nav-link font-mono text-xs tracking-widest uppercase transition-colors ${overLightHero ? 'text-black/55 hover:text-black' : 'text-white/45 hover:text-white'}`}
               /* Sobre el crema va el cobalto; sobre el fondo oscuro, un azul
@@ -2794,7 +2795,7 @@ export default function PreviewPage() {
                 ['#libro', 'Mi libro'],
                 ['#podcast', 'Podcast'],
                 ['#testimonios', 'Testimonios'],
-                // ['#evento', 'Evento'], // OCULTO — reactivar con el nuevo evento
+                ...(EVENTO.activo ? [['#evento', 'Evento']] as const : []),
                 ['#contacto', 'Contacto'],
               ] as const).map(([href, label], i) => (
                 <motion.a
@@ -2907,14 +2908,14 @@ export default function PreviewPage() {
               A partir de historias
             </motion.p>
 
-            {/* ── Hero CTA: OCULTO — reactivar cuando haya nueva pieza de evento ── */}
-            {false && (
+            {/* ── Hero CTA: se enciende con EVENTO.activo (lib/evento.ts) ── */}
+            {EVENTO.activo && (
             <motion.a
               variants={fadeUp}
               href="#evento"
               onClick={() => track({ type: 'click', target: 'hero_buy_cta' })}
               className={`hero-cta group hero-cta--${urgency.level}`}
-              aria-label="Quiero asistir al show del 22 de agosto"
+              aria-label={`Quiero asistir al show del ${EVENTO.fechaCorta}`}
             >
               <span className="hero-cta__meta">
                 <span className="hero-cta__pulse-dot" />
@@ -3619,12 +3620,9 @@ export default function PreviewPage() {
         </div>
       </section>
 
-      {/* Preload voice note audio so it plays instantly when modal opens */}
-      {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-      <audio src="/invitacion-evento.wav" preload="auto" style={{ display: 'none' }} />
 
-      {/* ── EVENTO OCULTO — reactivar cuando haya nueva pieza de diseño ── */}
-      {false && <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 [overflow-x:clip]">
+      {/* ── EVENTO: se enciende con EVENTO.activo (lib/evento.ts) ── */}
+      {EVENTO.activo && <section id="evento" data-track-section="evento" className="relative z-10 px-6 md:px-12 pt-10 pb-20 [overflow-x:clip]">
         <ScreenAmbientBg accent="orange" />
         {/* Scrim oscuro detrás de la columna de texto — da contraste cinematográfico */}
         <div className="absolute inset-0 pointer-events-none" style={{
@@ -3637,10 +3635,10 @@ export default function PreviewPage() {
           <motion.div className="mb-16 flex justify-center" initial="hidden" whileInView="visible" viewport={VP} variants={fadeUp}>
             <div className="w-full max-w-sm md:max-w-full relative">
 
-            {/* ── DESKTOP: Barranquilla (principal) + Cartagena (pasado, compacto) ── */}
+            {/* ── DESKTOP: próximo evento (datos en lib/evento.ts) + show anterior (pasado, compacto) ── */}
             <div className="hidden md:flex items-stretch gap-6">
 
-              {/* ── Par principal: Barranquilla ── */}
+              {/* ── Par principal: próximo evento ── */}
               <div className="flex items-stretch gap-5 flex-1">
 
                 {/* Card */}
@@ -3660,27 +3658,17 @@ export default function PreviewPage() {
                   <div className="px-5 pt-4 pb-5">
                     <div className="flex justify-between items-center mb-1">
                       <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                      <motion.button
-                        onClick={() => setShowVoiceNote(true)}
-                        className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
-                        style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
-                        animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
-                        transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-                        whileTap={{ scale: 0.88 }}
-                      >
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                      </motion.button>
-                    </div>
+                                          </div>
                     <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
                     <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                       <div className="text-center min-w-[42px] flex-shrink-0">
-                        <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
-                        <p className="font-display text-4xl font-bold text-white leading-none">22</p>
+                        <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>{EVENTO.mes}</p>
+                        <p className="font-display text-4xl font-bold text-white leading-none">{EVENTO.dia}</p>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
-                        <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
-                        <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
+                        <p className="font-body text-white text-sm font-medium">{EVENTO.nombre}</p>
+                        <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{EVENTO.ciudad} · {EVENTO.horaTexto}</p>
+                        <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Cupos limitados</p>
                       </div>
                     </div>
                     <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
@@ -3704,7 +3692,7 @@ export default function PreviewPage() {
                           onClick={() => { track({ type: 'click', target: 'open_event' }); salesOpen ? setShowEventModal(true) : setShowComingSoon(true) }}
                           className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
                           style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                          Comprar entrada · $40.000
+                          Comprar entrada · {EVENTO.precioTexto}
                         </button>
                       </div>
                     )}
@@ -3725,17 +3713,17 @@ export default function PreviewPage() {
                   className="flex-1 rounded-3xl overflow-hidden cursor-pointer relative"
                   style={{ border: 'none', background: 'none', boxShadow: '0 40px 100px rgba(0,0,0,0.75), 0 0 40px rgba(196,82,0,0.08)', outline: '1px solid rgba(255,255,255,0.07)' }}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/flyer-barranquilla.png" alt="Flyer — La vida es cule viaje" className="w-full h-full object-cover object-center block" />
+                  <img src={EVENTO.flyer} alt={`Flyer — ${EVENTO.nombre}`} className="w-full h-full object-cover object-center block" />
                   <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
                     <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
                   </div>
                 </button>
 
-              </div>{/* fin par Barranquilla */}
+              </div>{/* fin par próximo evento */}
 
-              {/* ── Otras ciudades: póster Cartagena — full height ── */}
+              {/* ── Show anterior: póster Cartagena — full height ── */}
               <div className="flex-shrink-0 flex flex-col gap-2" style={{ width: '195px' }}>
-                <p className="font-mono text-[9px] tracking-[0.35em] uppercase text-center flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }}>Otras ciudades</p>
+                <p className="font-mono text-[9px] tracking-[0.35em] uppercase text-center flex-shrink-0" style={{ color: 'rgba(255,255,255,0.28)' }}>Show anterior</p>
 
                 {/* Póster: flyer como fondo, sello #SoldOut al centro, info abajo */}
                 <div className="flex-1 rounded-2xl overflow-hidden relative" style={{
@@ -3785,7 +3773,7 @@ export default function PreviewPage() {
               }}>
               <div className="flex gap-4" style={{ paddingLeft: '24px', paddingRight: '24px' }}>
 
-                {/* ── Tiquete 1: Barranquilla (próximo evento) ── */}
+                {/* ── Tiquete 1: próximo evento ── */}
                 <div style={{ width: 'calc(100vw - 80px)', flexShrink: 0, scrollSnapAlign: 'start' }}>
                   <div className="rounded-3xl overflow-hidden" style={{
                     boxShadow: '0 20px 60px rgba(0,0,0,0.7), 0 0 40px rgba(196,82,0,0.08)',
@@ -3806,27 +3794,17 @@ export default function PreviewPage() {
                         <div className="px-5 pt-4 pb-5">
                           <div className="flex justify-between items-center mb-1">
                             <p className="font-mono text-sm font-semibold text-white tracking-wide">Próximo evento</p>
-                            <motion.button
-                              onClick={() => setShowVoiceNote(true)}
-                              className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 cursor-pointer"
-                              style={{ background: 'linear-gradient(135deg,#C45200,#E07820)', border: 'none' }}
-                              animate={{ boxShadow: ['0 0 10px rgba(196,82,0,0.4)', '0 0 28px rgba(255,120,0,0.85)', '0 0 10px rgba(196,82,0,0.4)'], scale: [1, 1.07, 1] }}
-                              transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-                              whileTap={{ scale: 0.88 }}
-                            >
-                              <svg width="14" height="14" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-                            </motion.button>
-                          </div>
+                                                      </div>
                           <div className="h-0.5 w-20 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#C45200,#FF9A3C)' }} />
                           <div className="flex gap-4 items-center py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
                             <div className="text-center min-w-[42px] flex-shrink-0">
-                              <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>AGO</p>
-                              <p className="font-display text-4xl font-bold text-white leading-none">22</p>
+                              <p className="font-mono text-xs uppercase tracking-widest" style={{ color: 'rgba(196,82,0,0.9)' }}>{EVENTO.mes}</p>
+                              <p className="font-display text-4xl font-bold text-white leading-none">{EVENTO.dia}</p>
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="font-body text-white text-sm font-medium">La vida es cule viaje</p>
-                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>Barranquilla · 2:00 – 6:00 PM</p>
-                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Solo {EVENT_MAX - eventSold} entradas disponibles</p>
+                              <p className="font-body text-white text-sm font-medium">{EVENTO.nombre}</p>
+                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.45)' }}>{EVENTO.ciudad} · {EVENTO.horaTexto}</p>
+                              <p className="font-mono text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.28)' }}>Cupos limitados</p>
                             </div>
                           </div>
                           <div className="flex items-center justify-center gap-2 py-3 border-b" style={{ borderColor: 'rgba(255,255,255,0.08)' }}>
@@ -3850,7 +3828,7 @@ export default function PreviewPage() {
                                 onClick={() => { track({ type: 'click', target: 'open_event' }); salesOpen ? setShowEventModal(true) : setShowComingSoon(true) }}
                                 className="w-full py-3.5 text-center rounded-full font-mono text-sm tracking-widest uppercase text-white transition-all"
                                 style={{ background: 'transparent', border: '1.5px solid rgba(196,82,0,0.85)', boxShadow: '0 0 18px rgba(196,82,0,0.4), inset 0 0 12px rgba(196,82,0,0.05)' }}>
-                                Comprar entrada · $40.000
+                                Comprar entrada · {EVENTO.precioTexto}
                               </button>
                             </div>
                           )}
@@ -3873,13 +3851,13 @@ export default function PreviewPage() {
                         </div>
                         <div style={{ height: '1.5px', background: 'linear-gradient(90deg, transparent 0%, rgba(196,82,0,0.5) 30%, rgba(255,154,60,0.7) 50%, rgba(196,82,0,0.5) 70%, transparent 100%)' }} />
                       </div>
-                      {/* Flyer Barranquilla */}
+                      {/* Flyer del próximo evento */}
                       <button onClick={() => setShowFlyer(true)}
                         className="block cursor-pointer relative overflow-hidden"
                         style={{ border: 'none', background: 'none', display: 'block', minHeight: '200px' }}>
                         <div className="absolute top-0 inset-x-0 h-10 pointer-events-none z-10" style={{ background: 'linear-gradient(to bottom, rgba(13,10,20,0.6), transparent)' }} />
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src="/flyer-barranquilla.png" alt="Flyer — La vida es cule viaje" className="w-full h-auto block" />
+                        <img src={EVENTO.flyer} alt={`Flyer — ${EVENTO.nombre}`} className="w-full h-auto block" />
                         <div className="absolute inset-0 flex items-end justify-end p-3 z-10" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 30%)' }}>
                           <span className="font-mono text-[9px] tracking-[0.25em] uppercase font-medium" style={{ color: 'rgba(255,255,255,0.5)' }}>toca para ampliar ↗</span>
                         </div>
@@ -4004,7 +3982,7 @@ export default function PreviewPage() {
                   <p className="font-body text-white/80 font-medium">Entrada General</p>
                   <p className="font-mono text-xs text-white/30 mt-1">Acceso completo al evento</p>
                 </div>
-                <p className="font-display text-3xl font-light" style={{ color: '#FF9A3C' }}>$40.000</p>
+                <p className="font-display text-3xl font-light" style={{ color: '#FF9A3C' }}>{EVENTO.precioTexto}</p>
               </div>
               {EVENT_MAX - eventSold <= 0 ? (
                 <div className="rounded-xl py-4 text-center"
@@ -4017,7 +3995,7 @@ export default function PreviewPage() {
                     onClick={() => salesOpen ? setShowEventModal(true) : setShowComingSoon(true)}
                     className="btn-primary w-full py-5 text-center"
                     style={{ background: 'linear-gradient(135deg, #C45200, #E07820, #FF9A3C)', boxShadow: '0 4px 24px rgba(196,82,0,0.45)' }}>
-                    <span>Comprar entrada · $40.000 COP</span>
+                    <span>Comprar entrada · {EVENTO.precioTexto} COP</span>
                   </button>
                 </div>
               )}
@@ -4150,7 +4128,7 @@ export default function PreviewPage() {
       </footer>
 
       {/* Sticky CTA mobile — OCULTO, reactivar con el evento */}
-      {false && <StickyMobileCTA urgencyShort={urgency.short} level={urgency.level} />}
+      {EVENTO.activo && <StickyMobileCTA urgencyShort={urgency.short} level={urgency.level} />}
 
     </main>
   )

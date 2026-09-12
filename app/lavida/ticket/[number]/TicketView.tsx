@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { useEffect, useState, useCallback, useRef, forwardRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateQRDataURL } from '@/lib/qr'
+import { EVENTO } from '@/lib/evento'
 
 interface Ticket {
   ticket_number: string
@@ -60,7 +61,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
       const shareData = {
         files: [file],
         title: '¡Voy a ver a Pipe Santos!',
-        text: '¡Ya tengo mi entrada para La vida es cule viaje! 22 de agosto · Barranquilla ⚡🧡',
+        text: `¡Ya tengo mi entrada para ${EVENTO.nombre}! ${EVENTO.fechaCorta} · ${EVENTO.ciudad} ⚡🧡`,
       }
 
       // navigator.canShare con files es la forma moderna y compatible
@@ -169,7 +170,7 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
                 ◆ Pipe Santos · Show en vivo
               </p>
               <p className="font-display text-2xl font-light text-white" style={{ lineHeight: 1.1, letterSpacing: '-0.3px' }}>
-                La vida es <em style={{ color: '#C45CFF' }}>cule viaje</em>
+                {EVENTO.nombre.split(' ')[0]} <em style={{ color: '#C45CFF' }}>{EVENTO.nombre.split(' ').slice(1).join(' ')}</em>
               </p>
             </div>
             <div className="absolute font-mono text-[9px] tracking-[2px] uppercase" style={{
@@ -185,9 +186,9 @@ export default function TicketView({ ticket }: { ticket: Ticket }) {
           {/* Metadata row: fecha · ciudad · valor */}
           <div className="grid grid-cols-3" style={{ borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
             {[
-              { label: 'Fecha', value: '22 ago', hl: false },
-              { label: 'Ciudad', value: 'Bquilla', hl: false },
-              { label: 'Valor', value: '$40.000', hl: true },
+              { label: 'Fecha', value: EVENTO.fechaCorta, hl: false },
+              { label: 'Ciudad', value: EVENTO.ciudad, hl: false },
+              { label: 'Valor', value: EVENTO.precioTexto, hl: true },
             ].map((item, i) => (
               <div key={i} className="py-3 px-4" style={{ borderRight: i < 2 ? '1px dashed rgba(255,255,255,0.08)' : 'none' }}>
                 <p className="font-mono text-[8px] tracking-[2px] uppercase mb-1" style={{ color: 'rgba(255,255,255,0.3)' }}>{item.label}</p>
@@ -834,7 +835,7 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
                 <p style={{
                   fontFamily: 'Georgia, serif', fontSize: '20px',
                   fontWeight: 300, color: 'white', lineHeight: 1.1, margin: 0,
-                }}>La vida es <em style={{ color: '#C45CFF' }}>cule viaje</em></p>
+                }}>{EVENTO.nombre.split(' ')[0]} <em style={{ color: '#C45CFF' }}>{EVENTO.nombre.split(' ').slice(1).join(' ')}</em></p>
               </div>
               <div style={{
                 position: 'absolute', top: '12px', right: '12px',
@@ -850,7 +851,7 @@ const ShareView = forwardRef<HTMLDivElement, { buyerName: string; shortId: strin
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px dashed rgba(255,255,255,0.08)' }}>
               {[
                 { label: 'Asistente', value: firstName, hl: false },
-                { label: 'Ciudad', value: 'Bquilla', hl: false },
+                { label: 'Ciudad', value: EVENTO.ciudad, hl: false },
                 { label: 'Boleto', value: shortId.slice(0, -3) + '***', hl: true },
               ].map((item, i) => (
                 <div key={i} style={{
