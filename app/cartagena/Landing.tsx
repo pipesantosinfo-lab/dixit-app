@@ -19,9 +19,9 @@ const FOTOS = [
 ]
 
 const QUE_ES = [
-  { n: '01', t: 'Sin guion, sin filtro', d: 'Lo que Pipe no cuenta en redes: las decisiones, las caídas y las vueltas que lo trajeron hasta aquí.' },
-  { n: '02', t: 'Más de dos horas en vivo', d: 'Risas, silencios incómodos y una energía colectiva que solo pasa cuando estamos en la misma sala.' },
-  { n: '03', t: 'Foto y firma de libros', d: 'Al final, espacio para la foto y para firmar tu libro (o comprarlo ahí mismo).' },
+  { n: '01', t: 'Te vas a reír. Mucho.', d: 'Las anécdotas que no caben en un reel de 30 segundos: las vergüenzas, los enredos y las metidas de pata que hoy dan risa.' },
+  { n: '02', t: 'Y en algún punto, te va a tocar.', d: 'Entre carcajada y carcajada se cuelan las historias que le cambiaron la vida a Pipe. Sin sermón, sin fórmulas: solo verdad.' },
+  { n: '03', t: 'Foto, firma y a seguir la tarde', d: 'Al final hay espacio para la foto, para firmar tu libro (o comprarlo ahí mismo) y para quedarte un rato con la gente.' },
 ]
 
 const FAQ = [
@@ -107,7 +107,7 @@ export default function Landing() {
       {/* ── De qué se trata ──────────────────────────────────────────── */}
       <section className="landing-section landing-section--tight">
         <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
-        <h2 className="landing-h2">Una tarde que <em>no olvidarás</em></h2>
+        <h2 className="landing-h2">Vienes a reírte. <em>Te vas pensando.</em></h2>
         <div className="landing-cards">
           {QUE_ES.map(x => (
             <article key={x.n} className="landing-card">
