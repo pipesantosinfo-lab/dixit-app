@@ -1,6 +1,4 @@
 import { Resend } from 'resend'
-import fs from 'fs'
-import path from 'path'
 
 /** Escapa caracteres HTML especiales para evitar inyección en el cuerpo del email */
 function escapeHtml(str: string): string {
@@ -36,13 +34,13 @@ export async function sendTicketEmail(params: TicketEmailParams) {
   // ticketPageUrl es construida internamente — solo sanear atributo href
   const safeUrl      = params.ticketPageUrl.replace(/"/g, '%22')
 
+  // El logo se carga desde el dominio. Antes iba adjunto e incrustado por
+  // cid:, y Gmail lo mostraba como imagen rota encima del correo y ademas
+  // dejaba un "logo.png" colgando como adjunto. Con URL absoluta Gmail lo
+  // sirve por su proxy y se ve; si algun cliente bloquea imagenes remotas,
+  // el alt "Pipe Santos" hace de respaldo.
   const attachments: { filename: string; content: Buffer; content_id: string }[] = []
-  try {
-    const logoBuffer = fs.readFileSync(path.join(process.cwd(), 'public', 'logo.png'))
-    attachments.push({ filename: 'logo.png', content: logoBuffer, content_id: 'logo-pipe' })
-  } catch {}
-
-  const logoSrc = attachments.length > 0 ? 'cid:logo-pipe' : ''
+  const logoSrc = `${(process.env.NEXT_PUBLIC_APP_URL || 'https://www.pipesantos.com').replace(/\/$/, '')}/logo.png`
 
   const html = `<!DOCTYPE html>
 <html lang="es">
