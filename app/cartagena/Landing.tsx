@@ -19,7 +19,7 @@ const FOTOS = [
 ]
 
 const QUE_ES = [
-  { n: '01', t: 'Historias reales', d: 'Las que no caben en un reel: las que cambiaron la vida de Pipe, contadas sin filtro y sin libreto.' },
+  { n: '01', t: 'Sin guion, sin filtro', d: 'Lo que Pipe no cuenta en redes: las decisiones, las caídas y las vueltas que lo trajeron hasta aquí.' },
   { n: '02', t: 'Más de dos horas en vivo', d: 'Risas, silencios incómodos y una energía colectiva que solo pasa cuando estamos en la misma sala.' },
   { n: '03', t: 'Foto y firma de libros', d: 'Al final, espacio para la foto y para firmar tu libro (o comprarlo ahí mismo).' },
 ]
@@ -70,7 +70,7 @@ export default function Landing() {
             <span className="landing-title__b">sin libreto</span>
           </h1>
           <p className="landing-lead">
-            Las historias que cambiaron la vida de Pipe, contadas en vivo, sin filtro y sin libreto. Más de dos horas que no vas a olvidar.
+            Historias reales que no caben en un reel: contadas en vivo, sin filtro y sin libreto, más de dos horas que no vas a olvidar.
           </p>
           <p className="landing-meta">
             <span>{EVENTO.fechaCorta.toUpperCase()}</span><i>·</i><span>{EVENTO.ciudad.toUpperCase()}</span><i>·</i><span>{EVENTO.horaTexto}</span>
@@ -84,23 +84,8 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* ── De qué se trata ──────────────────────────────────────────── */}
-      <section className="landing-section">
-        <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
-        <h2 className="landing-h2">Una tarde que <em>no olvidarás</em></h2>
-        <div className="landing-cards">
-          {QUE_ES.map(x => (
-            <article key={x.n} className="landing-card">
-              <span className="landing-card__n">{x.n}</span>
-              <h3>{x.t}</h3>
-              <p>{x.d}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
       {/* ── Poster + fotos ───────────────────────────────────────────── */}
-      <section className="landing-section landing-section--tight">
+      <section className="landing-section">
         <div className="landing-poster-row">
           <div className="landing-poster">
             <img src={EVENTO.flyer} alt={`Poster oficial — ${EVENTO.nombre}`} loading="lazy" />
@@ -115,6 +100,21 @@ export default function Landing() {
         <div className="landing-strip" aria-label="Fotos de shows anteriores">
           {FOTOS.map(f => (
             <figure key={f.src}><img src={f.src} alt={f.alt} loading="lazy" /></figure>
+          ))}
+        </div>
+      </section>
+
+      {/* ── De qué se trata ──────────────────────────────────────────── */}
+      <section className="landing-section landing-section--tight">
+        <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
+        <h2 className="landing-h2">Una tarde que <em>no olvidarás</em></h2>
+        <div className="landing-cards">
+          {QUE_ES.map(x => (
+            <article key={x.n} className="landing-card">
+              <span className="landing-card__n">{x.n}</span>
+              <h3>{x.t}</h3>
+              <p>{x.d}</p>
+            </article>
           ))}
         </div>
       </section>
