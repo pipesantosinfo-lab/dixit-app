@@ -55,11 +55,19 @@ export default function Landing() {
           <img src="/landing-hero-v1.webp" alt="" className="landing-hero__img" fetchPriority="high" />
         </picture>
         <div className="landing-hero__shade" />
+
+        {/* Fecha como sello, arriba a la derecha (como en el poster) */}
+        <div className="landing-hero__fecha" aria-hidden>
+          <span>{EVENTO.mes}</span>
+          <strong>{EVENTO.dia}</strong>
+          <small>{EVENTO.horaTexto}</small>
+        </div>
+
         <div className="landing-hero__content">
           <p className="landing-eyebrow">Pipe Santos · Show en vivo</p>
           <h1 className="landing-title">
-            <span>Historias</span>
-            <em>sin libreto</em>
+            <span className="landing-title__a">Historias</span>
+            <span className="landing-title__b">sin libreto</span>
           </h1>
           <p className="landing-lead">
             Las historias que cambiaron la vida de Pipe, contadas en vivo, sin filtro y sin libreto. Más de dos horas que no vas a olvidar.
@@ -68,7 +76,7 @@ export default function Landing() {
             <span>{EVENTO.fechaCorta.toUpperCase()}</span><i>·</i><span>{EVENTO.ciudad.toUpperCase()}</span><i>·</i><span>{EVENTO.horaTexto}</span>
           </p>
           <div className="landing-hero__actions">
-            <button onClick={comprar} className="landing-cta">
+            <button onClick={comprar} className="landing-cta landing-cta--hero">
               {agotado ? 'Lista de espera' : `Comprar entrada · ${EVENTO.precioTexto}`}
             </button>
             <a href="#detalles" className="landing-link">Ver detalles ↓</a>

@@ -31,19 +31,34 @@
 }
 .landing-eyebrow--orange { color: var(--naranja); }
 
+/* Titulo con el mismo contraste del poster: "HISTORIAS" en sans pesada,
+ * "sin libreto" en itálica. Sombra y contorno para que no se pierda con la foto. */
 .landing-title {
-  font-family: var(--font-display), Georgia, serif;
-  font-weight: 400;
-  line-height: 0.95;
-  letter-spacing: -0.02em;
-  margin: 0 0 20px;
-  font-size: clamp(56px, 15vw, 128px);
+  margin: 0 0 18px;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
-.landing-title em {
+.landing-title__a {
+  font-family: var(--font-hero), 'Montserrat', system-ui, sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-size: clamp(46px, 12.5vw, 112px);
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+  color: #fff;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.25), 0 12px 40px rgba(0,0,0,0.75);
+}
+.landing-title__b {
+  font-family: var(--font-display), Georgia, serif;
   font-style: italic;
+  font-weight: 700;
+  font-size: clamp(50px, 13.5vw, 120px);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
   color: var(--lavanda);
+  margin-top: 2px;
+  text-shadow: 0 2px 0 rgba(0,0,0,0.25), 0 12px 40px rgba(0,0,0,0.8);
 }
 .landing-h2 {
   font-family: var(--font-display), Georgia, serif;
@@ -61,9 +76,10 @@
   font-family: var(--font-body), system-ui, sans-serif;
   font-size: clamp(16px, 2.2vw, 20px);
   line-height: 1.5;
-  color: var(--tinta-2);
+  color: rgba(244,238,255,0.82);
   max-width: 34ch;
   margin: 0 0 22px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
 }
 .landing-p {
   font-family: var(--font-body), system-ui, sans-serif;
@@ -97,7 +113,7 @@
   border: 0;
   cursor: pointer;
   font-family: var(--font-body), system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 500;
   font-size: 15px;
   letter-spacing: 0.02em;
   color: #fff;
@@ -147,8 +163,52 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgba(7,5,8,0.55) 0%, rgba(7,5,8,0.05) 32%, rgba(7,5,8,0.55) 62%, rgba(7,5,8,0.97) 100%),
-    radial-gradient(ellipse at 20% 100%, rgba(139,60,247,0.35), transparent 55%);
+    linear-gradient(180deg, rgba(7,5,8,0.45) 0%, rgba(7,5,8,0.05) 28%, rgba(7,5,8,0.30) 46%, rgba(7,5,8,0.86) 66%, rgba(7,5,8,0.99) 100%),
+    radial-gradient(ellipse at 15% 95%, rgba(139,60,247,0.40), transparent 55%);
+}
+/* Sello de fecha (mes / dia / hora) */
+.landing-hero__fecha {
+  position: absolute;
+  top: max(18px, env(safe-area-inset-top));
+  right: 18px;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 14px 12px;
+  border-radius: 14px;
+  background: rgba(7,5,8,0.72);
+  border: 1px solid rgba(255,154,60,0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.landing-hero__fecha span {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--naranja);
+}
+.landing-hero__fecha strong {
+  font-family: var(--font-hero), 'Montserrat', system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 34px;
+  line-height: 1;
+  color: #fff;
+  margin: 2px 0;
+}
+.landing-hero__fecha small {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--lavanda);
+}
+.landing-cta--hero { width: 100%; padding: 19px 30px; font-size: 16px; }
+@media (min-width: 768px) {
+  .landing-cta--hero { width: auto; }
+  .landing-hero__fecha { top: 28px; right: 40px; padding: 14px 18px 16px; }
+  .landing-hero__fecha strong { font-size: 44px; }
 }
 .landing-hero__content {
   position: relative;
