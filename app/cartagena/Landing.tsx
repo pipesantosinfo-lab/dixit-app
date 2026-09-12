@@ -10,7 +10,6 @@ import CompraModal from '@/components/CompraModal'
  */
 
 const FOTOS = [
-  { src: '/landing/asi-se-vive-01-v6.webp', alt: 'Público en la entrada, con sus boletas en mano' },
   { src: '/landing/asi-se-vive-02-v6.webp', alt: 'Selfie desde las sillas antes de empezar' },
   { src: '/landing/asi-se-vive-03-v6.webp', alt: 'Risas en primera fila' },
   { src: '/landing/asi-se-vive-04-v6.webp', alt: 'Una fila entera riéndose a carcajadas' },
