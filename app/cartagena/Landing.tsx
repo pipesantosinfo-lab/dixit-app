@@ -23,6 +23,7 @@ const FOTOS = [
   { src: '/landing/asi-se-vive-13-v6.webp', alt: 'Todo el auditorio con las luces del celular encendidas' },
   { src: '/landing/asi-se-vive-14-v6.webp', alt: 'Selfie con Pipe Santos al final del show' },
   { src: '/landing/asi-se-vive-15-v6.webp', alt: 'Público riéndose durante el show' },
+  { src: '/landing/asi-se-vive-16-v6.webp', alt: 'Una asistente haciendo un corazón con las manos' },
 ]
 
 const QUE_ES = [
