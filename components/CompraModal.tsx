@@ -50,7 +50,7 @@ export default function CompraModal({ onClose, vendidas }: { onClose: () => void
         <div className="flex items-start justify-between mb-5">
           <div>
             <p className="font-mono text-[10px] tracking-[3px] uppercase mb-1" style={{ color: '#ff9a3c' }}>◆ Entrada general</p>
-            <h2 className="font-display text-2xl text-white leading-tight">{EVENTO.nombre}</h2>
+            <h2 className="text-xl text-white leading-tight uppercase" style={{ fontFamily: 'var(--font-hero), Montserrat, sans-serif', fontWeight: 900, letterSpacing: '-0.01em' }}>{EVENTO.nombre}</h2>
             <p className="font-body text-sm text-white/50 mt-1">{EVENTO.fechaCorta} · {EVENTO.horaTexto} · {EVENTO.ciudad}</p>
           </div>
           <button onClick={onClose} aria-label="Cerrar" className="text-white/40 hover:text-white transition-colors text-3xl leading-none -mt-1">×</button>
@@ -59,7 +59,7 @@ export default function CompraModal({ onClose, vendidas }: { onClose: () => void
         <div className="flex items-center justify-between mb-4 rounded-xl px-4 py-3" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}>
           <div>
             <p className="font-body text-white/70 text-sm">Cantidad</p>
-            <p className="font-display text-lg" style={{ color: '#C9A7FF' }}>${total.toLocaleString('es-CO')}</p>
+            <p className="text-xl" style={{ fontFamily: 'var(--font-hero), Montserrat, sans-serif', fontWeight: 900, color: '#ff9a3c', letterSpacing: '-0.01em' }}>${total.toLocaleString('es-CO')}</p>
           </div>
           <div className="flex items-center gap-3">
             <button onClick={() => setCantidad(q => Math.max(1, q - 1))} aria-label="Menos" className="w-9 h-9 rounded-lg text-lg"

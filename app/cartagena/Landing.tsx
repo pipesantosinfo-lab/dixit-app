@@ -140,7 +140,7 @@ export default function Landing() {
         <div className="landing-grid">
           <div><small>Dónde</small><strong>{EVENTO.lugar}</strong><span>{EVENTO.direccion}, {EVENTO.ciudad}</span></div>
           <div><small>Cuándo</small><strong>{EVENTO.fechaTexto.split(' · ')[0]}</strong><span>{EVENTO.horaTexto} · Llega con tiempo: el show empieza puntual</span></div>
-          <div><small>Entrada general</small><strong>{EVENTO.precioTexto}</strong><span>{pocas ? 'Últimas entradas' : 'Cupos limitados'} · Mayores de 18</span></div>
+          <div><small>Entrada general</small><strong className="landing-precio">{EVENTO.precioTexto}</strong><span>{pocas ? 'Últimas entradas' : 'Cupos limitados'} · Mayores de 18</span></div>
           <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Al instante con tarjeta; con PSE apenas confirme tu banco</span></div>
         </div>
         <button onClick={comprar} className="landing-cta landing-cta--wide">
@@ -182,7 +182,7 @@ export default function Landing() {
       {/* ── Barra fija ────────────────────────────────────────────────── */}
       <div className="landing-bar">
         <div className="landing-bar__text">
-          <strong>{EVENTO.nombre} · {EVENTO.precioTexto}</strong>
+          <strong>{EVENTO.nombre} · <span style={{ color: '#ff9a3c' }}>{EVENTO.precioTexto}</span></strong>
           <span>{EVENTO.fechaCorta} · {EVENTO.ciudad} · {pocas ? 'Últimas entradas' : 'Cupos limitados'}</span>
         </div>
         <button onClick={comprar} className="landing-cta landing-cta--bar"><span>{agotado ? 'Lista de espera' : 'Comprar'}</span>{!agotado && <b>{EVENTO.precioTexto}</b>}</button>
