@@ -113,6 +113,12 @@ firma sobre Base64 como Bold, o sobre el cuerpo crudo). Recorre orden →
 activación → correo → Excel → validador sin tocar Bold. Para activar a mano
 una compra real que quedó pendiente, es lo mismo con su `reference`.
 
+**Medición de la landing `/cartagena`:** cada visita (una por sesión, vía
+`/api/landing/visita`) y cada toque en comprar se guardan en
+`analytics_events` con `section = landing_cartagena`. Cada 10 visitas,
+`lib/reporte-landing.ts` manda el embudo al dueño. Reporte a demanda:
+`GET /api/admin/reporte-landing` (con `?enviar=1` lo manda por correo).
+
 **`/api/validate-qr` espera `ticketNumber`** (camelCase). El validador de la
 puerta usa `VALIDATOR_SECRET`; el segundo escaneo de una entrada devuelve
 `status: 'already_used'`.

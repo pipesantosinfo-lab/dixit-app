@@ -42,7 +42,7 @@ const TABLAS = [
 // una ruta de admin nueva, va aquí.
 const SOLO_ADMIN = [
   '/api/admin/lavida', '/api/admin/export', '/api/admin/tickets',
-  '/api/admin/gallery', '/api/admin/raffle',
+  '/api/admin/gallery', '/api/admin/raffle', '/api/admin/reporte-landing',
 ]
 // Rutas que el validador SÍ necesita.
 const DEL_VALIDADOR = ['/api/admin/sync-tickets']

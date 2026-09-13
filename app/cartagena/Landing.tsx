@@ -41,6 +41,19 @@ const FAQ = [
   { q: '¿Dónde es exactamente?', a: `${EVENTO.lugar}. ${EVENTO.direccion}, ${EVENTO.ciudad}. Pregunta por Unitecnar; el auditorio queda dentro de la universidad.` },
 ]
 
+/* Medicion del embudo: visita (una por sesion) y toques en "comprar".
+   Nunca bloquea nada: si falla, la pagina sigue igual. */
+function medir(tipo: 'visita' | 'clic') {
+  try {
+    let sid = sessionStorage.getItem('pipe_sid')
+    if (!sid) { sid = crypto.randomUUID(); sessionStorage.setItem('pipe_sid', sid) }
+    fetch('/api/landing/visita', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+      body: JSON.stringify({ session_id: sid, tipo, referrer: document.referrer || null }),
+    }).catch(() => {})
+  } catch {}
+}
+
 export default function Landing() {
   const [abierto, setAbierto] = useState(false)
   const [ventas, setVentas] = useState<boolean | null>(null)
@@ -49,6 +62,8 @@ export default function Landing() {
   useEffect(() => {
     fetch('/api/sales-status').then(r => r.json()).then(d => setVentas(!!d.open)).catch(() => setVentas(false))
     fetch('/api/ticket-count').then(r => r.json()).then(d => setVendidas(d.count ?? 0)).catch(() => {})
+    // Visita: una por sesion del navegador (recargar no cuenta dos veces)
+    medir('visita')
   }, [])
 
   const agotado = vendidas >= EVENTO.aforo
@@ -66,6 +81,7 @@ export default function Landing() {
       setCorazon(c => ({ n: (c?.n ?? 0) + 1, x, y }))
       window.setTimeout(() => setCorazon(null), 1300)
     }
+    medir('clic')
     setAbierto(true)
   }
 
