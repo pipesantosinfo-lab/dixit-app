@@ -61,7 +61,7 @@ export default function Landing() {
       <section className="landing-hero">
         <picture>
           <source media="(min-width: 768px)" srcSet="/landing-hero-wide-v1.webp" />
-          <img src="/landing-hero-v1.webp" alt="" className="landing-hero__img" fetchPriority="high" />
+          <img src="/landing-hero-v2.webp" alt="" className="landing-hero__img" fetchPriority="high" />
         </picture>
         <div className="landing-hero__shade" />
 
