@@ -306,10 +306,10 @@
 }
 .landing-cta > b {
   padding: 13px 24px 13px 16px;
-  font-family: var(--font-mono), ui-monospace, monospace;
-  font-weight: 500;
-  font-size: 12.5px;
-  letter-spacing: 0.06em;
+  font-family: var(--font-hero), 'Montserrat', system-ui, sans-serif;
+  font-weight: 900;
+  font-size: 13px;
+  letter-spacing: 0.02em;
   color: var(--naranja);
   border-left: 1.5px dashed rgba(255,154,60,0.6);
 }
