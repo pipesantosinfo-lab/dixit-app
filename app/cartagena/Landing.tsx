@@ -120,7 +120,7 @@ export default function Landing() {
       <section className="landing-band landing-band--trata landing-band--corte-der">
       <div className="landing-section">
         <p className="landing-eyebrow landing-eyebrow--orange"><span className="landing-num">02</span>¿De qué se trata?</p>
-        <h2 className="landing-h2">Vienes a reírte. <em>Te vas pensando.</em></h2>
+        <h2 className="landing-h2">Vienes a reírte. <em>Y un par de cosas más.</em></h2>
         <div className="landing-cards">
           {QUE_ES.map(x => (
             <article key={x.n} className="landing-card">
@@ -141,7 +141,7 @@ export default function Landing() {
           <div><small>Dónde</small><strong>{EVENTO.lugar}</strong><span>{EVENTO.direccion}, {EVENTO.ciudad}</span></div>
           <div><small>Cuándo</small><strong>{EVENTO.fechaTexto.split(' · ')[0]}</strong><span>{EVENTO.horaTexto} · Llega con tiempo: el show empieza puntual</span></div>
           <div><small>Entrada general</small><strong className="landing-precio">{EVENTO.precioTexto}</strong><span>{pocas ? 'Últimas entradas' : 'Cupos limitados'} · Mayores de 18</span></div>
-          <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Al instante con tarjeta; con PSE apenas confirme tu banco</span></div>
+          <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Tu entrada llega al instante pagando con tarjeta; con PSE, un par de minutos mientras confirma tu banco 😉</span></div>
         </div>
         <button onClick={comprar} className="landing-cta landing-cta--wide">
           <span>{agotado ? 'Lista de espera' : 'Comprar entrada'}</span>{!agotado && <b>{EVENTO.precioTexto}</b>}
