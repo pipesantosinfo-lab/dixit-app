@@ -94,14 +94,15 @@ export default function Landing() {
       </section>
 
       {/* ── Poster + fotos ───────────────────────────────────────────── */}
-      <section className="landing-band landing-band--violeta">
+      <section className="landing-band landing-band--vive">
+      <span className="landing-linea" aria-hidden />
       <div className="landing-section">
         <div className="landing-poster-row">
           <div className="landing-poster">
             <img src={EVENTO.flyer} alt={`Poster oficial — ${EVENTO.nombre}`} loading="lazy" />
           </div>
           <div className="landing-poster-text">
-            <p className="landing-eyebrow landing-eyebrow--orange">◆ Así se vive</p>
+            <p className="landing-eyebrow landing-eyebrow--orange"><span className="landing-num">01</span>Así se vive</p>
             <h2 className="landing-h2">Lo que pasa cuando <em>estamos en la misma sala</em></h2>
             <p className="landing-p">Cada show ha sido distinto, y en todos pasó lo mismo: nadie quería que terminara.</p>
             <button onClick={comprar} className="landing-cta landing-cta--ghost">Quiero mi entrada →</button>
@@ -116,9 +117,9 @@ export default function Landing() {
       </section>
 
       {/* ── De qué se trata ──────────────────────────────────────────── */}
-      <section className="landing-band landing-band--magenta">
+      <section className="landing-band landing-band--trata landing-band--corte-der">
       <div className="landing-section">
-        <p className="landing-eyebrow landing-eyebrow--orange">◆ ¿De qué se trata?</p>
+        <p className="landing-eyebrow landing-eyebrow--orange"><span className="landing-num">02</span>¿De qué se trata?</p>
         <h2 className="landing-h2">Vienes a reírte. <em>Te vas pensando.</em></h2>
         <div className="landing-cards">
           {QUE_ES.map(x => (
@@ -133,9 +134,9 @@ export default function Landing() {
       </section>
 
       {/* ── Detalles ─────────────────────────────────────────────────── */}
-      <section id="detalles" className="landing-band landing-band--dorado">
+      <section id="detalles" className="landing-band landing-band--datos landing-band--corte-izq">
       <div className="landing-section">
-        <p className="landing-eyebrow landing-eyebrow--orange">◆ Los datos</p>
+        <p className="landing-eyebrow landing-eyebrow--orange"><span className="landing-num">03</span>Los datos</p>
         <div className="landing-grid">
           <div><small>Dónde</small><strong>{EVENTO.lugar}</strong><span>{EVENTO.direccion}, {EVENTO.ciudad}</span></div>
           <div><small>Cuándo</small><strong>{EVENTO.fechaTexto.split(' · ')[0]}</strong><span>{EVENTO.horaTexto} · Llega con tiempo: el show empieza puntual</span></div>
@@ -149,9 +150,10 @@ export default function Landing() {
       </section>
 
       {/* ── Preguntas ─────────────────────────────────────────────────── */}
-      <section className="landing-band landing-band--morado">
+      <section className="landing-band landing-band--faq">
+      <span className="landing-linea" aria-hidden />
       <div className="landing-section">
-        <p className="landing-eyebrow landing-eyebrow--orange">◆ Preguntas frecuentes</p>
+        <p className="landing-eyebrow landing-eyebrow--orange"><span className="landing-num">04</span>Preguntas frecuentes</p>
         <div className="landing-faq">
           {FAQ.map(f => (
             <details key={f.q}>
@@ -164,7 +166,7 @@ export default function Landing() {
       </section>
 
       {/* ── Cierre ───────────────────────────────────────────────────── */}
-      <section className="landing-band landing-band--purpura landing-final">
+      <section className="landing-band landing-band--cierre landing-band--corte-der landing-final">
       <div className="landing-section">
         <h2 className="landing-h2 landing-h2--big">Nos vemos en <em>Cartagena</em>.</h2>
         <p className="landing-p">{EVENTO.fechaTexto} · {EVENTO.lugar}</p>
