@@ -385,7 +385,13 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: 50% 22%;
+  object-position: 50% 0%;
+}
+/* En el celular la foto (vertical) cabe entera, así que object-position no
+ * mueve nada: se hace el lienzo un 22% más alto y se sube, para que Pipe y
+ * el micrófono queden por encima del título. */
+@media (max-width: 767px) {
+  .landing-hero__img { height: 114%; top: -12%; }
 }
 .landing-hero__shade {
   position: absolute;
