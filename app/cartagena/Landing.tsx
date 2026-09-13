@@ -73,7 +73,6 @@ export default function Landing() {
         </div>
 
         <div className="landing-hero__content">
-          <p className="landing-eyebrow">Pipe Santos · Show en vivo</p>
           <h1 className="landing-title">
             <span className="landing-title__a">Historias</span>
             <span className="landing-title__b">sin libreto</span>
