@@ -53,7 +53,21 @@ export default function Landing() {
 
   const agotado = vendidas >= EVENTO.aforo
   const pocas = !agotado && vendidas >= EVENTO.aforo * 0.8
-  const comprar = () => setAbierto(true)
+
+  /* El corazon del podcast, aqui al tocar cualquier boton de compra: nace
+     donde se toco y sube desvaneciendose. El contador como key hace que la
+     animacion arranque de cero aunque se toque seguido. */
+  const [corazon, setCorazon] = useState<{ n: number; x: number; y: number } | null>(null)
+  const comprar = (e?: React.MouseEvent<HTMLElement>) => {
+    if (e) {
+      const r = e.currentTarget.getBoundingClientRect()
+      const x = e.clientX || r.left + r.width / 2
+      const y = e.clientY || r.top + r.height / 2
+      setCorazon(c => ({ n: (c?.n ?? 0) + 1, x, y }))
+      window.setTimeout(() => setCorazon(null), 1300)
+    }
+    setAbierto(true)
+  }
 
   return (
     <main className="landing">
@@ -178,6 +192,16 @@ export default function Landing() {
         </footer>
       </div>
       </section>
+
+      {corazon && (
+        <span key={corazon.n} className="landing-corazon" style={{ left: corazon.x, top: corazon.y }} aria-hidden>
+          <svg viewBox="0 0 24 24" className="landing-corazon__x">
+            <path d="M12 20.7C6.5 16.9 3 13.6 3 9.9 3 7.2 5.1 5.2 7.7 5.2c1.7 0 3.3.9 4.3 2.3 1-1.4 2.6-2.3 4.3-2.3 2.6 0 4.7 2 4.7 4.7 0 3.7-3.5 7-9 10.8z" />
+          </svg>
+          <i className="landing-corazon__mota landing-corazon__mota--a" />
+          <i className="landing-corazon__mota landing-corazon__mota--b" />
+        </span>
+      )}
 
       {/* ── Barra fija ────────────────────────────────────────────────── */}
       <div className="landing-bar">

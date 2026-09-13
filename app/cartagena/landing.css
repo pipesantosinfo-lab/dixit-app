@@ -715,3 +715,40 @@
   .landing-cta { transition: none; }
   .landing-poster::before { animation: none; }
 }
+
+/* ── El corazon (el mismo del podcast) al tocar "comprar" ────────────
+ * Nace donde se toco, crece un punto y sube desvaneciendose con dos
+ * motas. Va por encima del modal (z 80) y no captura toques. */
+.landing-corazon {
+  position: fixed; width: 0; height: 0;
+  pointer-events: none; z-index: 80;
+}
+.landing-corazon__x {
+  position: absolute; left: 0; top: 0; width: 22px; height: 22px;
+  margin: -11px 0 0 -11px; fill: #F2708A;
+  filter: drop-shadow(0 0 8px rgba(242,112,138,.6));
+  animation: landing-corazon-sube 1.15s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+.landing-corazon__mota {
+  position: absolute; left: 0; top: 0; width: 6px; height: 6px;
+  border-radius: 50%; background: #F2708A; opacity: 0;
+}
+.landing-corazon__mota--a { animation: landing-mota-a 1.15s cubic-bezier(.22, 1, .36, 1) .07s forwards; }
+.landing-corazon__mota--b { animation: landing-mota-b 1.15s cubic-bezier(.22, 1, .36, 1) .14s forwards; }
+@keyframes landing-corazon-sube {
+  0%   { opacity: 0; transform: translateY(2px) scale(.35); }
+  20%  { opacity: 1; transform: translateY(-8px) scale(1.25); }
+  38%  { transform: translateY(-16px) scale(1); }
+  100% { opacity: 0; transform: translateY(-44px) scale(.85); }
+}
+@keyframes landing-mota-a {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.4); }
+  30%  { opacity: .85; }
+  100% { opacity: 0; transform: translate(-16px, -32px) scale(.5); }
+}
+@keyframes landing-mota-b {
+  0%   { opacity: 0; transform: translate(0, 0) scale(.4); }
+  30%  { opacity: .7; }
+  100% { opacity: 0; transform: translate(14px, -28px) scale(.45); }
+}
+@media (prefers-reduced-motion: reduce) { .landing-corazon { display: none; } }
