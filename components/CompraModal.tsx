@@ -104,8 +104,8 @@ export default function CompraModal({ onClose, vendidas }: { onClose: () => void
           <span>{cargando ? 'Abriendo pago seguro…' : 'Pagar'}</span>{!cargando && <b>${total.toLocaleString('es-CO')}</b>}
         </button>
         <p className="font-body text-[12px] text-white/35 text-center mt-4 leading-relaxed">
-          Pago seguro con Bold · Tarjeta o PSE.<br />
-          Con tarjeta tu entrada llega al instante; con PSE, apenas tu banco confirme.
+          Pago seguro con Bold · Tarjeta débito o crédito, Nequi o PSE.<br />
+          Tu entrada llega al correo apenas se confirme el pago.
         </p>
         <p className="text-center mt-2"><a href="/mi-entrada" className="font-mono text-[11px] text-white/30 hover:text-white/60 underline underline-offset-4">¿Ya compraste y no te llegó el correo?</a></p>
       </div>

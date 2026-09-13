@@ -35,7 +35,7 @@ const QUE_ES = [
 
 const FAQ = [
   { q: '¿Cómo recibo mi entrada?', a: 'Al pagar te llega un correo con tu entrada y un código QR. Ese QR es lo que muestras en la puerta; puedes guardarlo como captura de pantalla.' },
-  { q: 'Pagué por PSE y no me ha llegado nada', a: 'Con PSE el banco puede tardar unos minutos en confirmar. Apenas confirme, tu entrada sale sola al correo. Si pasan 15 minutos, entra a pipesantos.com/mi-entrada y te la reenviamos.' },
+  { q: '¿Cuánto tarda en llegar mi entrada?', a: 'Con tarjeta (débito o crédito) o Nequi, llega en segundos. Con PSE depende del banco: normalmente un par de minutos. Apenas se confirme el pago, sale sola al correo. Si pasan 15 minutos, entra a pipesantos.com/mi-entrada y te la reenviamos.' },
   { q: '¿Puedo comprar varias entradas?', a: 'Sí, hasta 10 en una sola compra. Llega un correo por cada entrada, cada una con su propio QR.' },
   { q: '¿Hay restricción de edad?', a: 'Sí: es para mayores de 18 años. Te pedirán el documento de identidad al ingresar.' },
   { q: '¿Dónde es exactamente?', a: `${EVENTO.lugar}. ${EVENTO.direccion}, ${EVENTO.ciudad}. Pregunta por Unitecnar; el auditorio queda dentro de la universidad.` },
@@ -141,7 +141,7 @@ export default function Landing() {
           <div><small>Dónde</small><strong>{EVENTO.lugar}</strong><span>{EVENTO.direccion}, {EVENTO.ciudad}</span></div>
           <div><small>Cuándo</small><strong>{EVENTO.fechaTexto.split(' · ')[0]}</strong><span>{EVENTO.horaTexto} · Llega con tiempo: el show empieza puntual</span></div>
           <div><small>Entrada general</small><strong className="landing-precio">{EVENTO.precioTexto}</strong><span>{pocas ? 'Últimas entradas' : 'Cupos limitados'} · Mayores de 18</span></div>
-          <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Tu entrada llega al instante pagando con tarjeta; con PSE, un par de minutos mientras confirma tu banco 😉</span></div>
+          <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Tu entrada llega al correo apenas se confirme el pago: con tarjeta (débito o crédito) o Nequi es inmediato; con PSE, tu banco puede tardar un par de minutos 😉</span></div>
         </div>
         <button onClick={comprar} className="landing-cta landing-cta--wide">
           <span>{agotado ? 'Lista de espera' : 'Comprar entrada'}</span>{!agotado && <b>{EVENTO.precioTexto}</b>}

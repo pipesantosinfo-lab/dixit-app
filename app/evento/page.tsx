@@ -226,7 +226,7 @@ function CheckoutModal({ onClose, sold }: { onClose: () => void; sold: number })
         </button>
 
         <p className="font-mono text-xs text-white/20 text-center mt-4">
-          Pago seguro con Bold · Con tarjeta tu QR llega al instante · Con PSE, apenas tu banco confirme (pocos minutos)
+          Pago seguro con Bold · Tarjeta, Nequi o PSE · Tu QR llega al correo apenas se confirme el pago
         </p>
       </div>
     </div>
