@@ -619,6 +619,15 @@
 
 /* ── Cierre ──────────────────────────────────────────────────────────── */
 .landing-final { text-align: center; }
+/* Firma con el REC, con un resplandor morado detrás */
+.landing-firma {
+  display: block;
+  width: 190px;
+  height: auto;
+  margin: 0 auto 26px;
+  filter: drop-shadow(0 0 22px rgba(139,60,247,0.55)) drop-shadow(0 6px 18px rgba(0,0,0,0.6));
+}
+@media (min-width: 768px) { .landing-firma { width: 230px; margin-bottom: 32px; } }
 .landing-final .landing-p { margin-left: auto; margin-right: auto; }
 .landing-footer {
   display: flex;

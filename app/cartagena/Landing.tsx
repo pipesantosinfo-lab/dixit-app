@@ -168,6 +168,7 @@ export default function Landing() {
       {/* ── Cierre ───────────────────────────────────────────────────── */}
       <section className="landing-band landing-band--cierre landing-band--corte-der landing-final">
       <div className="landing-section">
+        <img src="/logo.png" alt="Pipe Santos" className="landing-firma" loading="lazy" />
         <h2 className="landing-h2 landing-h2--big">Nos vemos en <em>Cartagena</em>.</h2>
         <p className="landing-p">{EVENTO.fechaTexto} · {EVENTO.lugar}</p>
         <button onClick={comprar} className="landing-cta"><span>Comprar entrada</span><b>{EVENTO.precioTexto}</b></button>
