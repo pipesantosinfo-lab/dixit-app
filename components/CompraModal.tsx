@@ -100,8 +100,8 @@ export default function CompraModal({ onClose, vendidas }: { onClose: () => void
 
         {error && <p className="text-sm mt-4 font-body" style={{ color: '#ff8c8c' }}>{error}</p>}
 
-        <button onClick={comprar} disabled={cargando} className="landing-cta w-full mt-5 disabled:opacity-60">
-          {cargando ? 'Abriendo pago seguro…' : `Pagar $${total.toLocaleString('es-CO')} →`}
+        <button onClick={comprar} disabled={cargando} className="landing-cta landing-cta--wide disabled:opacity-60">
+          <span>{cargando ? 'Abriendo pago seguro…' : 'Pagar'}</span>{!cargando && <b>${total.toLocaleString('es-CO')}</b>}
         </button>
         <p className="font-body text-[12px] text-white/35 text-center mt-4 leading-relaxed">
           Pago seguro con Bold · Tarjeta o PSE.<br />

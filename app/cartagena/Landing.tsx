@@ -86,7 +86,7 @@ export default function Landing() {
           </p>
           <div className="landing-hero__actions">
             <button onClick={comprar} className="landing-cta landing-cta--hero">
-              {agotado ? 'Lista de espera' : `Comprar entrada · ${EVENTO.precioTexto}`}
+              <span>{agotado ? 'Lista de espera' : 'Comprar entrada'}</span>{!agotado && <b>{EVENTO.precioTexto}</b>}
             </button>
             <a href="#detalles" className="landing-link">Ver detalles ↓</a>
           </div>
@@ -105,7 +105,7 @@ export default function Landing() {
             <p className="landing-eyebrow landing-eyebrow--orange"><span className="landing-num">01</span>Así se vive</p>
             <h2 className="landing-h2">Lo que pasa cuando <em>estamos en la misma sala</em></h2>
             <p className="landing-p">Cada show ha sido distinto, y en todos pasó lo mismo: nadie quería que terminara.</p>
-            <button onClick={comprar} className="landing-cta landing-cta--ghost">Quiero mi entrada →</button>
+            <button onClick={comprar} className="landing-cta landing-cta--ghost"><span>Quiero mi entrada →</span></button>
           </div>
         </div>
         <div className="landing-strip" aria-label="Fotos de shows anteriores">
@@ -144,7 +144,7 @@ export default function Landing() {
           <div><small>Cómo llega</small><strong>Correo con QR</strong><span>Al instante con tarjeta; con PSE apenas confirme tu banco</span></div>
         </div>
         <button onClick={comprar} className="landing-cta landing-cta--wide">
-          {agotado ? 'Anotarme en lista de espera' : `Comprar entrada · ${EVENTO.precioTexto}`}
+          <span>{agotado ? 'Lista de espera' : 'Comprar entrada'}</span>{!agotado && <b>{EVENTO.precioTexto}</b>}
         </button>
       </div>
       </section>
@@ -170,7 +170,7 @@ export default function Landing() {
       <div className="landing-section">
         <h2 className="landing-h2 landing-h2--big">Nos vemos en <em>Cartagena</em>.</h2>
         <p className="landing-p">{EVENTO.fechaTexto} · {EVENTO.lugar}</p>
-        <button onClick={comprar} className="landing-cta">Comprar entrada · {EVENTO.precioTexto}</button>
+        <button onClick={comprar} className="landing-cta"><span>Comprar entrada</span><b>{EVENTO.precioTexto}</b></button>
         <footer className="landing-footer">
           <a href="https://www.pipesantos.com">pipesantos.com</a>
           <a href="/mi-entrada">Reenviar mi entrada</a>
@@ -185,7 +185,7 @@ export default function Landing() {
           <strong>{EVENTO.nombre} · {EVENTO.precioTexto}</strong>
           <span>{EVENTO.fechaCorta} · {EVENTO.ciudad} · {pocas ? 'Últimas entradas' : 'Cupos limitados'}</span>
         </div>
-        <button onClick={comprar} className="landing-cta landing-cta--bar">{agotado ? 'Lista de espera' : 'Comprar'}</button>
+        <button onClick={comprar} className="landing-cta landing-cta--bar"><span>{agotado ? 'Lista de espera' : 'Comprar'}</span>{!agotado && <b>{EVENTO.precioTexto}</b>}</button>
       </div>
 
       {abierto && (ventas === false || agotado ? (
@@ -196,7 +196,7 @@ export default function Landing() {
             <p className="font-body text-white/50 text-sm leading-relaxed mb-6">
               {agotado ? 'Escríbenos a pipesantosinfo@gmail.com y te avisamos si se libera un cupo.' : 'Síguenos en Instagram: ahí avisamos el momento exacto.'}
             </p>
-            <button onClick={() => setAbierto(false)} className="landing-cta landing-cta--ghost">Entendido</button>
+            <button onClick={() => setAbierto(false)} className="landing-cta landing-cta--ghost"><span>Entendido</span></button>
           </div>
         </div>
       ) : (
