@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: 'Pipe Santos',
     locale: 'es_CO',
     type: 'website',
-    images: [{ url: `${BASE}/og-cartagena-v1.jpg`, width: 1200, height: 630, alt: `${EVENTO.nombre} — Pipe Santos` }],
+    images: [{ url: `${BASE}/og-cartagena-v2.jpg`, width: 1200, height: 630, alt: `${EVENTO.nombre} — Pipe Santos` }],
   },
   twitter: { card: 'summary_large_image' },
 }
