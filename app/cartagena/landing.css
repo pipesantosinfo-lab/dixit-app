@@ -239,20 +239,22 @@
 }
 .landing-meta i { font-style: normal; color: var(--naranja); }
 
-/* ── Botones: una boleta ────────────────────────────────────────────────
- * Muescas a los lados (mask), linea perforada entre el texto y el precio,
- * texto en la sans pesada del poster y precio en monoespaciada. */
+/* ── Botones: una boleta, sutil ───────────────────────────────────────
+ * Muescas a los lados (mask), perforado entre texto y precio, texto en la
+ * sans del poster pero pequeño. Relleno naranja translúcido con borde fino;
+ * al pasar el mouse se llena de naranja. */
 .landing-cta {
-  --muesca: 9px;
+  --muesca: 7px;
   position: relative;
   display: inline-flex;
   align-items: stretch;
   border: 0;
   padding: 0;
-  border-radius: 12px;
+  border-radius: 10px;
   cursor: pointer;
-  color: #160a04;
-  background: linear-gradient(180deg, #ffb45f 0%, #ff9a3c 55%, #ff8a2a 100%);
+  color: #fff4e8;
+  background: rgba(255,154,60,0.14);
+  box-shadow: inset 0 0 0 1px rgba(255,154,60,0.75);
   -webkit-mask:
     radial-gradient(circle at 0 50%, transparent var(--muesca), #000 calc(var(--muesca) + 0.5px)),
     radial-gradient(circle at 100% 50%, transparent var(--muesca), #000 calc(var(--muesca) + 0.5px));
@@ -261,8 +263,7 @@
     radial-gradient(circle at 0 50%, transparent var(--muesca), #000 calc(var(--muesca) + 0.5px)),
     radial-gradient(circle at 100% 50%, transparent var(--muesca), #000 calc(var(--muesca) + 0.5px));
   mask-composite: intersect;
-  filter: drop-shadow(0 12px 28px rgba(255,138,42,0.35));
-  transition: transform 0.22s ease, filter 0.22s ease;
+  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
   -webkit-tap-highlight-color: transparent;
   overflow: hidden;
 }
@@ -271,58 +272,71 @@
   display: flex;
   align-items: center;
   white-space: nowrap;
+  transition: color 0.25s ease, border-color 0.25s ease;
 }
 .landing-cta > span {
-  padding: 17px 22px 17px 30px;
+  padding: 13px 18px 13px 24px;
   font-family: var(--font-hero), 'Montserrat', system-ui, sans-serif;
-  font-weight: 900;
-  font-size: 14px;
-  letter-spacing: 0.08em;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 .landing-cta > b {
-  padding: 17px 30px 17px 20px;
+  padding: 13px 24px 13px 16px;
   font-family: var(--font-mono), ui-monospace, monospace;
   font-weight: 500;
-  font-size: 14px;
+  font-size: 12.5px;
   letter-spacing: 0.06em;
-  border-left: 2px dashed rgba(22,10,4,0.45);
+  color: var(--naranja);
+  border-left: 1.5px dashed rgba(255,154,60,0.6);
 }
-/* brillo que pasa al pasar el mouse */
-.landing-cta::after {
-  content: '';
-  position: absolute;
-  top: 0; bottom: 0; left: -60%;
-  width: 40%;
-  background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent);
-  transform: skewX(-18deg);
-  transition: left 0.55s ease;
-  pointer-events: none;
+.landing-cta:hover,
+.landing-cta:focus-visible {
+  background: linear-gradient(180deg, #ffb45f, #ff9a3c);
+  color: #160a04;
+  box-shadow: inset 0 0 0 1px rgba(255,154,60,0), 0 10px 26px rgba(255,138,42,0.28);
+  transform: translateY(-1px);
 }
-.landing-cta:hover { transform: translateY(-2px); filter: drop-shadow(0 18px 36px rgba(255,138,42,0.5)); }
-.landing-cta:hover::after { left: 130%; }
-.landing-cta:active { transform: translateY(1px) scale(0.99); }
+.landing-cta:hover > b,
+.landing-cta:focus-visible > b { color: #160a04; border-left-color: rgba(22,10,4,0.4); }
+.landing-cta:active { transform: translateY(0); }
 .landing-cta:focus-visible { outline: 2px solid var(--lavanda); outline-offset: 4px; }
 
-/* Variante fantasma: solo el contorno de la boleta */
+/* Variante fantasma: contorno lavanda, sin naranja */
 .landing-cta--ghost {
-  background: rgba(139,60,247,0.10);
+  background: rgba(139,60,247,0.08);
   color: var(--ink);
-  filter: none;
-  box-shadow: inset 0 0 0 1.5px rgba(201,167,255,0.5);
+  box-shadow: inset 0 0 0 1px rgba(201,167,255,0.45);
 }
-.landing-cta--ghost > span { padding-right: 30px; }
-.landing-cta--ghost:hover { filter: none; box-shadow: inset 0 0 0 1.5px rgba(201,167,255,0.9); }
+.landing-cta--ghost > span { padding-right: 24px; }
+.landing-cta--ghost:hover,
+.landing-cta--ghost:focus-visible {
+  background: rgba(139,60,247,0.22);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px rgba(201,167,255,0.9);
+}
 
-.landing-cta--wide { width: 100%; margin-top: 28px; justify-content: center; }
+.landing-cta--wide { width: 100%; margin-top: 28px; }
 .landing-cta--wide > span { flex: 1; justify-content: center; }
 .landing-cta--hero { width: 100%; }
-.landing-cta--hero > span { flex: 1; justify-content: center; padding-left: 30px; }
-.landing-cta--bar { --muesca: 7px; flex-shrink: 0; }
-.landing-cta--bar > span { padding: 13px 16px 13px 22px; font-size: 12.5px; }
-.landing-cta--bar > b { padding: 13px 22px 13px 14px; font-size: 12.5px; }
+.landing-cta--hero > span { flex: 1; justify-content: center; }
+/* La barra fija y el hero sí van llenos: son los dos botones principales */
+.landing-cta--hero,
+.landing-cta--bar {
+  background: linear-gradient(180deg, #ffb45f, #ff9a3c);
+  color: #160a04;
+  box-shadow: 0 8px 22px rgba(255,138,42,0.25);
+}
+.landing-cta--hero > b,
+.landing-cta--bar > b { color: #160a04; border-left-color: rgba(22,10,4,0.4); }
+.landing-cta--hero:hover,
+.landing-cta--bar:hover { background: linear-gradient(180deg, #ffc27a, #ffa552); }
+.landing-cta--bar { --muesca: 6px; flex-shrink: 0; }
+.landing-cta--bar > span { padding: 11px 14px 11px 20px; font-size: 11.5px; }
+.landing-cta--bar > b { padding: 11px 20px 11px 12px; font-size: 11.5px; }
 /* En celulares angostos la barra muestra solo el texto: el precio ya va a la izquierda */
-@media (max-width: 400px) { .landing-cta--bar > b { display: none; } .landing-cta--bar > span { padding-right: 24px; } }
+@media (max-width: 400px) { .landing-cta--bar > b { display: none; } .landing-cta--bar > span { padding-right: 22px; } }
 .landing-link {
   font-family: var(--font-mono), ui-monospace, monospace;
   font-size: 12px;
