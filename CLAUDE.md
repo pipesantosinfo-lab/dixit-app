@@ -159,6 +159,10 @@ API. Si se añade una ruta de admin nueva, agregarla a `SOLO_ADMIN` dentro de
   entre el staff de la puerta y solo abre `sync-tickets`, `sync-used` y
   `validate-qr`. Todo lo demás (listados con cédulas, exportación, sorteos,
   ventas) es solo `ADMIN_SECRET`. No volver a mezclarlos.
+- **`supabaseAdmin()` manda `cache: 'no-store'` en cada petición.** Next
+  guarda en su Data Cache los GET de `fetch()` dentro de las rutas de API, y
+  supabase-js consulta con GET: `/api/admin/reporte-landing` devolvió durante
+  horas las cifras del primer día. No quitar ese `fetch` del cliente.
 - **Nunca juzgar una respuesta por su código HTTP.** Supabase devuelve 400
   tanto por "filtro de tipo de archivo" como por "regla de seguridad", y 200
   con cuerpo `[]`. Leer siempre el cuerpo antes de concluir.
