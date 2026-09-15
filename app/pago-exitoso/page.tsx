@@ -69,9 +69,6 @@ function HighFiveCelebration() {
         transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1], delay: 0.05 }}
       />
 
-      {/* Animación MP4: 97KB (vs 930KB del GIF original = -89%).
-          autoPlay + muted + playsInline → autoplay funciona en iOS Safari.
-          Sin rotate/shake propio porque el video ya trae su movimiento. */}
       <motion.div
         className="relative w-full h-full"
         initial={{ scale: 0.6, opacity: 0 }}
@@ -82,22 +79,18 @@ function HighFiveCelebration() {
           ease: [0.16, 1, 0.3, 1],
         }}
       >
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          aria-label="¡Choca esos cinco!"
+        {/* WebP animado con transparencia (del GIF original, 256px, 200 KB).
+            Antes era un <video>: el navegador interno de Instagram no lo
+            reproducia solo y mostraba un cuadro blanco con un boton de play
+            justo en la pantalla de "Pago confirmado". Una imagen animada
+            se mueve sola en todos los navegadores, sin permisos de autoplay. */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/high-five-v2.webp"
+          alt=""
           className="w-full h-full object-contain"
-          style={{ pointerEvents: 'none', background: 'transparent' }}
-        >
-          {/* WebM con VP9 + alpha real (Chrome, Firefox, Safari 16+). */}
-          <source src="/high-five.webm" type="video/webm" />
-          {/* Fallback MP4 con bg #070508 baked-in (matchea el bg de la página
-              → visualmente parece transparente en navegadores viejos). */}
-          <source src="/high-five.mp4" type="video/mp4" />
-        </video>
+          style={{ pointerEvents: 'none' }}
+        />
       </motion.div>
 
       {/* Chispas emanando del centro */}
