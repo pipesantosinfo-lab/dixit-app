@@ -53,7 +53,7 @@ export async function createBoldPaymentLink({
  * Pregunta a Bold el estado de un link de pago. Es el camino de respaldo
  * cuando el webhook no llega: si dice PAID, la orden se activa igual.
  */
-export async function consultarLinkBold(paymentLink: string): Promise<{ status: string; paymentMethod: string } | null> {
+export async function consultarLinkBold(paymentLink: string): Promise<{ status: string; paymentMethod: string; transactionId: string | null } | null> {
   const apiKey = process.env.BOLD_API_KEY
   if (!apiKey || !/^LNK_[A-Z0-9]{4,32}$/i.test(paymentLink)) return null
   const r = await fetch(`https://integrations.api.bold.co/online/link/v1/${paymentLink.toUpperCase()}`, {
@@ -65,5 +65,5 @@ export async function consultarLinkBold(paymentLink: string): Promise<{ status: 
     return null
   }
   const d = await r.json()
-  return { status: String(d.status ?? ''), paymentMethod: String(d.payment_method ?? 'Bold') }
+  return { status: String(d.status ?? ''), paymentMethod: String(d.payment_method ?? 'Bold'), transactionId: d.transaction_id ? String(d.transaction_id) : null }
 }
