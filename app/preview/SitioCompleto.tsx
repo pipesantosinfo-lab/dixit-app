@@ -1202,7 +1202,7 @@ const testimonials = [
     photo: '/t-brayan.png',
   },
   {
-    quote: 'Me gustó mucho, fue justo como me lo imaginaba: que los chicos pudieran tener ese espacio. Tuvimos varios encuentros con diferentes instituciones de la ciudad y logramos impactar a más de 800 jóvenes. Escuché muy buenos comentarios, la gente estuvo concentrada todo el tiempo y les llegaron las palabras. Todo quedó muy bien.',
+    quote: 'Con Pipe tuvimos varios encuentros con diferentes instituciones de la ciudad y logramos impactar a más de 800 jóvenes. Fue exactamente el espacio que queríamos darles a nuestros estudiantes: recibimos muy buenos comentarios, el público se mantuvo concentrado de principio a fin y el mensaje les llegó. El balance fue muy positivo.',
     name: 'Vanessa Bossio',
     role: 'Mercadeo — Universidad Rafael Núñez',
     photo: '/t-vanessa.png',
