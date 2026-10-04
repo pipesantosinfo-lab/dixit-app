@@ -2266,7 +2266,10 @@ function PreconfCarousel() {
   /* Los clips van agrupados por evento. Cuando un mismo evento ocupó varios
      días, sus vídeos viajan juntos con un rótulo encima: si no, dos tomas
      del mismo sitio parecen material repetido en vez de un evento grande. */
-  const grupos: { titulo?: string; videos: { src: string; dia?: string }[] }[] = [
+  /* `poster` solo cuando la portada no es la que lleva el nombre del vídeo:
+     los pósters se sirven con caché de un día, así que al cambiar uno hay
+     que darle nombre nuevo o los navegadores siguen mostrando el viejo. */
+  const grupos: { titulo?: string; videos: { src: string; dia?: string; poster?: string }[] }[] = [
     { videos: [{ src: 'preconf-3-web.mp4' }] },
     { videos: [{ src: 'preconf-1-web.mp4' }] },
     {
@@ -2276,7 +2279,7 @@ function PreconfCarousel() {
         { src: 'preconf-10-web.mp4', dia: 'Día 2' },
       ],
     },
-    { videos: [{ src: 'preconf-11-web.mp4' }] },
+    { videos: [{ src: 'preconf-11-web.mp4', poster: 'preconf-11-poster-v2.webp' }] },
     { videos: [{ src: 'preconf-7-web.mp4' }] },
     { videos: [{ src: 'preconf-2-web.mp4' }] },
     { videos: [{ src: 'preconf-4-web.mp4' }] },
@@ -2326,7 +2329,7 @@ function PreconfCarousel() {
                       controls
                       playsInline
                       preload="none"
-                      poster={`/showreel/${v.src.replace(/-web\.mp4$/, '')}-poster.webp`}
+                      poster={`/showreel/${v.poster ?? `${v.src.replace(/-web\.mp4$/, '')}-poster.webp`}`}
                       className="w-full h-full block"
                       style={{ objectFit: 'cover', background: '#070508' }}
                     >
