@@ -2276,10 +2276,11 @@ function PreconfCarousel() {
         { src: 'preconf-10-web.mp4', dia: 'Día 2' },
       ],
     },
+    { videos: [{ src: 'preconf-11-web.mp4' }] },
+    { videos: [{ src: 'preconf-7-web.mp4' }] },
     { videos: [{ src: 'preconf-2-web.mp4' }] },
     { videos: [{ src: 'preconf-4-web.mp4' }] },
     { videos: [{ src: 'preconf-6-web.mp4' }] },
-    { videos: [{ src: 'preconf-7-web.mp4' }] },
     { videos: [{ src: 'preconf-8-web.mp4' }] },
   ]
 
