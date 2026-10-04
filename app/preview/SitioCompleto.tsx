@@ -1188,12 +1188,24 @@ const stats = [
   { num: '+10', label: 'Años de experiencia' },
 ]
 
+function mostrarIniciales(img: HTMLImageElement) {
+  img.style.display = 'none'
+  const ini = img.parentElement?.querySelector('[data-iniciales]') as HTMLElement | null
+  if (ini) ini.style.display = 'flex'
+}
+
 const testimonials = [
   {
     quote: 'Contratamos a Pipe Santos como conferencista para la apertura de la conmemoración nacional de la Generación Bicentenaria. Lideró una conferencia presencial y otra virtual para nuestros centros tutoriales fuera de Cartagena, con más de 600 asistentes. Su presentación fue de gran impacto: los estudiantes quedaron emocionados, le pedían fotos y le hacían preguntas. En la Universidad de Cartagena siempre tendrá las puertas abiertas.',
     name: 'Brayan Antonio Buelvas',
     role: 'Vicerrectoría — Universidad de Cartagena',
     photo: '/t-brayan.png',
+  },
+  {
+    quote: 'Me gustó mucho, fue justo como me lo imaginaba: que los chicos pudieran tener ese espacio. Escuché muy buenos comentarios. Algunos no lo conocían porque son muy jóvenes, pero les llegaron las palabras. A pesar del calor y de que el lugar no era el más propicio, la gente estuvo concentrada todo el tiempo y todo quedó muy bien.',
+    name: 'Vanessa Bossio',
+    role: 'Mercadeo — Universidad Rafael Núñez',
+    photo: '/t-vanessa.png',
   },
   {
     quote: 'La capacidad que tiene Pipe Santos para conectar con las personas es impresionante, nunca vi a la comunidad de la universidad tan conectada con un speaker como el día de su presentación en la u.',
@@ -3614,13 +3626,11 @@ export default function PreviewPage() {
                   <div className="flex items-center gap-3 relative z-10">
                     <div className="tc-avatar-ring">
                       <img src={t.photo} alt={t.name} className="w-full h-full object-cover object-top rounded-full"
-                        /* Si la foto todavía no está en /public, se muestran las iniciales en vez del icono de imagen rota */
-                        onError={(e) => {
-                          const img = e.currentTarget
-                          img.style.display = 'none'
-                          const ini = img.parentElement?.querySelector('[data-iniciales]') as HTMLElement | null
-                          if (ini) ini.style.display = 'flex'
-                        }} />
+                        /* Si la foto todavía no está en /public, se muestran las iniciales en vez del icono de imagen rota.
+                         * El 404 suele ocurrir antes de que React hidrate, así que onError no alcanza a dispararse:
+                         * por eso al montar se comprueba también si la imagen ya falló. */
+                        ref={(img) => { if (img && img.complete && img.naturalWidth === 0) mostrarIniciales(img) }}
+                        onError={(e) => mostrarIniciales(e.currentTarget)} />
                       <span data-iniciales aria-hidden className="absolute inset-[2px] rounded-full items-center justify-center font-body text-white text-sm font-medium" style={{ display: 'none', background: '#0d0a14' }}>
                         {t.name.split(' ').map(w => w[0]).slice(0, 2).join('')}
                       </span>
