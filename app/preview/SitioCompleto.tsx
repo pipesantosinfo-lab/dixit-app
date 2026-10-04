@@ -2264,6 +2264,8 @@ function PreconfCarousel() {
      cámara, y el reproductor se quedaba cargando). Todas en .mp4 — la mitad
      eran .mov, que fuera de Safari sólo funciona por tolerancia. */
   const videos = [
+    'preconf-9-web.mp4',
+    'preconf-10-web.mp4',
     'preconf-1-web.mp4',
     'preconf-2-web.mp4',
     'preconf-3-web.mp4',
