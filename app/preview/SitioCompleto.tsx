@@ -2268,7 +2268,7 @@ function PreconfCarousel() {
      del mismo sitio parecen material repetido en vez de un evento grande. */
   const grupos: { titulo?: string; videos: { src: string; dia?: string }[] }[] = [
     {
-      titulo: 'Universidad Rafael Núñez · dos días',
+      titulo: 'Evento UniNúñez · 2 días',
       videos: [
         { src: 'preconf-9-web.mp4', dia: 'Día 1' },
         { src: 'preconf-10-web.mp4', dia: 'Día 2' },
@@ -2309,17 +2309,12 @@ function PreconfCarousel() {
 
         <div
           ref={scrollRef}
-          className="flex items-end gap-4 overflow-x-auto pb-4"
+          className="flex items-start gap-4 overflow-x-auto pb-4"
           style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
         >
           {grupos.map((g) => (
             <div key={g.videos[0].src} className="flex-none" style={{ scrollSnapAlign: 'start' }}>
-              {g.titulo && (
-                <p className="font-mono text-[9px] tracking-[0.26em] uppercase text-aurora/45 mb-2 pl-1 whitespace-nowrap">
-                  {g.titulo}
-                </p>
-              )}
-              <div className="flex items-end gap-2">
+              <div className="flex items-start gap-2">
                 {g.videos.map((v) => (
                   <div
                     key={v.src}
@@ -2352,6 +2347,35 @@ function PreconfCarousel() {
                   </div>
                 ))}
               </div>
+              {g.titulo && (
+                /* Llave de mapa conceptual: de cada vídeo baja un filete, se
+                   encuentran, y de ese punto cuelga el nombre del evento.
+                   Va con bordes de 1px y no con un SVG estirado, para que las
+                   esquinas redondeen parejo. 24,6% es el centro de cada
+                   tarjeta: ancho W separadas 8px -> (W/2)/(2W+8). */
+                <div className="text-aurora/40">
+                  <div className="relative h-5" aria-hidden>
+                    <div
+                      className="absolute top-0"
+                      style={{
+                        left: '24.6%', right: '24.6%', height: '11px',
+                        borderLeft: '1px solid currentColor',
+                        borderRight: '1px solid currentColor',
+                        borderBottom: '1px solid currentColor',
+                        borderBottomLeftRadius: '7px',
+                        borderBottomRightRadius: '7px',
+                      }}
+                    />
+                    <div
+                      className="absolute"
+                      style={{ left: '50%', top: '11px', height: '9px', borderLeft: '1px solid currentColor' }}
+                    />
+                  </div>
+                  <p className="font-mono text-[9px] tracking-[0.24em] uppercase text-aurora/55 text-center mt-1 whitespace-nowrap">
+                    {g.titulo}
+                  </p>
+                </div>
+              )}
             </div>
           ))}
         </div>
