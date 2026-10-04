@@ -2263,16 +2263,24 @@ function PreconfCarousel() {
      reproduzca sin cortes en datos móviles (antes venían a ~11 Mbps, tasa de
      cámara, y el reproductor se quedaba cargando). Todas en .mp4 — la mitad
      eran .mov, que fuera de Safari sólo funciona por tolerancia. */
-  const videos = [
-    'preconf-9-web.mp4',
-    'preconf-10-web.mp4',
-    'preconf-1-web.mp4',
-    'preconf-2-web.mp4',
-    'preconf-3-web.mp4',
-    'preconf-4-web.mp4',
-    'preconf-6-web.mp4',
-    'preconf-7-web.mp4',
-    'preconf-8-web.mp4',
+  /* Los clips van agrupados por evento. Cuando un mismo evento ocupó varios
+     días, sus vídeos viajan juntos con un rótulo encima: si no, dos tomas
+     del mismo sitio parecen material repetido en vez de un evento grande. */
+  const grupos: { titulo?: string; videos: { src: string; dia?: string }[] }[] = [
+    {
+      titulo: 'Universidad Rafael Núñez · dos días',
+      videos: [
+        { src: 'preconf-9-web.mp4', dia: 'Día 1' },
+        { src: 'preconf-10-web.mp4', dia: 'Día 2' },
+      ],
+    },
+    { videos: [{ src: 'preconf-1-web.mp4' }] },
+    { videos: [{ src: 'preconf-2-web.mp4' }] },
+    { videos: [{ src: 'preconf-3-web.mp4' }] },
+    { videos: [{ src: 'preconf-4-web.mp4' }] },
+    { videos: [{ src: 'preconf-6-web.mp4' }] },
+    { videos: [{ src: 'preconf-7-web.mp4' }] },
+    { videos: [{ src: 'preconf-8-web.mp4' }] },
   ]
 
   return (
@@ -2304,22 +2312,46 @@ function PreconfCarousel() {
           className="flex items-end gap-4 overflow-x-auto pb-4"
           style={{ scrollSnapType: 'x mandatory', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' } as React.CSSProperties}
         >
-          {videos.map((src) => (
-            <div
-              key={src}
-              className="flex-none relative rounded-2xl overflow-hidden"
-              style={{ width: 'min(45vw, 260px)', height: 'auto', aspectRatio: '9/16', scrollSnapAlign: 'start', background: '#070508' }}
-            >
-              <video
-                controls
-                playsInline
-                preload="none"
-                poster={`/showreel/${src.replace(/-web\.mp4$/, '')}-poster.webp`}
-                className="w-full h-full block"
-                style={{ objectFit: 'cover', background: '#070508' }}
-              >
-                <source src={`/showreel/${src}`} type="video/mp4" />
-              </video>
+          {grupos.map((g) => (
+            <div key={g.videos[0].src} className="flex-none" style={{ scrollSnapAlign: 'start' }}>
+              {g.titulo && (
+                <p className="font-mono text-[9px] tracking-[0.26em] uppercase text-aurora/45 mb-2 pl-1 whitespace-nowrap">
+                  {g.titulo}
+                </p>
+              )}
+              <div className="flex items-end gap-2">
+                {g.videos.map((v) => (
+                  <div
+                    key={v.src}
+                    className="flex-none relative rounded-2xl overflow-hidden"
+                    style={{ width: 'min(45vw, 260px)', height: 'auto', aspectRatio: '9/16', background: '#070508' }}
+                  >
+                    <video
+                      controls
+                      playsInline
+                      preload="none"
+                      poster={`/showreel/${v.src.replace(/-web\.mp4$/, '')}-poster.webp`}
+                      className="w-full h-full block"
+                      style={{ objectFit: 'cover', background: '#070508' }}
+                    >
+                      <source src={`/showreel/${v.src}`} type="video/mp4" />
+                    </video>
+                    {v.dia && (
+                      <span
+                        className="absolute top-3 left-3 z-10 pointer-events-none font-mono text-[9px] tracking-[0.18em] uppercase text-white/90 px-2 py-[3px] rounded-full"
+                        style={{
+                          background: 'rgba(7,5,8,0.58)',
+                          border: '1px solid rgba(255,255,255,0.16)',
+                          backdropFilter: 'blur(6px)',
+                          WebkitBackdropFilter: 'blur(6px)',
+                        }}
+                      >
+                        {v.dia}
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
         </div>
