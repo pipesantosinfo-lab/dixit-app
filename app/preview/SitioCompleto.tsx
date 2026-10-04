@@ -1202,7 +1202,7 @@ const testimonials = [
     photo: '/t-brayan.png',
   },
   {
-    quote: 'Me gustó mucho, fue justo como me lo imaginaba: que los chicos pudieran tener ese espacio. Escuché muy buenos comentarios. Algunos no lo conocían porque son muy jóvenes, pero les llegaron las palabras. A pesar del calor y de que el lugar no era el más propicio, la gente estuvo concentrada todo el tiempo y todo quedó muy bien.',
+    quote: 'Me gustó mucho, fue justo como me lo imaginaba: que los chicos pudieran tener ese espacio. Tuvimos varios encuentros con diferentes instituciones de la ciudad y logramos impactar a más de 800 jóvenes. Escuché muy buenos comentarios, la gente estuvo concentrada todo el tiempo y les llegaron las palabras. Todo quedó muy bien.',
     name: 'Vanessa Bossio',
     role: 'Mercadeo — Universidad Rafael Núñez',
     photo: '/t-vanessa.png',
