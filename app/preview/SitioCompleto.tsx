@@ -2267,6 +2267,8 @@ function PreconfCarousel() {
      días, sus vídeos viajan juntos con un rótulo encima: si no, dos tomas
      del mismo sitio parecen material repetido en vez de un evento grande. */
   const grupos: { titulo?: string; videos: { src: string; dia?: string }[] }[] = [
+    { videos: [{ src: 'preconf-3-web.mp4' }] },
+    { videos: [{ src: 'preconf-1-web.mp4' }] },
     {
       titulo: 'Evento UniNúñez · 2 días',
       videos: [
@@ -2274,9 +2276,7 @@ function PreconfCarousel() {
         { src: 'preconf-10-web.mp4', dia: 'Día 2' },
       ],
     },
-    { videos: [{ src: 'preconf-1-web.mp4' }] },
     { videos: [{ src: 'preconf-2-web.mp4' }] },
-    { videos: [{ src: 'preconf-3-web.mp4' }] },
     { videos: [{ src: 'preconf-4-web.mp4' }] },
     { videos: [{ src: 'preconf-6-web.mp4' }] },
     { videos: [{ src: 'preconf-7-web.mp4' }] },
