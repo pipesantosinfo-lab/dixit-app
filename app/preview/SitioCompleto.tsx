@@ -2270,7 +2270,7 @@ function PreconfCarousel() {
      los pósters se sirven con caché de un día, así que al cambiar uno hay
      que darle nombre nuevo o los navegadores siguen mostrando el viejo. */
   const grupos: { titulo?: string; videos: { src: string; dia?: string; poster?: string }[] }[] = [
-    { videos: [{ src: 'preconf-3-web.mp4' }] },
+    { videos: [{ src: 'preconf-3-web.mp4', poster: 'preconf-3-poster-v2.webp' }] },
     { videos: [{ src: 'preconf-1-web.mp4' }] },
     {
       titulo: 'Evento UniNúñez · 2 días',
