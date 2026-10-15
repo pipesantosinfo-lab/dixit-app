@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 
+/* El interruptor de la landing vive en lib/evento.ts y se lee de ahi, no se
+   copia: tener el mismo dato en dos sitios es como terminaba el precio en
+   cinco archivos distintos. Hace falta aqui porque `redirect()` dentro de la
+   pagina devuelve un 307 SIN cabecera Location —los navegadores lo resuelven
+   por JavaScript, pero un rastreador o la vista previa de WhatsApp se
+   quedaban con el anuncio del evento—. Un redirect de configuracion si manda
+   Location, y ocurre antes de renderizar nada. */
+const landingActiva = /landingActiva:\s*true/.test(
+  require('fs').readFileSync(require('path').join(__dirname, 'lib/evento.ts'), 'utf8')
+)
+
 const securityHeaders = [
   { key: 'X-DNS-Prefetch-Control',     value: 'on' },
   { key: 'X-Frame-Options',            value: 'SAMEORIGIN' },
@@ -92,6 +103,10 @@ const nextConfig = {
       // Pagina antigua del evento de Barranquilla, con los datos escritos a
       // mano. La seccion #evento de la portada lee de lib/evento.ts.
       { source: '/evento', destination: '/#evento', permanent: false },
+      // Landing apagada: quien llegue por el enlace de la bio cae en la
+      // portada. Temporal a proposito (permanent: false): cuando se vuelva
+      // a encender, nadie se queda con el salto guardado en el navegador.
+      ...(landingActiva ? [] : [{ source: '/cartagena', destination: '/', permanent: false }]),
     ]
   },
 }
