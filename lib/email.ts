@@ -2,7 +2,7 @@ import { Resend } from 'resend'
 import { EVENTO } from '@/lib/evento'
 
 /** Escapa caracteres HTML especiales para evitar inyección en el cuerpo del email */
-function escapeHtml(str: string): string {
+export function escapeHtml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
