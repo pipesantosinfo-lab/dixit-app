@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { redirect } from 'next/navigation'
 import { EVENTO } from '@/lib/evento'
 import Landing from './Landing'
 import './landing.css'
@@ -22,5 +23,10 @@ export const metadata: Metadata = {
 }
 
 export default function CartagenaPage() {
+  /* Con la landing apagada (EVENTO.landingActiva) nadie debe ver ni la
+     pagina ni sus botones de compra. Se redirige a la portada en vez de
+     devolver un 404: el enlace sigue vivo en la bio de Instagram y en los
+     mensajes ya enviados, y es mejor que esa gente caiga en el sitio. */
+  if (!EVENTO.landingActiva) redirect('/')
   return <Landing />
 }

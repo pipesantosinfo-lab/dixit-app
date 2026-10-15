@@ -24,7 +24,17 @@ export const EVENTO = {
    * panel de admin): solo esconde la seccion. Con activo=false y ventas
    * abiertas, nadie encuentra donde comprar.
    */
-  activo: true,
+  activo: false,
+
+  /**
+   * La landing de una sola pagina (/cartagena). Es un interruptor aparte
+   * del de arriba: la portada y la landing se encienden y se apagan por
+   * separado, porque a veces interesa tener la landing viva para una
+   * campaña sin abrir la seccion de evento en la portada, o al reves.
+   * Apagada, /cartagena redirige a la portada: quien llegue por el enlace
+   * de la bio de Instagram cae en el sitio y no en un error.
+   */
+  landingActiva: false,
 
   /** Nombre del show tal como va en el flyer. */
   nombre: 'Historias sin libreto',
