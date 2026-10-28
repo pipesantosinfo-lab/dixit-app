@@ -1183,9 +1183,9 @@ function SocialCardNew({ data }: { data: SocialCardData }) {
 }
 
 const stats = [
-  { num: '+300', label: 'Conferencias' },
-  { num: '+1', label: 'Seguidores', suffix: 'M' },
-  { num: '+10', label: 'Años de experiencia' },
+  { num: '+300', label: 'Conferencias', corto: 'Charlas' },
+  { num: '+1', label: 'Seguidores', suffix: 'M', corto: 'Comunidad' },
+  { num: '+10', label: 'Años de experiencia', corto: 'Años' },
 ]
 
 function mostrarIniciales(img: HTMLImageElement) {
@@ -2930,8 +2930,8 @@ export default function PreviewPage() {
             style={{ transform: 'scale(1.15)', willChange: 'transform' }}
           >
             {/* Adaptive HD con srcset por DPR + WebP + JPG fallback:
-                - DPR 1 (raro aqui):        hero-mobile-1x-pan-v2 (2775x1850)
-                - DPR 2 y 3 (iPad, iPhone): hero-mobile-2x-pan-v2 (5535x3690)
+                - DPR 1 (raro aqui):        hero-mobile-1x-pan-v3 (2775x1850)
+                - DPR 2 y 3 (iPad, iPhone): hero-mobile-2x-pan-v3 (5535x3690)
                 Browser usa <picture>/<source>/srcset para elegir. */}
             <picture>
               {/* Este bloque ahora se puede ver en cualquier ancho (móvil real
@@ -2946,12 +2946,12 @@ export default function PreviewPage() {
                   cambia: es la misma foto entera, solo sin reducir. */}
               <source
                 type="image/webp"
-                srcSet="/hero-mobile-1x-pan-v2.webp 1x, /hero-mobile-2x-pan-v2.webp 2x"
+                srcSet="/hero-mobile-1x-pan-v3.webp 1x, /hero-mobile-2x-pan-v3.webp 2x"
               />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
-                src="/hero-mobile-2x-pan-v2.jpg"
-                srcSet="/hero-mobile-1x-pan-v2.jpg 1x, /hero-mobile-2x-pan-v2.jpg 2x"
+                src="/hero-mobile-2x-pan-v3.jpg"
+                srcSet="/hero-mobile-1x-pan-v3.jpg 1x, /hero-mobile-2x-pan-v3.jpg 2x"
                 alt=""
                 className="absolute inset-0 w-full h-full object-cover"
                 style={{ objectPosition: '63% top' }}
@@ -2960,20 +2960,22 @@ export default function PreviewPage() {
               />
             </picture>
           </div>
-          {/* Gradiente diagonal: oscuro arriba-izquierda donde está el texto, transparente abajo */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(155deg, rgba(7,5,8,0.97) 0%, rgba(7,5,8,0.9) 20%, rgba(7,5,8,0.22) 40%, transparent 54%)' }} />
+          {/* Un solo degradado para el texto. Antes eran tres superpuestos
+              (diagonal + vertical + sombra) y en la franja del título se
+              sumaban dejando un gris sucio, ni negro ni foto. */}
+          <div className="absolute inset-0" style={{
+            background: 'linear-gradient(to bottom, rgba(7,5,8,0.96) 0%, rgba(7,5,8,0.9) 30%, rgba(7,5,8,0.45) 46%, rgba(7,5,8,0.12) 58%, transparent 66%)',
+          }} />
           {/* Fade-to-black abajo: la imagen se difumina suavemente hacia el
               color del background de la siguiente sección (#070508) para que
               no haya línea visible entre hero y la sección de estadísticas. */}
           <div className="absolute inset-0 pointer-events-none" style={{
             background: 'linear-gradient(to top, rgba(7,5,8,1) 0%, rgba(7,5,8,0.95) 6%, rgba(7,5,8,0.78) 14%, rgba(7,5,8,0.4) 22%, transparent 34%)',
           }} />
-          {/* Sombra desde arriba para cubrir el área del título y subtítulo */}
-          <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(7,5,8,0.92) 0%, rgba(7,5,8,0.75) 25%, rgba(7,5,8,0.28) 46%, transparent 62%)' }} />
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
-        <div className="hero-view-mobile relative z-10 w-full max-w-5xl mx-auto px-6 pb-16" style={{ paddingTop: '20vh' }}>
+        <div className="hero-view-mobile relative z-10 w-full max-w-5xl mx-auto px-6 pb-16" style={{ paddingTop: '14vh' }}>
           {/* Texto — wrapper con w-full + items-start para anclar todos los hijos a la izquierda */}
           <motion.div initial="hidden" animate="visible" variants={stagger}
             className="w-full flex flex-col items-start">
@@ -2985,9 +2987,27 @@ export default function PreviewPage() {
                 ? <ScrambleText text="Conectando" delay={2800} />
                 : <span style={{ position: 'relative', zIndex: 1, color: 'white' }}>{HERO_WORDS[heroWordIdx]}</span>}
             </motion.h1>
-            <motion.p variants={fadeUp} className="text-[2.3rem] mb-6 whitespace-nowrap" style={{ fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
+            {/* El tamaño escala con el ancho: a 2.3rem fijos la "s" final de
+                "historias" moría contra el borde de la pantalla. */}
+            <motion.p variants={fadeUp} className="mb-6 whitespace-nowrap" style={{ fontSize: 'clamp(1.6rem, 8vw, 2.1rem)', fontFamily: 'Amsterdam, cursive', color: 'rgba(139,60,247,0.9)', textShadow: '0 2px 20px rgba(7,5,8,0.9)' }}>
               A partir de historias
             </motion.p>
+
+            {/* Cifras: ocupan el aire que quedaba entre el título y la foto,
+                y dan autoridad en el primer vistazo. Leen de `stats`, el mismo
+                sitio que la sección de más abajo: un solo número que mantener. */}
+            <motion.div variants={fadeUp} className="w-full flex border-t border-white/15 pt-3.5 mb-6">
+              {stats.map((st) => (
+                <div key={st.label} className="flex-1">
+                  <p className="font-body text-[17px] font-bold text-white leading-none">
+                    {st.num}{st.suffix ?? ''}
+                  </p>
+                  <p className="font-mono text-[8px] tracking-[0.18em] uppercase text-white/45 mt-1">
+                    {st.corto}
+                  </p>
+                </div>
+              ))}
+            </motion.div>
 
             {/* ── Hero CTA: se enciende con EVENTO.activo (lib/evento.ts) ── */}
             {EVENTO.activo && (
