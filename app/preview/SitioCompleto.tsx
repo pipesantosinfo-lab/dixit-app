@@ -1182,10 +1182,18 @@ function SocialCardNew({ data }: { data: SocialCardData }) {
   )
 }
 
+/* Etiquetas del hero movil. Van aparte de `stats` porque abren la cifra
+   de seguidores por red, y la seccion de mas abajo sigue mostrando el
+   total. Suman 937.000, de ahi el "+1M" redondeado que habia antes. */
+const HERO_ETIQUETAS: { num: string; texto: string }[][] = [
+  [{ num: '+300', texto: 'charlas' }, { num: '+10', texto: 'años' }],
+  [{ num: '541K', texto: 'Facebook' }, { num: '168K', texto: 'Instagram' }, { num: '228K', texto: 'TikTok' }],
+]
+
 const stats = [
-  { num: '+300', label: 'Conferencias', corto: 'charlas' },
-  { num: '+1', label: 'Seguidores', suffix: 'M', corto: 'seguidores' },
-  { num: '+10', label: 'Años de experiencia', corto: 'años' },
+  { num: '+300', label: 'Conferencias' },
+  { num: '+1', label: 'Seguidores', suffix: 'M' },
+  { num: '+10', label: 'Años de experiencia' },
 ]
 
 function mostrarIniciales(img: HTMLImageElement) {
@@ -2999,25 +3007,25 @@ export default function PreviewPage() {
             {/* Etiquetas en vez de columnas: en columnas los numeros caian
                 justo donde empieza la foto y competian con las caras. Cada
                 etiqueta se trae su propio fondo, asi se lee sobre lo que sea. */}
-            <motion.div variants={fadeUp} className="w-full flex flex-wrap gap-2 mb-6">
-              {stats.map((st) => (
-                <span
-                  key={st.label}
-                  className="inline-flex items-baseline gap-1.5 rounded-full py-1.5 px-3"
-                  style={{
-                    background: 'rgba(7,5,8,0.42)',
-                    border: '1px solid rgba(255,255,255,0.16)',
-                    backdropFilter: 'blur(8px)',
-                    WebkitBackdropFilter: 'blur(8px)',
-                  }}
-                >
-                  <b className="font-body text-[13px] font-bold text-white leading-none">
-                    {st.num}{st.suffix ?? ''}
-                  </b>
-                  <span className="font-body text-[11.5px] text-white/65 leading-none">
-                    {st.corto}
-                  </span>
-                </span>
+            <motion.div variants={fadeUp} className="w-full mt-3 mb-6">
+              {HERO_ETIQUETAS.map((fila, n) => (
+                <div key={n} className="flex flex-wrap gap-1.5" style={{ marginTop: n ? 6 : 0 }}>
+                  {fila.map((st) => (
+                    <span
+                      key={st.texto}
+                      className="inline-flex items-baseline gap-1.5 rounded-full py-1 px-2.5"
+                      style={{
+                        background: 'rgba(7,5,8,0.42)',
+                        border: '1px solid rgba(255,255,255,0.16)',
+                        backdropFilter: 'blur(8px)',
+                        WebkitBackdropFilter: 'blur(8px)',
+                      }}
+                    >
+                      <b className="font-body text-[12px] font-bold text-white leading-none">{st.num}</b>
+                      <span className="font-body text-[10.5px] text-white/65 leading-none">{st.texto}</span>
+                    </span>
+                  ))}
+                </div>
               ))}
             </motion.div>
 
