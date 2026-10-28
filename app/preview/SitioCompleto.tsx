@@ -1187,7 +1187,8 @@ function SocialCardNew({ data }: { data: SocialCardData }) {
    total. Suman 937.000, de ahi el "+1M" redondeado que habia antes. */
 const HERO_ETIQUETAS: { num: string; texto: string }[][] = [
   [{ num: '+300', texto: 'charlas' }, { num: '+10', texto: 'años' }],
-  [{ num: '541K', texto: 'Facebook' }, { num: '168K', texto: 'Instagram' }, { num: '228K', texto: 'TikTok' }],
+  [{ num: '541K', texto: 'Facebook' }, { num: '168K', texto: 'Instagram' }],
+  [{ num: '228K', texto: 'TikTok' }],
 ]
 
 const stats = [
