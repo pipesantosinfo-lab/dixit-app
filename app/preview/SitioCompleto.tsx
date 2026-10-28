@@ -2975,10 +2975,28 @@ export default function PreviewPage() {
           <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 20% 35%, rgba(139,60,247,0.1) 0%, transparent 50%)' }} />
         </div>
 
-        <div className="hero-view-mobile relative z-10 w-full max-w-5xl mx-auto px-6 pb-16" style={{ paddingTop: '14vh' }}>
+        <div className="hero-view-mobile relative z-10 w-full max-w-5xl mx-auto px-6 pb-16" style={{ paddingTop: '10vh' }}>
           {/* Texto — wrapper con w-full + items-start para anclar todos los hijos a la izquierda */}
           <motion.div initial="hidden" animate="visible" variants={stagger}
             className="w-full flex flex-col items-start">
+            {/* Cinta de marcas. La imagen original es a color sobre fondo
+                claro; el filtro la convierte en siluetas blancas de una sola
+                pieza, que es lo unico que funciona sobre el hero oscuro. */}
+            <motion.div variants={fadeUp} className="w-full mb-7">
+              <p className="font-mono text-[8px] tracking-[0.3em] uppercase text-white/35 mb-2.5">
+                Han confiado en mí
+              </p>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/marcas/logos-hero-v1.webp"
+                alt="Marcas con las que ha trabajado Pipe Santos"
+                loading="lazy"
+                decoding="async"
+                className="w-full max-w-[320px] h-auto"
+                style={{ filter: 'brightness(0) invert(1)', opacity: 0.5 }}
+              />
+            </motion.div>
+
             <motion.p variants={fadeUp} className="font-mono text-[9px] tracking-[0.2em] text-aurora/80 uppercase mb-5">
               ◆ Conferencista · Escritor · Influencer
             </motion.p>
