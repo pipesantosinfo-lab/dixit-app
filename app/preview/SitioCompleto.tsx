@@ -1183,9 +1183,9 @@ function SocialCardNew({ data }: { data: SocialCardData }) {
 }
 
 const stats = [
-  { num: '+300', label: 'Conferencias', corto: 'Charlas' },
-  { num: '+1', label: 'Seguidores', suffix: 'M', corto: 'Comunidad' },
-  { num: '+10', label: 'Años de experiencia', corto: 'Años' },
+  { num: '+300', label: 'Conferencias', corto: 'charlas' },
+  { num: '+1', label: 'Seguidores', suffix: 'M', corto: 'seguidores' },
+  { num: '+10', label: 'Años de experiencia', corto: 'años' },
 ]
 
 function mostrarIniciales(img: HTMLImageElement) {
@@ -2996,16 +2996,28 @@ export default function PreviewPage() {
             {/* Cifras: ocupan el aire que quedaba entre el título y la foto,
                 y dan autoridad en el primer vistazo. Leen de `stats`, el mismo
                 sitio que la sección de más abajo: un solo número que mantener. */}
-            <motion.div variants={fadeUp} className="w-full flex border-t border-white/15 pt-3.5 mb-6">
+            {/* Etiquetas en vez de columnas: en columnas los numeros caian
+                justo donde empieza la foto y competian con las caras. Cada
+                etiqueta se trae su propio fondo, asi se lee sobre lo que sea. */}
+            <motion.div variants={fadeUp} className="w-full flex flex-wrap gap-2 mb-6">
               {stats.map((st) => (
-                <div key={st.label} className="flex-1">
-                  <p className="font-body text-[17px] font-bold text-white leading-none">
+                <span
+                  key={st.label}
+                  className="inline-flex items-baseline gap-1.5 rounded-full py-1.5 px-3"
+                  style={{
+                    background: 'rgba(7,5,8,0.42)',
+                    border: '1px solid rgba(255,255,255,0.16)',
+                    backdropFilter: 'blur(8px)',
+                    WebkitBackdropFilter: 'blur(8px)',
+                  }}
+                >
+                  <b className="font-body text-[13px] font-bold text-white leading-none">
                     {st.num}{st.suffix ?? ''}
-                  </p>
-                  <p className="font-mono text-[8px] tracking-[0.18em] uppercase text-white/45 mt-1">
+                  </b>
+                  <span className="font-body text-[11.5px] text-white/65 leading-none">
                     {st.corto}
-                  </p>
-                </div>
+                  </span>
+                </span>
               ))}
             </motion.div>
 
