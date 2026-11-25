@@ -3338,12 +3338,12 @@ export default function PreviewPage() {
             variants={{ hidden: {}, visible: { transition: { staggerChildren: 0.07 } } }}
           >
             {[
+              { file: 'vid7-opinion.jpg',    caption: 'Mi opinión sobre esto',                  likes: '19K',    shortcode: 'DfDdmo8ta62' },
               { file: 'vid1-offcampus.jpg',  caption: 'Mi experiencia con Off Campus y Katy', likes: '106.9K', shortcode: 'DYvIQ4mBdhh', viral: true },
               { file: 'vid2-vozalta.jpg',    caption: 'Pensando en voz alta',                  likes: '14.5K',  shortcode: 'Db4CVUkPj8y' },
               { file: 'vid3-unpaso.jpg',     caption: 'Un paso a la vez, no hay prisa',         likes: '12K',    shortcode: 'Cr1-YmdgcqH' },
               { file: 'vid4-aura.jpg',       caption: 'Mi opinión sobre farmear aura',          likes: '10.9K',  shortcode: 'DcMu1edhR79' },
               { file: 'vid5-brillemos.jpg',  caption: 'Brillemos juntos',                       likes: '5.5K',   shortcode: 'DGTcfJ7u8hj' },
-              { file: 'vid6-confundido.jpg', caption: 'Cada día más confundido',                likes: '5.3K',   shortcode: 'DbHMobHPmpy' },
             ].map((v) => (
               <motion.a
                 key={v.shortcode}
