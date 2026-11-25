@@ -3081,11 +3081,11 @@ export default function PreviewPage() {
             left: 'calc(21.927 * var(--hs))', bottom: 'calc(50% - 46.081 * var(--hs))', zIndex: 4,
           }}>
             {([
-              { n: 1, h: 71.28, ml: 0,      mb: 0,    z: 5, amp: 2.38, delay: 0,    sh: 'calc(1.767 * var(--hs)) calc(2.777 * var(--hs)) calc(5.303 * var(--hs)) rgba(52,42,24,0.28)' },
-              { n: 2, h: 60.48, ml: -10.38, mb: 0,    z: 4, amp: 2.05, delay: 0.32, sh: 'calc(1.515 * var(--hs)) calc(2.399 * var(--hs)) calc(4.545 * var(--hs)) rgba(52,42,24,0.26)' },
-              { n: 3, h: 51.84, ml: -8.90,  mb: 0.32, z: 3, amp: 1.73, delay: 0.64, sh: 'calc(1.262 * var(--hs)) calc(2.020 * var(--hs)) calc(3.787 * var(--hs)) rgba(52,42,24,0.24)' },
-              { n: 4, h: 42.12, ml: -7.23,  mb: 1.73, z: 2, amp: 1.40, delay: 0.96, sh: 'calc(1.010 * var(--hs)) calc(1.515 * var(--hs)) calc(3.030 * var(--hs)) rgba(52,42,24,0.22)' },
-              { n: 5, h: 34.56, ml: -5.93,  mb: 3.46, z: 1, amp: 1.08, delay: 1.28, sh: 'calc(0.757 * var(--hs)) calc(1.262 * var(--hs)) calc(2.525 * var(--hs)) rgba(52,42,24,0.20)' },
+              { n: 1, img: 'card1', h: 71.28, ml: 0,      mb: 0,    z: 5, amp: 2.38, delay: 0,    sh: 'calc(1.767 * var(--hs)) calc(2.777 * var(--hs)) calc(5.303 * var(--hs)) rgba(52,42,24,0.28)' },
+              { n: 2, img: 'card2-v2', h: 60.48, ml: -10.38, mb: 0,    z: 4, amp: 2.05, delay: 0.32, sh: 'calc(1.515 * var(--hs)) calc(2.399 * var(--hs)) calc(4.545 * var(--hs)) rgba(52,42,24,0.26)' },
+              { n: 3, img: 'card3', h: 51.84, ml: -8.90,  mb: 0.32, z: 3, amp: 1.73, delay: 0.64, sh: 'calc(1.262 * var(--hs)) calc(2.020 * var(--hs)) calc(3.787 * var(--hs)) rgba(52,42,24,0.24)' },
+              { n: 4, img: 'card4', h: 42.12, ml: -7.23,  mb: 1.73, z: 2, amp: 1.40, delay: 0.96, sh: 'calc(1.010 * var(--hs)) calc(1.515 * var(--hs)) calc(3.030 * var(--hs)) rgba(52,42,24,0.22)' },
+              { n: 5, img: 'card5', h: 34.56, ml: -5.93,  mb: 3.46, z: 1, amp: 1.08, delay: 1.28, sh: 'calc(0.757 * var(--hs)) calc(1.262 * var(--hs)) calc(2.525 * var(--hs)) rgba(52,42,24,0.20)' },
             ] as const).map((c) => (
               <div key={c.n} className="hero-card-slot relative" style={{
                 height: `calc(${c.h} * var(--u))`, aspectRatio: '0.78', flexShrink: 0, zIndex: c.z,
@@ -3098,9 +3098,9 @@ export default function PreviewPage() {
                   boxShadow: c.sh,
                 }}>
                   <picture>
-                    <source type="image/webp" srcSet={`/hero-cards/card${c.n}.webp`} />
+                    <source type="image/webp" srcSet={`/hero-cards/${c.img}.webp`} />
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={`/hero-cards/card${c.n}.jpg`} alt="" loading={c.n <= 2 ? 'eager' : 'lazy'}
+                    <img src={`/hero-cards/${c.img}.jpg`} alt="" loading={c.n <= 2 ? 'eager' : 'lazy'}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
                   </picture>
                 </div>
